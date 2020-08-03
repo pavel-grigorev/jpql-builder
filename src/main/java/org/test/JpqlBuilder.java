@@ -2,6 +2,8 @@ package org.test;
 
 import org.test.operators.Parentheses;
 import org.test.operators.builders.ExpressionChain;
+import org.test.operators.builders.OperatorBuilder;
+import org.test.operators.builders.StringOperatorBuilder;
 import org.test.utils.EntityHelper;
 
 import java.util.HashMap;
@@ -67,56 +69,16 @@ public class JpqlBuilder<T> {
     return pathResolver.getPathSpecifier();
   }
 
-  public <P> JpqlBuilderOperatorBuilder<P, T> where(P operand) {
-    return createOperator(" where ", operand);
+  public <P> OperatorBuilder<P, JpqlBuilderWhereChain<T>> where(P operand) {
+    return new OperatorBuilder<>(new JpqlBuilderWhereChain<>(this), operand);
   }
 
-  public JpqlBuilderStringOperatorBuilder<T> where(String operand) {
-    return createOperator(" where ", operand);
+  public StringOperatorBuilder<JpqlBuilderWhereChain<T>> where(String operand) {
+    return new StringOperatorBuilder<>(new JpqlBuilderWhereChain<>(this), operand);
   }
 
-  public JpqlBuilder<T> where(ExpressionChain chain) {
-    return join(" where ", chain);
-  }
-
-  public <P> JpqlBuilderOperatorBuilder<P, T> and(P operand) {
-    return createOperator(" and ", operand);
-  }
-
-  public JpqlBuilderStringOperatorBuilder<T> and(String operand) {
-    return createOperator(" and ", operand);
-  }
-
-  public JpqlBuilder<T> and(ExpressionChain chain) {
-    return join(" and ", chain);
-  }
-
-  public <P> JpqlBuilderOperatorBuilder<P, T> or(P operand) {
-    return createOperator(" or ", operand);
-  }
-
-  public JpqlBuilderStringOperatorBuilder<T> or(String operand) {
-    return createOperator(" or ", operand);
-  }
-
-  public JpqlBuilder<T> or(ExpressionChain chain) {
-    return join(" or ", chain);
-  }
-
-  private <P> JpqlBuilderOperatorBuilder<P, T> createOperator(String joiner, P operand) {
-    builder.append(joiner);
-    return new JpqlBuilderOperatorBuilder<>(this, operand);
-  }
-
-  private JpqlBuilderStringOperatorBuilder<T> createOperator(String joiner, String operand) {
-    builder.append(joiner);
-    return new JpqlBuilderStringOperatorBuilder<>(this, operand);
-  }
-
-  private JpqlBuilder<T> join(String joiner, ExpressionChain chain) {
-    builder.append(joiner);
-    new Parentheses(chain.getOperator()).writeTo(this);
-    return this;
+  public JpqlBuilderWhereChain<T> where(ExpressionChain chain) {
+    return new JpqlBuilderWhereChain<>(new Parentheses(chain.getOperator()), this);
   }
 
   public String build() {

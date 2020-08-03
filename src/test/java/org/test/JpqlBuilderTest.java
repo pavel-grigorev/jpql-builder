@@ -13,7 +13,12 @@ import static org.test.operators.builders.StringOperatorBuilder.$;
 
 public class JpqlBuilderTest {
   @Test
-  public void test() {
+  public void testMinimal() {
+    Assert.assertEquals("select e from test$AdGroup e", JpqlBuilder.select(AdGroup.class).build());
+  }
+
+  @Test
+  public void testWhere() {
     JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
     AdGroup adGroup = select.getPathSpecifier();
     String query = select
