@@ -40,11 +40,11 @@ class PathResolver<T> {
     return basePath + '.' + propertyName;
   }
 
-  public T getPathSpecifier() {
+  T getPathSpecifier() {
     return pathSpecifier;
   }
 
-  public String getPropertyPath(Object value) {
+  String getPropertyPath(Object value) {
     String propertyPath = getPropertyPathInternal(value);
     return propertyPath != null ? propertyPath : findPathInChildren(value);
   }
