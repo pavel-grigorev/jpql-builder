@@ -1,15 +1,15 @@
 package org.test.operators;
 
-import org.test.JpqlBuilder;
+import org.test.JpqlStringBuilder;
 
 public abstract class Operator {
-  public abstract void writeTo(JpqlBuilder<?> jpqlBuilder);
+  public abstract void writeTo(JpqlStringBuilder<?> stringBuilder);
 
-  static void writeOperand(Object operand, JpqlBuilder<?> jpqlBuilder) {
+  static void writeOperand(Object operand, JpqlStringBuilder<?> stringBuilder) {
     if (operand instanceof Operator) {
-      ((Operator) operand).writeTo(jpqlBuilder);
+      ((Operator) operand).writeTo(stringBuilder);
     } else {
-      jpqlBuilder.appendValue(operand);
+      stringBuilder.appendValue(operand);
     }
   }
 }

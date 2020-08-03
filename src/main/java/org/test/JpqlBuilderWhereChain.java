@@ -4,26 +4,26 @@ import org.test.operators.Operator;
 import org.test.operators.builders.BaseExpressionChain;
 
 public class JpqlBuilderWhereChain<T> extends BaseExpressionChain<JpqlBuilderWhereChain<T>> {
-  private final JpqlBuilder<T> jpqlBuilder;
+  private final JpqlStringBuilder<T> stringBuilder;
 
-  JpqlBuilderWhereChain(JpqlBuilder<T> jpqlBuilder) {
+  JpqlBuilderWhereChain(JpqlStringBuilder<T> stringBuilder) {
     super();
-    this.jpqlBuilder = jpqlBuilder;
+    this.stringBuilder = stringBuilder;
   }
 
-  JpqlBuilderWhereChain(Operator operator, JpqlBuilder<T> jpqlBuilder) {
+  JpqlBuilderWhereChain(Operator operator, JpqlStringBuilder<T> stringBuilder) {
     super(operator);
-    this.jpqlBuilder = jpqlBuilder;
+    this.stringBuilder = stringBuilder;
   }
 
   @Override
   protected JpqlBuilderWhereChain<T> createChain(Operator operator) {
-    return new JpqlBuilderWhereChain<>(operator, jpqlBuilder);
+    return new JpqlBuilderWhereChain<>(operator, stringBuilder);
   }
 
   public String build() {
-    jpqlBuilder.appendString(" where ");
-    getOperator().writeTo(jpqlBuilder);
-    return jpqlBuilder.build();
+    stringBuilder.appendString(" where ");
+    getOperator().writeTo(stringBuilder);
+    return stringBuilder.build();
   }
 }

@@ -1,6 +1,6 @@
 package org.test.operators;
 
-import org.test.JpqlBuilder;
+import org.test.JpqlStringBuilder;
 
 public class And<A, B> extends BinaryOperator<A, B> {
   public And(A operandA, B operandB) {
@@ -8,9 +8,9 @@ public class And<A, B> extends BinaryOperator<A, B> {
   }
 
   @Override
-  public void writeTo(JpqlBuilder<?> jpqlBuilder) {
-    writeOperand(operandA, jpqlBuilder);
-    jpqlBuilder.appendString(" and ");
-    writeOperand(operandB, jpqlBuilder);
+  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
+    writeOperand(operandA, stringBuilder);
+    stringBuilder.appendString(" and ");
+    writeOperand(operandB, stringBuilder);
   }
 }

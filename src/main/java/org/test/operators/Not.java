@@ -1,6 +1,6 @@
 package org.test.operators;
 
-import org.test.JpqlBuilder;
+import org.test.JpqlStringBuilder;
 
 public class Not extends UnaryOperator<Operator> {
   public Not(Operator operand) {
@@ -8,9 +8,9 @@ public class Not extends UnaryOperator<Operator> {
   }
 
   @Override
-  public void writeTo(JpqlBuilder<?> jpqlBuilder) {
-    jpqlBuilder.appendString("not (");
-    operand.writeTo(jpqlBuilder);
-    jpqlBuilder.appendString(")");
+  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
+    stringBuilder.appendString("not (");
+    operand.writeTo(stringBuilder);
+    stringBuilder.appendString(")");
   }
 }

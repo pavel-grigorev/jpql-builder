@@ -1,6 +1,6 @@
 package org.test.operators;
 
-import org.test.JpqlBuilder;
+import org.test.JpqlStringBuilder;
 
 public class Like extends BinaryOperator<String, String> {
   public Like(String operandA, String operandB) {
@@ -12,9 +12,9 @@ public class Like extends BinaryOperator<String, String> {
   }
 
   @Override
-  public void writeTo(JpqlBuilder<?> jpqlBuilder) {
-    writeOperand(operandA, jpqlBuilder);
-    jpqlBuilder.appendString(" like ");
-    writeOperand(operandB, jpqlBuilder);
+  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
+    writeOperand(operandA, stringBuilder);
+    stringBuilder.appendString(" like ");
+    writeOperand(operandB, stringBuilder);
   }
 }

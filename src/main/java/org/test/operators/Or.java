@@ -1,6 +1,6 @@
 package org.test.operators;
 
-import org.test.JpqlBuilder;
+import org.test.JpqlStringBuilder;
 
 public class Or<A, B> extends BinaryOperator<A, B> {
   public Or(A operandA, B operandB) {
@@ -8,9 +8,9 @@ public class Or<A, B> extends BinaryOperator<A, B> {
   }
 
   @Override
-  public void writeTo(JpqlBuilder<?> jpqlBuilder) {
-    writeOperand(operandA, jpqlBuilder);
-    jpqlBuilder.appendString(" or ");
-    writeOperand(operandB, jpqlBuilder);
+  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
+    writeOperand(operandA, stringBuilder);
+    stringBuilder.appendString(" or ");
+    writeOperand(operandB, stringBuilder);
   }
 }
