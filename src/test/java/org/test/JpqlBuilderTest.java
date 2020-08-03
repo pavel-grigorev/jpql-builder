@@ -65,7 +65,6 @@ public class JpqlBuilderTest {
       put("h", Status.ACTIVE);
       put("i", "B");
       put("j", Status.SUSPENDED);
-
     }}, select.getParameters());
   }
 }
