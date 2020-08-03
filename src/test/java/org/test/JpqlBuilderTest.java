@@ -1,8 +1,11 @@
 package org.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.test.entities.AdGroup;
 import org.test.entities.Status;
+
+import java.util.HashMap;
 
 import static org.test.operators.builders.OperatorBuilder.$;
 import static org.test.operators.builders.OperatorBuilder.not;
@@ -31,7 +34,38 @@ public class JpqlBuilderTest {
                 .and(adGroup.getStatus()).is(Status.SUSPENDED)
         )
         .build();
-    System.out.println(query);
-    System.out.println(select.getParameters());
+    Assert.assertEquals(
+        "select e from test$AdGroup e " +
+            "where e.id <> :a " +
+            "and e.status <> :b " +
+            "and e.campaign.status <> :c " +
+            "and e.campaign.advertiser.status <> :d " +
+            "and e.campaign.name like :e " +
+            "or e.name is null " +
+            "or e.campaign.id is not null " +
+            "and (" +
+              "e.campaign.name like :f " +
+              "or e.campaign.advertiser.name like :g " +
+              "or not (" +
+                "e.status = :h " +
+                "and e.name like :i" +
+              ") " +
+              "and e.status = :j" +
+            ")",
+        query
+    );
+    Assert.assertEquals(new HashMap<String, Object>() {{
+      put("a", 123456L);
+      put("b", Status.DELETED);
+      put("c", Status.DELETED);
+      put("d", Status.DELETED);
+      put("e", "%test%");
+      put("f", "A");
+      put("g", "A");
+      put("h", Status.ACTIVE);
+      put("i", "B");
+      put("j", Status.SUSPENDED);
+
+    }}, select.getParameters());
   }
 }
