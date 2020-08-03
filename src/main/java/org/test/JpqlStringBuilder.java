@@ -9,9 +9,7 @@ public class JpqlStringBuilder<T> {
   private final PathResolver<T> pathResolver;
   private final StringBuilder builder = new StringBuilder();
   private final Map<String, Object> parameters = new HashMap<>();
-
-  // TODO: build alias factory to support more aliases
-  private char currentParameterAlias = 'a';
+  private final AliasGenerator aliasGenerator = new AliasGenerator();
 
   JpqlStringBuilder(PathResolver<T> pathResolver) {
     this.pathResolver = pathResolver;
@@ -49,12 +47,8 @@ public class JpqlStringBuilder<T> {
   }
 
   private void appendParameter(Object value) {
-    String alias = getNextParameterAlias();
+    String alias = aliasGenerator.next();
     parameters.put(alias, value);
     builder.append(':').append(alias);
-  }
-
-  private String getNextParameterAlias() {
-    return String.valueOf(currentParameterAlias++);
   }
 }

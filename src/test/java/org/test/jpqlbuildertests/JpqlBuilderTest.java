@@ -1,4 +1,4 @@
-package org.test.tests;
+package org.test.jpqlbuildertests;
 
 import org.junit.Assert;
 import org.junit.Test;
