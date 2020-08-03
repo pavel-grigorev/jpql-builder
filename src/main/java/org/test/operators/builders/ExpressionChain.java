@@ -1,6 +1,7 @@
 package org.test.operators.builders;
 
 import org.test.operators.And;
+import org.test.operators.Not;
 import org.test.operators.Operator;
 import org.test.operators.Or;
 import org.test.operators.Parentheses;
@@ -54,7 +55,15 @@ public class ExpressionChain {
   }
 
   private ExpressionChain join(ExpressionChain chain) {
-    return join(new Parentheses(chain.getOperator()));
+    Operator operator = chain.getOperator();
+    if (!isWrappedInParentheses(operator)) {
+      operator = new Parentheses(operator);
+    }
+    return join(operator);
+  }
+
+  private static boolean isWrappedInParentheses(Operator operator) {
+    return operator instanceof Parentheses || operator instanceof Not;
   }
 
   ExpressionChain join(Operator operator) {
