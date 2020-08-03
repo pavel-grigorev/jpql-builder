@@ -2,8 +2,8 @@ package org.test;
 
 import org.test.operators.Like;
 
-public class JpqlStringExpression<T> extends JpqlExpression<String, T> {
-  JpqlStringExpression(JpqlBuilder<T> builder, String operand) {
+public class JpqlBuilderStringOperatorBuilder<T> extends JpqlBuilderOperatorBuilder<String, T> {
+  JpqlBuilderStringOperatorBuilder(JpqlBuilder<T> builder, String operand) {
     super(builder, operand);
   }
 

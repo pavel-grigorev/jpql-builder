@@ -67,11 +67,11 @@ public class JpqlBuilder<T> {
     return pathResolver.getPathSpecifier();
   }
 
-  public <P> JpqlExpression<P, T> where(P operand) {
+  public <P> JpqlBuilderOperatorBuilder<P, T> where(P operand) {
     return createExpression(" where ", operand);
   }
 
-  public JpqlStringExpression<T> where(String operand) {
+  public JpqlBuilderStringOperatorBuilder<T> where(String operand) {
     return createExpression(" where ", operand);
   }
 
@@ -79,11 +79,11 @@ public class JpqlBuilder<T> {
     return join(" where ", chain);
   }
 
-  public <P> JpqlExpression<P, T> and(P operand) {
+  public <P> JpqlBuilderOperatorBuilder<P, T> and(P operand) {
     return createExpression(" and ", operand);
   }
 
-  public JpqlStringExpression<T> and(String operand) {
+  public JpqlBuilderStringOperatorBuilder<T> and(String operand) {
     return createExpression(" and ", operand);
   }
 
@@ -91,11 +91,11 @@ public class JpqlBuilder<T> {
     return join(" and ", chain);
   }
 
-  public <P> JpqlExpression<P, T> or(P operand) {
+  public <P> JpqlBuilderOperatorBuilder<P, T> or(P operand) {
     return createExpression(" or ", operand);
   }
 
-  public JpqlStringExpression<T> or(String operand) {
+  public JpqlBuilderStringOperatorBuilder<T> or(String operand) {
     return createExpression(" or ", operand);
   }
 
@@ -103,14 +103,14 @@ public class JpqlBuilder<T> {
     return join(" or ", chain);
   }
 
-  private <P> JpqlExpression<P, T> createExpression(String connector, P operand) {
+  private <P> JpqlBuilderOperatorBuilder<P, T> createExpression(String connector, P operand) {
     builder.append(connector);
-    return new JpqlExpression<>(this, operand);
+    return new JpqlBuilderOperatorBuilder<>(this, operand);
   }
 
-  private JpqlStringExpression<T> createExpression(String connector, String operand) {
+  private JpqlBuilderStringOperatorBuilder<T> createExpression(String connector, String operand) {
     builder.append(connector);
-    return new JpqlStringExpression<>(this, operand);
+    return new JpqlBuilderStringOperatorBuilder<>(this, operand);
   }
 
   private JpqlBuilder<T> join(String joiner, ExpressionChain chain) {

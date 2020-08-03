@@ -5,13 +5,11 @@ import org.test.operators.IsNotNull;
 import org.test.operators.IsNull;
 import org.test.operators.NotEqual;
 
-// TODO: rename to JpqlBuilderExpression
-// TODO: extend ExpressionChain?
-public class JpqlExpression<P, T> {
+public class JpqlBuilderOperatorBuilder<P, T> {
   final JpqlBuilder<T> builder;
   final P operand;
 
-  JpqlExpression(JpqlBuilder<T> builder, P operand) {
+  JpqlBuilderOperatorBuilder(JpqlBuilder<T> builder, P operand) {
     this.builder = builder;
     this.operand = operand;
   }
