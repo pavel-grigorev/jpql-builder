@@ -11,6 +11,10 @@ public class ExpressionChain {
   private final Operator operator;
   private BinaryOperator<Operator> joiner;
 
+  ExpressionChain() {
+    this(null);
+  }
+
   ExpressionChain(Operator operator) {
     this.operator = operator;
   }
@@ -49,11 +53,14 @@ public class ExpressionChain {
     return join(chain);
   }
 
-  ExpressionChain join(Operator operator) {
-    return new ExpressionChain(joiner.apply(this.operator, operator));
-  }
-
   private ExpressionChain join(ExpressionChain chain) {
     return join(new Parentheses(chain.getOperator()));
+  }
+
+  ExpressionChain join(Operator operator) {
+    if (this.operator == null) {
+      return new ExpressionChain(operator);
+    }
+    return new ExpressionChain(joiner.apply(this.operator, operator));
   }
 }

@@ -1,18 +1,17 @@
 package org.test.operators.builders;
 
 import org.test.operators.Equal;
-import org.test.operators.Operator;
 import org.test.operators.IsNotNull;
 import org.test.operators.IsNull;
 import org.test.operators.Not;
 import org.test.operators.NotEqual;
 
 public class OperatorBuilder<T> {
-  private final ExpressionChain chain;
+  final ExpressionChain chain;
   final T operand;
 
   OperatorBuilder(T operand) {
-    this(null, operand);
+    this(new ExpressionChain(), operand);
   }
 
   OperatorBuilder(ExpressionChain chain, T operand) {
@@ -29,22 +28,18 @@ public class OperatorBuilder<T> {
   }
 
   public ExpressionChain is(T value) {
-    return apply(new Equal<>(operand, value));
+    return chain.join(new Equal<>(operand, value));
   }
 
   public ExpressionChain isNot(T value) {
-    return apply(new NotEqual<>(operand, value));
+    return chain.join(new NotEqual<>(operand, value));
   }
 
   public ExpressionChain isNull() {
-    return apply(new IsNull<>(operand));
+    return chain.join(new IsNull<>(operand));
   }
 
   public ExpressionChain isNotNull() {
-    return apply(new IsNotNull<>(operand));
-  }
-
-  ExpressionChain apply(Operator operator) {
-    return chain != null ? chain.join(operator) : new ExpressionChain(operator);
+    return chain.join(new IsNotNull<>(operand));
   }
 }

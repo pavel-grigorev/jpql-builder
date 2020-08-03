@@ -16,6 +16,6 @@ public class StringOperatorBuilder extends OperatorBuilder<String> {
   }
 
   public ExpressionChain like(String value) {
-    return apply(new Like(operand, value));
+    return chain.join(new Like(operand, value));
   }
 }
