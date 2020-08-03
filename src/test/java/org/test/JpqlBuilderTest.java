@@ -46,10 +46,10 @@ public class JpqlBuilderTest {
             "and (" +
               "e.campaign.name like :f " +
               "or e.campaign.advertiser.name like :g " +
-              "or not (" +
+              "or (not (" +
                 "e.status = :h " +
                 "and e.name like :i" +
-              ") " +
+              ")) " +
               "and e.status = :j" +
             ")",
         query
