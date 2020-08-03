@@ -68,11 +68,11 @@ public class JpqlBuilder<T> {
   }
 
   public <P> JpqlBuilderOperatorBuilder<P, T> where(P operand) {
-    return createExpression(" where ", operand);
+    return createOperator(" where ", operand);
   }
 
   public JpqlBuilderStringOperatorBuilder<T> where(String operand) {
-    return createExpression(" where ", operand);
+    return createOperator(" where ", operand);
   }
 
   public JpqlBuilder<T> where(ExpressionChain chain) {
@@ -80,11 +80,11 @@ public class JpqlBuilder<T> {
   }
 
   public <P> JpqlBuilderOperatorBuilder<P, T> and(P operand) {
-    return createExpression(" and ", operand);
+    return createOperator(" and ", operand);
   }
 
   public JpqlBuilderStringOperatorBuilder<T> and(String operand) {
-    return createExpression(" and ", operand);
+    return createOperator(" and ", operand);
   }
 
   public JpqlBuilder<T> and(ExpressionChain chain) {
@@ -92,24 +92,24 @@ public class JpqlBuilder<T> {
   }
 
   public <P> JpqlBuilderOperatorBuilder<P, T> or(P operand) {
-    return createExpression(" or ", operand);
+    return createOperator(" or ", operand);
   }
 
   public JpqlBuilderStringOperatorBuilder<T> or(String operand) {
-    return createExpression(" or ", operand);
+    return createOperator(" or ", operand);
   }
 
   public JpqlBuilder<T> or(ExpressionChain chain) {
     return join(" or ", chain);
   }
 
-  private <P> JpqlBuilderOperatorBuilder<P, T> createExpression(String connector, P operand) {
-    builder.append(connector);
+  private <P> JpqlBuilderOperatorBuilder<P, T> createOperator(String joiner, P operand) {
+    builder.append(joiner);
     return new JpqlBuilderOperatorBuilder<>(this, operand);
   }
 
-  private JpqlBuilderStringOperatorBuilder<T> createExpression(String connector, String operand) {
-    builder.append(connector);
+  private JpqlBuilderStringOperatorBuilder<T> createOperator(String joiner, String operand) {
+    builder.append(joiner);
     return new JpqlBuilderStringOperatorBuilder<>(this, operand);
   }
 
