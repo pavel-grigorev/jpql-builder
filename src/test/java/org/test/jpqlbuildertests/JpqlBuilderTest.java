@@ -80,7 +80,7 @@ public class JpqlBuilderTest {
                     $(adGroup.getStatus()).is(Status.ACTIVE)
                         .and(adGroup.getName()).like("B")
                 ))
-                .and(adGroup.getStatus()).is(Status.SUSPENDED)
+                .and(adGroup.getId()).between(10L, 20L)
         )
         .build();
     Assert.assertEquals(
@@ -96,7 +96,7 @@ public class JpqlBuilderTest {
               "e.campaign.name not like :f " +
               "or e.campaign.advertiser.name like :g escape :h " +
               "or (not (e.status = :i and e.name like :j)) " +
-              "and e.status = :k" +
+              "and e.id between :k and :l" +
             ")",
         query
     );
@@ -112,7 +112,8 @@ public class JpqlBuilderTest {
           put("h", "\\");
           put("i", Status.ACTIVE);
           put("j", "B");
-          put("k", Status.SUSPENDED);
+          put("k", 10L);
+          put("l", 20L);
         }},
         select.getParameters()
     );

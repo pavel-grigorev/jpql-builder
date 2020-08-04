@@ -1,5 +1,6 @@
 package org.test.operators.builders;
 
+import org.test.operators.Between;
 import org.test.operators.Equal;
 import org.test.operators.IsNotNull;
 import org.test.operators.IsNull;
@@ -37,5 +38,9 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
 
   public B isNotNull() {
     return chain.join(new IsNotNull<>(operand));
+  }
+
+  public B between(T min, T max) {
+    return chain.join(new Between<>(operand, min, max));
   }
 }
