@@ -74,8 +74,8 @@ public class JpqlBuilderTest {
         .or(adGroup.getName()).isNull()
         .or(adGroup.getCampaign().getId()).isNotNull()
         .and(
-            $(adGroup.getCampaign().getName()).like("A")
-                .or(adGroup.getCampaign().getAdvertiser().getName()).like("A")
+            $(adGroup.getCampaign().getName()).notLike("A")
+                .or(adGroup.getCampaign().getAdvertiser().getName()).like("10\\%", "\\")
                 .or(not(
                     $(adGroup.getStatus()).is(Status.ACTIVE)
                         .and(adGroup.getName()).like("B")
@@ -93,10 +93,10 @@ public class JpqlBuilderTest {
             "or e.name is null " +
             "or e.campaign.id is not null " +
             "and (" +
-              "e.campaign.name like :f " +
-              "or e.campaign.advertiser.name like :g " +
-              "or (not (e.status = :h and e.name like :i)) " +
-              "and e.status = :j" +
+              "e.campaign.name not like :f " +
+              "or e.campaign.advertiser.name like :g escape :h " +
+              "or (not (e.status = :i and e.name like :j)) " +
+              "and e.status = :k" +
             ")",
         query
     );
@@ -108,10 +108,11 @@ public class JpqlBuilderTest {
           put("d", Status.DELETED);
           put("e", "%test%");
           put("f", "A");
-          put("g", "A");
-          put("h", Status.ACTIVE);
-          put("i", "B");
-          put("j", Status.SUSPENDED);
+          put("g", "10\\%");
+          put("h", "\\");
+          put("i", Status.ACTIVE);
+          put("j", "B");
+          put("k", Status.SUSPENDED);
         }},
         select.getParameters()
     );
