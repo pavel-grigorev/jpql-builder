@@ -2,9 +2,13 @@ package org.test.operators.builders;
 
 import org.test.operators.Between;
 import org.test.operators.Equal;
+import org.test.operators.GreaterThan;
+import org.test.operators.GreaterThanOrEqual;
 import org.test.operators.In;
 import org.test.operators.IsNotNull;
 import org.test.operators.IsNull;
+import org.test.operators.LessThan;
+import org.test.operators.LessThanOrEqual;
 import org.test.operators.Not;
 import org.test.operators.NotBetween;
 import org.test.operators.NotEqual;
@@ -70,5 +74,21 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
   @SafeVarargs
   public final B notIn(T... values) {
     return notIn(Arrays.asList(values));
+  }
+
+  public B greaterThan(T value) {
+    return chain.join(new GreaterThan<>(operand, value));
+  }
+
+  public B greaterThanOrEqual(T value) {
+    return chain.join(new GreaterThanOrEqual<>(operand, value));
+  }
+
+  public B lessThan(T value) {
+    return chain.join(new LessThan<>(operand, value));
+  }
+
+  public B lessThanOrEqual(T value) {
+    return chain.join(new LessThanOrEqual<>(operand, value));
   }
 }

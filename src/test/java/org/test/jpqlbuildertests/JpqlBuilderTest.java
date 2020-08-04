@@ -87,6 +87,10 @@ public class JpqlBuilderTest {
                     .or(adGroup.getStatus()).notIn(Status.DELETED, Status.DISABLED)
                 )
         )
+        .or(
+            $(adGroup.getId()).greaterThanOrEqual(0L)
+            .and(adGroup.getId()).lessThanOrEqual(100L)
+        )
         .build();
     Assert.assertEquals(
         "select e from test$AdGroup e " +
@@ -103,7 +107,8 @@ public class JpqlBuilderTest {
               "or (not (e.status = :i and e.name like :j)) " +
               "and e.id between :k and :l " +
               "and (e.status in :m or e.status not in :n)" +
-            ")",
+            ") " +
+            "or (e.id >= :o and e.id <= :p)",
         query
     );
     Assert.assertEquals(
@@ -122,6 +127,8 @@ public class JpqlBuilderTest {
           put("l", 20L);
           put("m", Arrays.asList(Status.ACTIVE, Status.SUSPENDED));
           put("n", Arrays.asList(Status.DELETED, Status.DISABLED));
+          put("o", 0L);
+          put("p", 100L);
         }},
         select.getParameters()
     );
