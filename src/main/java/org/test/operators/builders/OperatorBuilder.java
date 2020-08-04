@@ -6,6 +6,7 @@ import org.test.operators.In;
 import org.test.operators.IsNotNull;
 import org.test.operators.IsNull;
 import org.test.operators.Not;
+import org.test.operators.NotBetween;
 import org.test.operators.NotEqual;
 import org.test.operators.NotIn;
 
@@ -47,6 +48,10 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
 
   public B between(T min, T max) {
     return chain.join(new Between<>(operand, min, max));
+  }
+
+  public B notBetween(T min, T max) {
+    return chain.join(new NotBetween<>(operand, min, max));
   }
 
   public B in(Collection<T> values) {
