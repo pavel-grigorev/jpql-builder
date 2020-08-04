@@ -5,10 +5,6 @@ import org.test.JpqlStringBuilder;
 public class Equal<A, B> extends BinaryOperator<A, B> {
   public Equal(A operandA, B operandB) {
     super(operandA, operandB);
-
-    if (operandA == null) {
-      throw new IllegalArgumentException("First operand must not be null");
-    }
   }
 
   @Override
