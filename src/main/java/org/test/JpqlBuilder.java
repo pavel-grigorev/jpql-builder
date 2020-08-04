@@ -50,4 +50,8 @@ public class JpqlBuilder<T> {
   public JpqlBuilderWhereChain<T> where(ExpressionChain chain) {
     return new JpqlBuilderWhereChain<>(new Parentheses(chain.getOperator()), builder);
   }
+
+  public JpqlBuilderOrderByChain<T> orderBy(Object... values) {
+    return new JpqlBuilderOrderByChain<>(builder, values);
+  }
 }

@@ -22,6 +22,53 @@ public class JpqlBuilderTest {
   }
 
   @Test
+  public void testOrderBy() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    String query = select.orderBy(adGroup.getName(), adGroup.getId()).build();
+    Assert.assertEquals("select e from test$AdGroup e order by e.name, e.id", query);
+    Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
+  }
+
+  @Test
+  public void testOrderByNullsFirst() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    Assert.assertEquals(
+        "select e from test$AdGroup e order by e.name nulls first",
+        select.orderBy(adGroup.getName()).nullsFirst().build()
+    );
+    Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
+  }
+
+  @Test
+  public void testOrderByNullsLast() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    Assert.assertEquals(
+        "select e from test$AdGroup e order by e.name nulls last",
+        select.orderBy(adGroup.getName()).nullsLast().build()
+    );
+    Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
+  }
+
+  @Test
+  public void testWhereAndOrderBy() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    String query = select
+        .where(adGroup.getStatus()).isNot(Status.DELETED)
+        .orderBy(adGroup.getName()).build();
+    Assert.assertEquals("select e from test$AdGroup e where e.status <> :a order by e.name", query);
+    Assert.assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
   public void testWhereString() {
     JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
     AdGroup adGroup = select.getPathSpecifier();
