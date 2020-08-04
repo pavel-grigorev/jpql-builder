@@ -2,8 +2,8 @@ package org.test.operators;
 
 import org.test.JpqlStringBuilder;
 
-public class Equal<A, B> extends BinaryOperator<A, B> {
-  public Equal(A operandA, B operandB) {
+public class Equal<T> extends BinaryOperator<T, T> {
+  public Equal(T operandA, T operandB) {
     super(operandA, operandB);
   }
 

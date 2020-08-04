@@ -2,8 +2,8 @@ package org.test.operators;
 
 import org.test.JpqlStringBuilder;
 
-public class NotEqual<A, B> extends BinaryOperator<A, B> {
-  public NotEqual(A operandA, B operandB) {
+public class NotEqual<T> extends BinaryOperator<T, T> {
+  public NotEqual(T operandA, T operandB) {
     super(operandA, operandB);
   }
 
