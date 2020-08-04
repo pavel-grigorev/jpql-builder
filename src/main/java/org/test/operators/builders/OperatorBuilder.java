@@ -2,10 +2,15 @@ package org.test.operators.builders;
 
 import org.test.operators.Between;
 import org.test.operators.Equal;
+import org.test.operators.In;
 import org.test.operators.IsNotNull;
 import org.test.operators.IsNull;
 import org.test.operators.Not;
 import org.test.operators.NotEqual;
+import org.test.operators.NotIn;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
   final B chain;
@@ -42,5 +47,23 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
 
   public B between(T min, T max) {
     return chain.join(new Between<>(operand, min, max));
+  }
+
+  public B in(Collection<T> values) {
+    return chain.join(new In<>(operand, values));
+  }
+
+  @SafeVarargs
+  public final B in(T... values) {
+    return in(Arrays.asList(values));
+  }
+
+  public B notIn(Collection<T> values) {
+    return chain.join(new NotIn<>(operand, values));
+  }
+
+  @SafeVarargs
+  public final B notIn(T... values) {
+    return notIn(Arrays.asList(values));
   }
 }

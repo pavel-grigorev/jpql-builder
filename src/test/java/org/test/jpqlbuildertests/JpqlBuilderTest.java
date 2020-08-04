@@ -6,6 +6,7 @@ import org.test.JpqlBuilder;
 import org.test.entities.AdGroup;
 import org.test.entities.Status;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.test.operators.builders.OperatorBuilder.$;
@@ -81,6 +82,10 @@ public class JpqlBuilderTest {
                         .and(adGroup.getName()).like("B")
                 ))
                 .and(adGroup.getId()).between(10L, 20L)
+                .and(
+                    $(adGroup.getStatus()).in(Status.ACTIVE, Status.SUSPENDED)
+                    .or(adGroup.getStatus()).notIn(Status.DELETED, Status.DISABLED)
+                )
         )
         .build();
     Assert.assertEquals(
@@ -96,7 +101,8 @@ public class JpqlBuilderTest {
               "e.campaign.name not like :f " +
               "or e.campaign.advertiser.name like :g escape :h " +
               "or (not (e.status = :i and e.name like :j)) " +
-              "and e.id between :k and :l" +
+              "and e.id between :k and :l " +
+              "and (e.status in :m or e.status not in :n)" +
             ")",
         query
     );
@@ -114,6 +120,8 @@ public class JpqlBuilderTest {
           put("j", "B");
           put("k", 10L);
           put("l", 20L);
+          put("m", Arrays.asList(Status.ACTIVE, Status.SUSPENDED));
+          put("n", Arrays.asList(Status.DELETED, Status.DISABLED));
         }},
         select.getParameters()
     );
