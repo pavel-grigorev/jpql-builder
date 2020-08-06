@@ -1,9 +1,9 @@
 package org.test.operators;
 
-abstract class UnaryOperator<T> extends Operator {
-  final T operand;
+public abstract class UnaryOperator<T> extends Operator {
+  protected final T operand;
 
-  UnaryOperator(T operand) {
+  protected UnaryOperator(T operand) {
     this.operand = operand;
   }
 }

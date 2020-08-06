@@ -1,7 +1,7 @@
 package org.test;
 
 import org.test.operators.Operator;
-import org.test.operators.Where;
+import org.test.query.Where;
 import org.test.operators.builders.BaseExpressionChain;
 
 public class JpqlBuilderWhereChain<T> extends BaseExpressionChain<JpqlBuilderWhereChain<T>> {

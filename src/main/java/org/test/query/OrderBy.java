@@ -1,6 +1,7 @@
-package org.test.operators;
+package org.test.query;
 
 import org.test.JpqlStringBuilder;
+import org.test.operators.Operator;
 
 import java.util.ArrayList;
 import java.util.List;

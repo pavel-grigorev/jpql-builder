@@ -1,6 +1,6 @@
 package org.test;
 
-import org.test.operators.OrderBy;
+import org.test.query.OrderBy;
 
 public class JpqlBuilderOrderByChain<T> {
   private final JpqlStringBuilder<T> stringBuilder;
