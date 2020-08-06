@@ -51,7 +51,7 @@ public class JpqlBuilder<T> {
     return new JpqlBuilderWhereChain<>(new Parentheses(chain.getOperator()), builder);
   }
 
-  public JpqlBuilderOrderByChain<T> orderBy(Object... values) {
-    return new JpqlBuilderOrderByChain<>(builder, values);
+  public JpqlBuilderOrderByChain<T> orderBy(Object operand) {
+    return new JpqlBuilderOrderByChain<>(builder, operand);
   }
 }

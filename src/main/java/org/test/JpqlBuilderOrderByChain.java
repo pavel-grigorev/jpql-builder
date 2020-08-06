@@ -2,15 +2,28 @@ package org.test;
 
 import org.test.operators.OrderBy;
 
-import java.util.Arrays;
-
 public class JpqlBuilderOrderByChain<T> {
   private final JpqlStringBuilder<T> stringBuilder;
-  private final OrderBy<Object> orderBy;
+  private final OrderBy orderBy;
 
-  JpqlBuilderOrderByChain(JpqlStringBuilder<T> stringBuilder, Object... values) {
+  JpqlBuilderOrderByChain(JpqlStringBuilder<T> stringBuilder, Object operand) {
     this.stringBuilder = stringBuilder;
-    orderBy = new OrderBy<>(Arrays.asList(values));
+    orderBy = new OrderBy(operand);
+  }
+
+  public JpqlBuilderOrderByChain<T> orderBy(Object operand) {
+    orderBy.addItem(operand);
+    return this;
+  }
+
+  public JpqlBuilderOrderByChain<T> asc() {
+    orderBy.setAsc();
+    return this;
+  }
+
+  public JpqlBuilderOrderByChain<T> desc() {
+    orderBy.setDesc();
+    return this;
   }
 
   public JpqlBuilderOrderByChain<T> nullsFirst() {

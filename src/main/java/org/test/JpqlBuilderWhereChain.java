@@ -22,9 +22,9 @@ public class JpqlBuilderWhereChain<T> extends BaseExpressionChain<JpqlBuilderWhe
     return new JpqlBuilderWhereChain<>(operator, stringBuilder);
   }
 
-  public JpqlBuilderOrderByChain<T> orderBy(Object... values) {
+  public JpqlBuilderOrderByChain<T> orderBy(Object operand) {
     writeWhereClause();
-    return new JpqlBuilderOrderByChain<>(stringBuilder, values);
+    return new JpqlBuilderOrderByChain<>(stringBuilder, operand);
   }
 
   public String build() {
