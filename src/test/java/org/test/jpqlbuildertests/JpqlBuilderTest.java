@@ -9,6 +9,8 @@ import org.test.entities.Status;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import static org.test.functions.Functions.lower;
+import static org.test.functions.Functions.upper;
 import static org.test.operators.builders.OperatorBuilder.$;
 import static org.test.operators.builders.OperatorBuilder.not;
 import static org.test.operators.builders.StringOperatorBuilder.$;
@@ -26,8 +28,8 @@ public class JpqlBuilderTest {
     JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
     AdGroup adGroup = select.getPathSpecifier();
     Assert.assertEquals(
-        "select e from test$AdGroup e order by e.name desc, e.id",
-        select.orderBy(adGroup.getName()).desc().orderBy(adGroup.getId()).build()
+        "select e from test$AdGroup e order by lower(e.name) desc, e.id",
+        select.orderBy(lower(adGroup.getName())).desc().orderBy(adGroup.getId()).build()
     );
     Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
@@ -37,9 +39,9 @@ public class JpqlBuilderTest {
     JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
     AdGroup adGroup = select.getPathSpecifier();
     Assert.assertEquals(
-        "select e from test$AdGroup e order by e.name desc nulls first, e.id asc nulls last, e.campaign",
+        "select e from test$AdGroup e order by upper(e.name) desc nulls first, e.id asc nulls last, e.campaign",
         select
-            .orderBy(adGroup.getName()).desc().nullsFirst()
+            .orderBy(upper(adGroup.getName())).desc().nullsFirst()
             .orderBy(adGroup.getId()).asc().nullsLast()
             .orderBy(adGroup.getCampaign())
             .build()
