@@ -7,12 +7,14 @@ import java.util.Map;
 
 public class JpqlStringBuilder<T> {
   private final PathResolver<T> pathResolver;
+  private final PathResolverList joins;
   private final StringBuilder builder = new StringBuilder();
   private final Map<String, Object> parameters = new HashMap<>();
   private final AliasGenerator aliasGenerator = new AliasGenerator();
 
-  JpqlStringBuilder(PathResolver<T> pathResolver) {
+  JpqlStringBuilder(PathResolver<T> pathResolver, PathResolverList joins) {
     this.pathResolver = pathResolver;
+    this.joins = joins;
   }
 
   void buildBaseQuery(Class<T> entityClass, String alias) {
@@ -38,12 +40,17 @@ public class JpqlStringBuilder<T> {
   }
 
   public void appendValue(Object value) {
-    String path = pathResolver.getPropertyPath(value);
+    String path = getPropertyPath(value);
     if (path != null) {
       builder.append(path);
     } else {
       appendParameter(value);
     }
+  }
+
+  private String getPropertyPath(Object value) {
+    String path = pathResolver.getPropertyPath(value);
+    return path != null ? path : joins.getPropertyPath(value);
   }
 
   private void appendParameter(Object value) {
