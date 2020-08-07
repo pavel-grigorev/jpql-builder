@@ -2,17 +2,14 @@ package org.test;
 
 import org.test.utils.ProxyFactory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 class PathResolver<T> {
   private final Map<String, Object> nameToValue = new HashMap<>();
   private final Map<Object, String> valueToName = new IdentityHashMap<>();
-  private final List<PathResolver<?>> children = new ArrayList<>();
+  private final PathResolverList children = new PathResolverList();
   private final String basePath;
   private final T pathSpecifier;
 
@@ -49,20 +46,11 @@ class PathResolver<T> {
       return basePath;
     }
     String propertyPath = getPropertyPathInternal(value);
-    return propertyPath != null ? propertyPath : findPathInChildren(value);
+    return propertyPath != null ? propertyPath : children.getPropertyPath(value);
   }
 
   private String getPropertyPathInternal(Object value) {
     String propertyName = valueToName.get(value);
     return propertyName != null ? buildPath(propertyName) : null;
-  }
-
-  private String findPathInChildren(Object value) {
-    return children
-        .stream()
-        .map(c -> c.getPropertyPath(value))
-        .filter(Objects::nonNull)
-        .findFirst()
-        .orElse(null);
   }
 }
