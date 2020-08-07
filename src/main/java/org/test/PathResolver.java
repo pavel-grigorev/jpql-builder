@@ -45,6 +45,9 @@ class PathResolver<T> {
   }
 
   String getPropertyPath(Object value) {
+    if (value == pathSpecifier) {
+      return basePath;
+    }
     String propertyPath = getPropertyPathInternal(value);
     return propertyPath != null ? propertyPath : findPathInChildren(value);
   }
