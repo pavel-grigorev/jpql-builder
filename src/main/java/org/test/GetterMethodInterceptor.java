@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class GetterMethodInterceptor implements MethodInterceptor {
   private static final List<String> PREFIXES = Arrays.asList("get", "is");
@@ -37,10 +38,6 @@ public class GetterMethodInterceptor implements MethodInterceptor {
     }
 
     value = getReturnValue(method, propertyName);
-    if (value == null) {
-      return invocation.proceed();
-    }
-
     pathResolver.put(propertyName, value);
     return value;
   }
@@ -76,7 +73,7 @@ public class GetterMethodInterceptor implements MethodInterceptor {
     return StringUtils.uncapitalize(propertyName);
   }
 
-  private Object getReturnValue(Method method, String propertyName) {
+  private Object getReturnValue(Method method, String propertyName) throws ReflectiveOperationException {
     Class<?> returnType = method.getReturnType();
 
     if (EntityHelper.isEntity(returnType)) {
@@ -86,9 +83,6 @@ public class GetterMethodInterceptor implements MethodInterceptor {
     }
     if (returnType.isEnum()) {
       return EnumFactory.newInstance(returnType);
-    }
-    if (String.class.isAssignableFrom(returnType)) {
-      return new String();
     }
     if (Byte.class.isAssignableFrom(returnType)) {
       return new Byte(Byte.MAX_VALUE);
@@ -117,6 +111,9 @@ public class GetterMethodInterceptor implements MethodInterceptor {
     if (BigDecimal.class.isAssignableFrom(returnType)) {
       return new BigDecimal(0);
     }
-    return null;
+    if (UUID.class.isAssignableFrom(returnType)) {
+      return UUID.randomUUID();
+    }
+    return returnType.newInstance();
   }
 }
