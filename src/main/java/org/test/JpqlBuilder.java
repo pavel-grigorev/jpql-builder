@@ -9,8 +9,7 @@ import org.test.utils.EntityHelper;
 import java.util.Map;
 
 public class JpqlBuilder<T> {
-  private static final String ROOT_ALIAS = "e";
-
+  private final AliasGenerator aliasGenerator = new AliasGenerator();
   private final PathResolver<T> pathResolver;
   private final JpqlStringBuilder<T> builder;
 
@@ -18,9 +17,12 @@ public class JpqlBuilder<T> {
     if (!EntityHelper.isEntity(entityClass)) {
       throw new IllegalArgumentException("Class " + entityClass.getName() + " is not an entity class");
     }
-    pathResolver = new PathResolver<>(entityClass, ROOT_ALIAS);
+
+    String rootAlias = aliasGenerator.next();
+
+    pathResolver = new PathResolver<>(entityClass, rootAlias);
     builder = new JpqlStringBuilder<>(pathResolver);
-    builder.buildBaseQuery(entityClass, ROOT_ALIAS);
+    builder.buildBaseQuery(entityClass, rootAlias);
   }
 
   public static <T> JpqlBuilder<T> select(Class<T> entityType) {

@@ -19,7 +19,7 @@ public class JpqlBuilderTest {
   @Test
   public void testMinimal() {
     JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    Assert.assertEquals("select e from test$AdGroup e", select.build());
+    Assert.assertEquals("select a from test$AdGroup a", select.build());
     Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
 
@@ -28,7 +28,7 @@ public class JpqlBuilderTest {
     JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
     AdGroup adGroup = select.getPathSpecifier();
     Assert.assertEquals(
-        "select e from test$AdGroup e order by lower(e.name) desc, e.id",
+        "select a from test$AdGroup a order by lower(a.name) desc, a.id",
         select.orderBy(lower(adGroup.getName())).desc().orderBy(adGroup.getId()).build()
     );
     Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
@@ -39,7 +39,7 @@ public class JpqlBuilderTest {
     JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
     AdGroup adGroup = select.getPathSpecifier();
     Assert.assertEquals(
-        "select e from test$AdGroup e order by upper(e.name) desc nulls first, e.id asc nulls last, e.campaign",
+        "select a from test$AdGroup a order by upper(a.name) desc nulls first, a.id asc nulls last, a.campaign",
         select
             .orderBy(upper(adGroup.getName())).desc().nullsFirst()
             .orderBy(adGroup.getId()).asc().nullsLast()
@@ -54,7 +54,7 @@ public class JpqlBuilderTest {
     JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
     AdGroup adGroup = select.getPathSpecifier();
     Assert.assertEquals(
-        "select e from test$AdGroup e where e.status <> :a order by e.name desc",
+        "select a from test$AdGroup a where a.status <> :a order by a.name desc",
         select
             .where(adGroup.getStatus()).isNot(Status.DELETED)
             .orderBy(adGroup.getName()).desc().build()
@@ -72,7 +72,7 @@ public class JpqlBuilderTest {
     JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
     AdGroup adGroup = select.getPathSpecifier();
     Assert.assertEquals(
-        "select e from test$AdGroup e where e.name like :a",
+        "select a from test$AdGroup a where a.name like :a",
         select.where(adGroup.getName()).like("%test%").build()
     );
     Assert.assertEquals(
@@ -95,9 +95,9 @@ public class JpqlBuilderTest {
         .and(adGroup.getId()).isNot(1L)
         .build();
     Assert.assertEquals(
-        "select e from test$AdGroup e " +
-            "where (e.name = :a or e.status = :b) " +
-            "and e.id <> :c",
+        "select a from test$AdGroup a " +
+            "where (a.name = :a or a.status = :b) " +
+            "and a.id <> :c",
         query
     );
     Assert.assertEquals(
@@ -141,22 +141,22 @@ public class JpqlBuilderTest {
         )
         .build();
     Assert.assertEquals(
-        "select e from test$AdGroup e " +
-            "where e.id <> :a " +
-            "and e.status <> :b " +
-            "and e.campaign.status <> :c " +
-            "and e.campaign.advertiser.status <> :d " +
-            "and e.campaign.name like :e " +
-            "or e.name is null " +
-            "or e.campaign.id is not null " +
+        "select a from test$AdGroup a " +
+            "where a.id <> :a " +
+            "and a.status <> :b " +
+            "and a.campaign.status <> :c " +
+            "and a.campaign.advertiser.status <> :d " +
+            "and a.campaign.name like :e " +
+            "or a.name is null " +
+            "or a.campaign.id is not null " +
             "and (" +
-              "e.campaign.name not like :f " +
-              "or e.campaign.advertiser.name like :g escape :h " +
-              "or (not (e.status = :i and e.name like :j)) " +
-              "and e.id between :k and :l " +
-              "and (e.status in :m or e.status not in :n)" +
+              "a.campaign.name not like :f " +
+              "or a.campaign.advertiser.name like :g escape :h " +
+              "or (not (a.status = :i and a.name like :j)) " +
+              "and a.id between :k and :l " +
+              "and (a.status in :m or a.status not in :n)" +
             ") " +
-            "or (e.id >= :o and e.id <= :p)",
+            "or (a.id >= :o and a.id <= :p)",
         query
     );
     Assert.assertEquals(
