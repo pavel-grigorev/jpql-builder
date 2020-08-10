@@ -8,12 +8,13 @@ import org.test.operators.builders.StringOperatorBuilder;
 import org.test.query.Join;
 import org.test.utils.EntityHelper;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class JpqlBuilder<T> {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
   private final PathResolverList joins = new PathResolverList();
-  private final Join join = new Join();
+  private final Join joinClause = new Join();
   private final PathResolver<T> pathResolver;
   private final JpqlStringBuilder<T> builder;
 
@@ -37,13 +38,21 @@ public class JpqlBuilder<T> {
     return new JpqlBuilder<>(entityType);
   }
 
-  @SuppressWarnings("unchecked")
   public <P> P join(P path) {
-    Class<?> targetClass = AopUtils.getTargetClass(path);
+    return join(path, AopUtils.getTargetClass(path));
+  }
+
+  public <P> P join(Collection<P> path) {
+    P item = path.iterator().next();
+    return join(path, item.getClass());
+  }
+
+  @SuppressWarnings("unchecked")
+  private <P> P join(Object path, Class<?> targetClass) {
     requireEntityClass(targetClass);
 
     String alias = aliasGenerator.next();
-    join.add(alias, path);
+    joinClause.add(alias, path);
 
     PathResolver<?> pathResolver = new PathResolver<>(targetClass, alias);
     joins.add(pathResolver);
@@ -76,7 +85,7 @@ public class JpqlBuilder<T> {
   }
 
   private void writeJoins() {
-    join.writeTo(builder);
+    joinClause.writeTo(builder);
   }
 
   public Map<String, Object> getParameters() {

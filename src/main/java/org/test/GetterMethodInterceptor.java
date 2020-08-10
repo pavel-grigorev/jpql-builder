@@ -4,15 +4,15 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.StringUtils;
 import org.test.utils.EntityHelper;
-import org.test.utils.EnumFactory;
+import org.test.utils.ObjectFactory;
+import org.test.utils.ReflectionHelper;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public class GetterMethodInterceptor implements MethodInterceptor {
   private static final List<String> PREFIXES = Arrays.asList("get", "is");
@@ -77,43 +77,22 @@ public class GetterMethodInterceptor implements MethodInterceptor {
     Class<?> returnType = method.getReturnType();
 
     if (EntityHelper.isEntity(returnType)) {
+      Object instance = returnType.newInstance();
       return pathResolver
-          .createChildResolver(returnType, propertyName)
+          .createChildResolver(instance, propertyName)
           .getPathSpecifier();
     }
-    if (returnType.isEnum()) {
-      return EnumFactory.newInstance(returnType);
+    if (Collection.class.isAssignableFrom(returnType)) {
+      Class<?> genericClass = ReflectionHelper.getGenericReturnType(method);
+      Object instance = ObjectFactory.newInstance(genericClass);
+
+      Collection<Object> collection = ObjectFactory.newCollectionInstance(returnType);
+      collection.add(instance);
+
+      return pathResolver
+          .createChildResolver(collection, propertyName)
+          .getPathSpecifier();
     }
-    if (Byte.class.isAssignableFrom(returnType)) {
-      return new Byte(Byte.MAX_VALUE);
-    }
-    if (Short.class.isAssignableFrom(returnType)) {
-      return new Short(Short.MAX_VALUE);
-    }
-    if (Integer.class.isAssignableFrom(returnType)) {
-      return new Integer(0);
-    }
-    if (Long.class.isAssignableFrom(returnType)) {
-      return new Long(0);
-    }
-    if (Float.class.isAssignableFrom(returnType)) {
-      return new Float(0);
-    }
-    if (Double.class.isAssignableFrom(returnType)) {
-      return new Double(0);
-    }
-    if (Boolean.class.isAssignableFrom(returnType)) {
-      return new Boolean(false);
-    }
-    if (Character.class.isAssignableFrom(returnType)) {
-      return new Character('0');
-    }
-    if (BigDecimal.class.isAssignableFrom(returnType)) {
-      return new BigDecimal(0);
-    }
-    if (UUID.class.isAssignableFrom(returnType)) {
-      return UUID.randomUUID();
-    }
-    return returnType.newInstance();
+    return ObjectFactory.newInstance(returnType);
   }
 }

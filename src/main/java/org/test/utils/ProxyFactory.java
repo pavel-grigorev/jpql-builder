@@ -11,4 +11,13 @@ public class ProxyFactory {
     proxyFactoryBean.addAdvice(advice);
     return type.cast(proxyFactoryBean.getObject());
   }
+
+  @SuppressWarnings("unchecked")
+  public static <T> T createProxy(T target, Advice advice) {
+    ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+    proxyFactoryBean.setAutodetectInterfaces(false);
+    proxyFactoryBean.setTarget(target);
+    proxyFactoryBean.addAdvice(advice);
+    return (T) proxyFactoryBean.getObject();
+  }
 }

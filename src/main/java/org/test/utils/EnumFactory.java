@@ -16,7 +16,7 @@ public class EnumFactory {
   private static final boolean BOOLEAN_VALUE = false;
   private static final char CHAR_VALUE = '0';
 
-  public static Object newInstance(Class<?> enumClass) {
+  static Object newInstance(Class<?> enumClass) {
     if (!enumClass.isEnum()) {
       throw new IllegalArgumentException("Class " + enumClass + " is not enum");
     }

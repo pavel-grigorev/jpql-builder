@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.test.JpqlBuilder;
 import org.test.entities.AdGroup;
+import org.test.entities.AdGroupBid;
 import org.test.entities.Advertiser;
 import org.test.entities.Campaign;
 import org.test.entities.Status;
@@ -202,6 +203,43 @@ public class JpqlBuilderTest {
             .where(adGroup.getStatus()).isNot(Status.DELETED)
             .and(campaign.getStatus()).isNot(Status.DELETED)
             .and(advertiser.getStatus()).isNot(Status.DELETED)
+            .orderBy(advertiser.getName())
+            .orderBy(campaign.getName())
+            .orderBy(adGroup.getName())
+            .build()
+    );
+    Assert.assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+          put("b", Status.DELETED);
+          put("c", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void testCollectionJoins() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    Campaign campaign = select.join(adGroup.getCampaign());
+    Advertiser advertiser = select.join(campaign.getAdvertiser());
+    AdGroupBid bid = select.join(adGroup.getBids());
+    Assert.assertEquals(
+        "select a from test$AdGroup a " +
+            "join a.campaign b " +
+            "join b.advertiser c " +
+            "join a.bids d " +
+            "where a.status <> :a " +
+            "and b.status <> :b " +
+            "and c.status <> :c " +
+            "and d.active is true " +
+            "order by c.name, b.name, a.name",
+        select
+            .where(adGroup.getStatus()).isNot(Status.DELETED)
+            .and(campaign.getStatus()).isNot(Status.DELETED)
+            .and(advertiser.getStatus()).isNot(Status.DELETED)
+            .and(bid.getActive()).is(Boolean.TRUE)
             .orderBy(advertiser.getName())
             .orderBy(campaign.getName())
             .orderBy(adGroup.getName())

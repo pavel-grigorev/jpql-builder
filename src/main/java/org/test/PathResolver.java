@@ -18,6 +18,11 @@ class PathResolver<T> {
     this.pathSpecifier = ProxyFactory.createProxy(entityClass, new GetterMethodInterceptor(this));
   }
 
+  private PathResolver(T target, String basePath) {
+    this.basePath = basePath;
+    this.pathSpecifier = ProxyFactory.createProxy(target, new GetterMethodInterceptor(this));
+  }
+
   Object getValue(String propertyName) {
     return nameToValue.get(propertyName);
   }
@@ -27,8 +32,8 @@ class PathResolver<T> {
     valueToName.put(value, propertyName);
   }
 
-  <E> PathResolver<E> createChildResolver(Class<E> entityClass, String propertyName) {
-    PathResolver<E> pathResolver = new PathResolver<>(entityClass, buildPath(propertyName));
+  <E> PathResolver<E> createChildResolver(E target, String propertyName) {
+    PathResolver<E> pathResolver = new PathResolver<>(target, buildPath(propertyName));
     children.add(pathResolver);
     return pathResolver;
   }

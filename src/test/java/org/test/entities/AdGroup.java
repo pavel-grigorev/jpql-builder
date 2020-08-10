@@ -1,6 +1,7 @@
 package org.test.entities;
 
 import javax.persistence.Entity;
+import java.util.List;
 
 @Entity(name = "test$AdGroup")
 public class AdGroup {
@@ -8,6 +9,7 @@ public class AdGroup {
   private String name;
   private Status status;
   private Campaign campaign;
+  private List<AdGroupBid> bids;
 
   public Long getId() {
     return id;
@@ -39,5 +41,13 @@ public class AdGroup {
 
   public void setCampaign(Campaign campaign) {
     this.campaign = campaign;
+  }
+
+  public List<AdGroupBid> getBids() {
+    return bids;
+  }
+
+  public void setBids(List<AdGroupBid> bids) {
+    this.bids = bids;
   }
 }
