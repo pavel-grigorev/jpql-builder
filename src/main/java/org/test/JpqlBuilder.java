@@ -66,6 +66,15 @@ public class JpqlBuilder<T> {
     join(path, item.getClass(), JoinType.FETCH);
   }
 
+  public <P> P joinFetchWithAlias(P path) {
+    return join(path, AopUtils.getTargetClass(path), JoinType.FETCH_WITH_ALIAS);
+  }
+
+  public <P> P joinFetchWithAlias(Collection<P> path) {
+    P item = path.iterator().next();
+    return join(path, item.getClass(), JoinType.FETCH_WITH_ALIAS);
+  }
+
   @SuppressWarnings("unchecked")
   private <P> P join(Object path, Class<?> targetClass, JoinType type) {
     requireEntityClass(targetClass);
@@ -79,7 +88,7 @@ public class JpqlBuilder<T> {
   }
 
   private String getNextAlias(JoinType type) {
-    return type == JoinType.FETCH ? "" : aliasGenerator.next();
+    return type.hasAlias() ? aliasGenerator.next() : "";
   }
 
   public <P> OperatorBuilder<P, JpqlBuilderWhereChain<T>> where(P operand) {

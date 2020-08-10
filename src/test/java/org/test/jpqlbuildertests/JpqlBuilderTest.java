@@ -318,4 +318,32 @@ public class JpqlBuilderTest {
         select.getParameters()
     );
   }
+
+  @Test
+  public void testJoinFetchWithAlias() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    Campaign campaign = select.joinFetchWithAlias(adGroup.getCampaign());
+    AdGroupBid bid = select.joinFetchWithAlias(adGroup.getBids());
+    Assert.assertEquals(
+        "select a from test$AdGroup a " +
+            "join fetch a.campaign b " +
+            "join fetch a.bids c " +
+            "where a.status <> :a " +
+            "and b.status <> :b " +
+            "order by c.value",
+        select
+            .where(adGroup.getStatus()).isNot(Status.DELETED)
+            .and(campaign.getStatus()).isNot(Status.DELETED)
+            .orderBy(bid.getValue())
+            .build()
+    );
+    Assert.assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+          put("b", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
 }
