@@ -40,39 +40,44 @@ public class JpqlBuilder<T> {
   }
 
   public <P> P join(P path) {
-    return join(path, AopUtils.getTargetClass(path), JoinType.INNER);
+    return joinAssociation(path, JoinType.INNER);
   }
 
   public <P> P join(Collection<P> path) {
-    P item = path.iterator().next();
-    return join(path, item.getClass(), JoinType.INNER);
+    return joinCollection(path, JoinType.INNER);
   }
 
   public <P> P leftJoin(P path) {
-    return join(path, AopUtils.getTargetClass(path), JoinType.LEFT);
+    return joinAssociation(path, JoinType.LEFT);
   }
 
   public <P> P leftJoin(Collection<P> path) {
-    P item = path.iterator().next();
-    return join(path, item.getClass(), JoinType.LEFT);
+    return joinCollection(path, JoinType.LEFT);
   }
 
   public void joinFetch(Object path) {
-    join(path, AopUtils.getTargetClass(path), JoinType.FETCH);
+    joinAssociation(path, JoinType.FETCH);
   }
 
   public void joinFetch(Collection<?> path) {
-    Object item = path.iterator().next();
-    join(path, item.getClass(), JoinType.FETCH);
+    joinCollection(path, JoinType.FETCH);
   }
 
   public <P> P joinFetchWithAlias(P path) {
-    return join(path, AopUtils.getTargetClass(path), JoinType.FETCH_WITH_ALIAS);
+    return joinAssociation(path, JoinType.FETCH_WITH_ALIAS);
   }
 
   public <P> P joinFetchWithAlias(Collection<P> path) {
+    return joinCollection(path, JoinType.FETCH_WITH_ALIAS);
+  }
+
+  private <P> P joinAssociation(P path, JoinType type) {
+    return join(path, AopUtils.getTargetClass(path), type);
+  }
+
+  private <P> P joinCollection(Collection<P> path, JoinType type) {
     P item = path.iterator().next();
-    return join(path, item.getClass(), JoinType.FETCH_WITH_ALIAS);
+    return join(path, item.getClass(), type);
   }
 
   @SuppressWarnings("unchecked")
