@@ -293,4 +293,29 @@ public class JpqlBuilderTest {
         select.getParameters()
     );
   }
+
+  @Test
+  public void testJoinFetch() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    select.joinFetch(adGroup.getCampaign());
+    select.joinFetch(adGroup.getBids());
+    Assert.assertEquals(
+        "select a from test$AdGroup a " +
+            "join fetch a.campaign " +
+            "join fetch a.bids " +
+            "where a.status <> :a " +
+            "order by a.name",
+        select
+            .where(adGroup.getStatus()).isNot(Status.DELETED)
+            .orderBy(adGroup.getName())
+            .build()
+    );
+    Assert.assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
 }

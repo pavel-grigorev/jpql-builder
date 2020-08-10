@@ -1,5 +1,6 @@
 package org.test.query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.test.JpqlStringBuilder;
 import org.test.operators.Operator;
 
@@ -22,8 +23,14 @@ public class Join extends Operator {
     for (int i = 0; i < aliases.size(); i++) {
       stringBuilder.appendString(types.get(i).getClause());
       stringBuilder.appendValue(paths.get(i));
+      appendAlias(stringBuilder, aliases.get(i));
+    }
+  }
+
+  private void appendAlias(JpqlStringBuilder<?> stringBuilder, String alias) {
+    if (StringUtils.isNotBlank(alias)) {
       stringBuilder.appendString(" ");
-      stringBuilder.appendString(aliases.get(i));
+      stringBuilder.appendString(alias);
     }
   }
 }
