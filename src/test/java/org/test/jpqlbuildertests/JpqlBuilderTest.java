@@ -233,7 +233,7 @@ public class JpqlBuilderTest {
             "where a.status <> :a " +
             "and b.status <> :b " +
             "and c.status <> :c " +
-            "and d.active is true " +
+            "and d.active = :d " +
             "order by c.name, b.name, a.name",
         select
             .where(adGroup.getStatus()).isNot(Status.DELETED)
@@ -250,6 +250,7 @@ public class JpqlBuilderTest {
           put("a", Status.DELETED);
           put("b", Status.DELETED);
           put("c", Status.DELETED);
+          put("d", Boolean.TRUE);
         }},
         select.getParameters()
     );

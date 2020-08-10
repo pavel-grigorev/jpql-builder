@@ -13,10 +13,6 @@ public class Equal<T> extends BinaryOperator<T, T> {
 
     if (operandB == null) {
       stringBuilder.appendString(" is null");
-    } else if (Boolean.TRUE.equals(operandB)) {
-      stringBuilder.appendString(" is true");
-    } else if (Boolean.FALSE.equals(operandB)) {
-      stringBuilder.appendString(" is false");
     } else {
       stringBuilder.appendString(" = ");
       writeOperand(operandB, stringBuilder);
