@@ -255,4 +255,42 @@ public class JpqlBuilderTest {
         select.getParameters()
     );
   }
+
+  @Test
+  public void testLeftJoin() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    Campaign campaign = select.leftJoin(adGroup.getCampaign());
+    Advertiser advertiser = select.leftJoin(campaign.getAdvertiser());
+    AdGroupBid bid = select.leftJoin(adGroup.getBids());
+    Assert.assertEquals(
+        "select a from test$AdGroup a " +
+            "left join a.campaign b " +
+            "left join b.advertiser c " +
+            "left join a.bids d " +
+            "where a.status <> :a " +
+            "and b.status <> :b " +
+            "and c.status <> :c " +
+            "and d.active = :d " +
+            "order by c.name, b.name, a.name",
+        select
+            .where(adGroup.getStatus()).isNot(Status.DELETED)
+            .and(campaign.getStatus()).isNot(Status.DELETED)
+            .and(advertiser.getStatus()).isNot(Status.DELETED)
+            .and(bid.getActive()).is(Boolean.TRUE)
+            .orderBy(advertiser.getName())
+            .orderBy(campaign.getName())
+            .orderBy(adGroup.getName())
+            .build()
+    );
+    Assert.assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+          put("b", Status.DELETED);
+          put("c", Status.DELETED);
+          put("d", Boolean.TRUE);
+        }},
+        select.getParameters()
+    );
+  }
 }

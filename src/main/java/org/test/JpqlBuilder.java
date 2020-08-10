@@ -6,6 +6,7 @@ import org.test.operators.builders.ExpressionChain;
 import org.test.operators.builders.OperatorBuilder;
 import org.test.operators.builders.StringOperatorBuilder;
 import org.test.query.Join;
+import org.test.query.JoinType;
 import org.test.utils.EntityHelper;
 
 import java.util.Collection;
@@ -39,20 +40,29 @@ public class JpqlBuilder<T> {
   }
 
   public <P> P join(P path) {
-    return join(path, AopUtils.getTargetClass(path));
+    return join(path, AopUtils.getTargetClass(path), JoinType.INNER);
   }
 
   public <P> P join(Collection<P> path) {
     P item = path.iterator().next();
-    return join(path, item.getClass());
+    return join(path, item.getClass(), JoinType.INNER);
+  }
+
+  public <P> P leftJoin(P path) {
+    return join(path, AopUtils.getTargetClass(path), JoinType.LEFT);
+  }
+
+  public <P> P leftJoin(Collection<P> path) {
+    P item = path.iterator().next();
+    return join(path, item.getClass(), JoinType.LEFT);
   }
 
   @SuppressWarnings("unchecked")
-  private <P> P join(Object path, Class<?> targetClass) {
+  private <P> P join(Object path, Class<?> targetClass, JoinType type) {
     requireEntityClass(targetClass);
 
     String alias = aliasGenerator.next();
-    joinClause.add(alias, path);
+    joinClause.add(alias, path, type);
 
     PathResolver<?> pathResolver = new PathResolver<>(targetClass, alias);
     joins.add(pathResolver);

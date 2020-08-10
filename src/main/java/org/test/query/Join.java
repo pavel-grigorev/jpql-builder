@@ -9,16 +9,18 @@ import java.util.List;
 public class Join extends Operator {
   private final List<String> aliases = new ArrayList<>();
   private final List<Object> paths = new ArrayList<>();
+  private final List<JoinType> types = new ArrayList<>();
 
-  public void add(String alias, Object path) {
+  public void add(String alias, Object path, JoinType type) {
     aliases.add(alias);
     paths.add(path);
+    types.add(type);
   }
 
   @Override
   public void writeTo(JpqlStringBuilder<?> stringBuilder) {
     for (int i = 0; i < aliases.size(); i++) {
-      stringBuilder.appendString(" join ");
+      stringBuilder.appendString(types.get(i).getClause());
       stringBuilder.appendValue(paths.get(i));
       stringBuilder.appendString(" ");
       stringBuilder.appendString(aliases.get(i));
