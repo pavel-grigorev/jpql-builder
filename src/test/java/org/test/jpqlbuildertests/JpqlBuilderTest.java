@@ -7,6 +7,7 @@ import org.test.entities.AdGroup;
 import org.test.entities.AdGroupBid;
 import org.test.entities.Advertiser;
 import org.test.entities.Campaign;
+import org.test.entities.Publisher;
 import org.test.entities.Status;
 
 import java.util.Arrays;
@@ -345,5 +346,37 @@ public class JpqlBuilderTest {
         }},
         select.getParameters()
     );
+  }
+
+  @Test
+  public void testClassJoin() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    Publisher publisher = select.join(Publisher.class);
+    Assert.assertEquals(
+        "select a from test$AdGroup a " +
+            "join test$Publisher b " +
+            "where a.status = b.status",
+        select
+            .where(adGroup.getStatus()).is(publisher.getStatus())
+            .build()
+    );
+    Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
+  }
+
+  @Test
+  public void testClassLeftJoin() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    Publisher publisher = select.leftJoin(Publisher.class);
+    Assert.assertEquals(
+        "select a from test$AdGroup a " +
+            "left join test$Publisher b " +
+            "where a.status = b.status",
+        select
+            .where(adGroup.getStatus()).is(publisher.getStatus())
+            .build()
+    );
+    Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
 }

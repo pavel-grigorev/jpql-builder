@@ -47,12 +47,20 @@ public class JpqlBuilder<T> {
     return joinCollection(path, JoinType.INNER);
   }
 
+  public <P> P join(Class<?> entityClass) {
+    return joinClass(entityClass, JoinType.INNER);
+  }
+
   public <P> P leftJoin(P path) {
     return joinAssociation(path, JoinType.LEFT);
   }
 
   public <P> P leftJoin(Collection<P> path) {
     return joinCollection(path, JoinType.LEFT);
+  }
+
+  public <P> P leftJoin(Class<?> entityClass) {
+    return joinClass(entityClass, JoinType.LEFT);
   }
 
   public void joinFetch(Object path) {
@@ -78,6 +86,10 @@ public class JpqlBuilder<T> {
   private <P> P joinCollection(Collection<P> path, JoinType type) {
     P item = path.iterator().next();
     return join(path, item.getClass(), type);
+  }
+
+  private <P> P joinClass(Class<?> entityClass, JoinType type) {
+    return join(entityClass, entityClass, type);
   }
 
   @SuppressWarnings("unchecked")

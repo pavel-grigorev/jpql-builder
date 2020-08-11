@@ -40,12 +40,24 @@ public class JpqlStringBuilder<T> {
   }
 
   public void appendValue(Object value) {
+    if (isEntityClass(value)) {
+      builder.append(getEntityName(value));
+      return;
+    }
     String path = getPropertyPath(value);
     if (path != null) {
       builder.append(path);
-    } else {
-      appendParameter(value);
+      return;
     }
+    appendParameter(value);
+  }
+
+  private static boolean isEntityClass(Object value) {
+    return value instanceof Class && EntityHelper.isEntity((Class<?>) value);
+  }
+
+  private static String getEntityName(Object value) {
+    return EntityHelper.getEntityName((Class<?>) value);
   }
 
   private String getPropertyPath(Object value) {
