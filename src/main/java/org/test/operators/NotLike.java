@@ -1,11 +1,11 @@
 package org.test.operators;
 
 public class NotLike extends Like {
-  public NotLike(String operandA, String operandB) {
+  public NotLike(Object operandA, Object operandB) {
     super(operandA, operandB);
   }
 
-  public NotLike(String operandA, String operandB, String escapeChar) {
+  public NotLike(Object operandA, Object operandB, String escapeChar) {
     super(operandA, operandB, escapeChar);
   }
 

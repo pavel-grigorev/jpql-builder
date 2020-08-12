@@ -4,6 +4,7 @@ import org.test.operators.And;
 import org.test.operators.Operator;
 import org.test.operators.Or;
 import org.test.operators.Parentheses;
+import org.test.operators.UnaryOperator;
 
 import java.util.function.BinaryOperator;
 
@@ -33,6 +34,11 @@ public abstract class BaseExpressionChain<B extends BaseExpressionChain<B>> {
     return new StringOperatorBuilder<>(thisChain(), operand);
   }
 
+  public StringOperatorBuilder<B> and(UnaryOperator<String> operator) {
+    joiner = And::new;
+    return new StringOperatorBuilder<>(thisChain(), operator);
+  }
+
   public B and(ExpressionChain chain) {
     joiner = And::new;
     return join(chain);
@@ -46,6 +52,11 @@ public abstract class BaseExpressionChain<B extends BaseExpressionChain<B>> {
   public StringOperatorBuilder<B> or(String operand) {
     joiner = Or::new;
     return new StringOperatorBuilder<>(thisChain(), operand);
+  }
+
+  public StringOperatorBuilder<B> or(UnaryOperator<String> operator) {
+    joiner = Or::new;
+    return new StringOperatorBuilder<>(thisChain(), operator);
   }
 
   public B or(ExpressionChain chain) {

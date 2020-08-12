@@ -2,6 +2,7 @@ package org.test;
 
 import org.springframework.aop.support.AopUtils;
 import org.test.operators.Parentheses;
+import org.test.operators.UnaryOperator;
 import org.test.operators.builders.ExpressionChain;
 import org.test.operators.builders.OperatorBuilder;
 import org.test.operators.builders.StringOperatorBuilder;
@@ -121,6 +122,11 @@ public class JpqlBuilder<T> {
   public StringOperatorBuilder<JpqlBuilderWhereChain<T>> where(String operand) {
     writeJoins();
     return new StringOperatorBuilder<>(new JpqlBuilderWhereChain<>(builder), operand);
+  }
+
+  public StringOperatorBuilder<JpqlBuilderWhereChain<T>> where(UnaryOperator<String> operator) {
+    writeJoins();
+    return new StringOperatorBuilder<>(new JpqlBuilderWhereChain<>(builder), operator);
   }
 
   public JpqlBuilderWhereChain<T> where(ExpressionChain chain) {

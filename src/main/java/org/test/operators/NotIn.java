@@ -4,8 +4,8 @@ import org.test.JpqlStringBuilder;
 
 import java.util.Collection;
 
-public class NotIn<T> extends BinaryOperator<T, Collection<T>> {
-  public NotIn(T operandA, Collection<T> operandB) {
+public class NotIn<T> extends BinaryOperator<Object, Collection<T>> {
+  public NotIn(Object operandA, Collection<T> operandB) {
     super(operandA, operandB);
   }
 

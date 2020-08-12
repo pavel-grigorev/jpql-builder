@@ -435,4 +435,32 @@ public class JpqlBuilderTest {
         select.getParameters()
     );
   }
+
+  @Test
+  public void testLowerUpper() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+    Publisher publisher = select
+        .join(Publisher.class)
+        .on(p -> $(lower(p.getName())).like(lower(adGroup.getName())))
+        .getPathSpecifier();
+    Assert.assertEquals(
+        "select a from test$AdGroup a " +
+            "join test$Publisher b on lower(b.name) like lower(a.name) " +
+            "where upper(a.name) like upper(:a) " +
+            "or lower(a.name) like lower(b.name) " +
+            "and upper(a.name) not like upper(b.name)",
+        select
+            .where(upper(adGroup.getName())).like(upper("%test%"))
+            .or(lower(adGroup.getName())).like(lower(publisher.getName()))
+            .and(upper(adGroup.getName())).notLike(upper(publisher.getName()))
+            .build()
+    );
+    Assert.assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", "%test%");
+        }},
+        select.getParameters()
+    );
+  }
 }
