@@ -5,17 +5,18 @@ import org.test.operators.Parentheses;
 import org.test.operators.builders.ExpressionChain;
 import org.test.operators.builders.OperatorBuilder;
 import org.test.operators.builders.StringOperatorBuilder;
-import org.test.query.Join;
 import org.test.query.JoinType;
 import org.test.utils.EntityHelper;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class JpqlBuilder<T> {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
-  private final PathResolverList joins = new PathResolverList();
-  private final Join joinClause = new Join();
+  private final PathResolverList joinedPathResolvers = new PathResolverList();
+  private final List<JpqlBuilderJoinChain<?>> joins = new ArrayList<>();
   private final PathResolver<T> pathResolver;
   private final JpqlStringBuilder<T> builder;
 
@@ -25,7 +26,7 @@ public class JpqlBuilder<T> {
     String rootAlias = aliasGenerator.next();
 
     pathResolver = new PathResolver<>(entityClass, rootAlias);
-    builder = new JpqlStringBuilder<>(pathResolver, joins);
+    builder = new JpqlStringBuilder<>(pathResolver, joinedPathResolvers);
     builder.buildBaseQuery(entityClass, rootAlias);
   }
 
@@ -39,27 +40,27 @@ public class JpqlBuilder<T> {
     return new JpqlBuilder<>(entityType);
   }
 
-  public <P> P join(P path) {
+  public <P> JpqlBuilderJoinChain<P> join(P path) {
     return joinAssociation(path, JoinType.INNER);
   }
 
-  public <P> P join(Collection<P> path) {
+  public <P> JpqlBuilderJoinChain<P> join(Collection<P> path) {
     return joinCollection(path, JoinType.INNER);
   }
 
-  public <P> P join(Class<?> entityClass) {
+  public <P> JpqlBuilderJoinChain<P> join(Class<P> entityClass) {
     return joinClass(entityClass, JoinType.INNER);
   }
 
-  public <P> P leftJoin(P path) {
+  public <P> JpqlBuilderJoinChain<P> leftJoin(P path) {
     return joinAssociation(path, JoinType.LEFT);
   }
 
-  public <P> P leftJoin(Collection<P> path) {
+  public <P> JpqlBuilderJoinChain<P> leftJoin(Collection<P> path) {
     return joinCollection(path, JoinType.LEFT);
   }
 
-  public <P> P leftJoin(Class<?> entityClass) {
+  public <P> JpqlBuilderJoinChain<P> leftJoin(Class<P> entityClass) {
     return joinClass(entityClass, JoinType.LEFT);
   }
 
@@ -71,37 +72,41 @@ public class JpqlBuilder<T> {
     joinCollection(path, JoinType.FETCH);
   }
 
-  public <P> P joinFetchWithAlias(P path) {
+  public <P> JpqlBuilderJoinChain<P> joinFetchWithAlias(P path) {
     return joinAssociation(path, JoinType.FETCH_WITH_ALIAS);
   }
 
-  public <P> P joinFetchWithAlias(Collection<P> path) {
+  public <P> JpqlBuilderJoinChain<P> joinFetchWithAlias(Collection<P> path) {
     return joinCollection(path, JoinType.FETCH_WITH_ALIAS);
   }
 
-  private <P> P joinAssociation(P path, JoinType type) {
+  private <P> JpqlBuilderJoinChain<P> joinAssociation(P path, JoinType type) {
     return join(path, AopUtils.getTargetClass(path), type);
   }
 
-  private <P> P joinCollection(Collection<P> path, JoinType type) {
+  private <P> JpqlBuilderJoinChain<P> joinCollection(Collection<P> path, JoinType type) {
     P item = path.iterator().next();
     return join(path, item.getClass(), type);
   }
 
-  private <P> P joinClass(Class<?> entityClass, JoinType type) {
+  private <P> JpqlBuilderJoinChain<P> joinClass(Class<P> entityClass, JoinType type) {
     return join(entityClass, entityClass, type);
   }
 
+  // TODO: refactor into JpqlBuilderJoinChainFactory
   @SuppressWarnings("unchecked")
-  private <P> P join(Object path, Class<?> targetClass, JoinType type) {
+  private <P> JpqlBuilderJoinChain<P> join(Object joinedThing, Class<?> targetClass, JoinType type) {
     requireEntityClass(targetClass);
 
+    Class<P> castedClass = (Class<P>) targetClass;
     String alias = getNextAlias(type);
-    joinClause.add(alias, path, type);
 
-    PathResolver<?> pathResolver = new PathResolver<>(targetClass, alias);
-    joins.add(pathResolver);
-    return (P) pathResolver.getPathSpecifier();
+    PathResolver<P> pathResolver = new PathResolver<>(castedClass, alias);
+    joinedPathResolvers.add(pathResolver);
+
+    JpqlBuilderJoinChain<P> joinChain = new JpqlBuilderJoinChain<>(alias, joinedThing, type, pathResolver);
+    joins.add(joinChain);
+    return joinChain;
   }
 
   private String getNextAlias(JoinType type) {
@@ -134,7 +139,7 @@ public class JpqlBuilder<T> {
   }
 
   private void writeJoins() {
-    joinClause.writeTo(builder);
+    joins.forEach(join -> join.writeTo(builder));
   }
 
   public Map<String, Object> getParameters() {
