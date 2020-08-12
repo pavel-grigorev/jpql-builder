@@ -8,7 +8,6 @@ public class JpqlBuilderWhereChain<T> extends BaseExpressionChain<JpqlBuilderWhe
   private final JpqlStringBuilder<T> stringBuilder;
 
   JpqlBuilderWhereChain(JpqlStringBuilder<T> stringBuilder) {
-    super();
     this.stringBuilder = stringBuilder;
   }
 
