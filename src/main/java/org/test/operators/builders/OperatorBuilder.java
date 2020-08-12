@@ -13,6 +13,7 @@ import org.test.operators.Not;
 import org.test.operators.NotBetween;
 import org.test.operators.NotEqual;
 import org.test.operators.NotIn;
+import org.test.operators.Parentheses;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +29,10 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
 
   public static <T> OperatorBuilder<T, ExpressionChain> $(T operand) {
     return new OperatorBuilder<>(new ExpressionChain(), operand);
+  }
+
+  public static ExpressionChain $(ExpressionChain chain) {
+    return new ExpressionChain(new Parentheses(chain.getOperator()));
   }
 
   public static ExpressionChain not(ExpressionChain chain) {
