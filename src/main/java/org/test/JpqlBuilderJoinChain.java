@@ -20,9 +20,9 @@ public class JpqlBuilderJoinChain<T> {
     return pathResolver.getPathSpecifier();
   }
 
-  public JpqlBuilderJoinOnChain<T> on(Function<T, ExpressionChain> chainFunction) {
+  public On on(Function<T, ExpressionChain> chainFunction) {
     onChain = chainFunction.apply(getPathSpecifier());
-    return new JpqlBuilderJoinOnChain<>(pathResolver);
+    return new On();
   }
 
   void writeTo(JpqlStringBuilder<?> stringBuilder) {
@@ -30,5 +30,11 @@ public class JpqlBuilderJoinChain<T> {
       joinClause.setOnClause(onChain.getOperator());
     }
     joinClause.writeTo(stringBuilder);
+  }
+
+  public class On {
+    public T getPathSpecifier() {
+      return pathResolver.getPathSpecifier();
+    }
   }
 }
