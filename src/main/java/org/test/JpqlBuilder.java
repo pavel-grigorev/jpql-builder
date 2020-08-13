@@ -1,6 +1,7 @@
 package org.test;
 
 import org.springframework.aop.support.AopUtils;
+import org.test.operators.Operator;
 import org.test.operators.Parentheses;
 import org.test.operators.UnaryOperator;
 import org.test.operators.builders.ExpressionChain;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class JpqlBuilder<T> {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
@@ -116,27 +118,38 @@ public class JpqlBuilder<T> {
 
   public <P> OperatorBuilder<P, JpqlBuilderWhereChain<T>> where(P operand) {
     writeJoins();
-    return new OperatorBuilder<>(new JpqlBuilderWhereChain<>(builder), operand);
+    return new OperatorBuilder<>(createWhere(), operand);
   }
 
   public StringOperatorBuilder<JpqlBuilderWhereChain<T>> where(String operand) {
     writeJoins();
-    return new StringOperatorBuilder<>(new JpqlBuilderWhereChain<>(builder), operand);
+    return new StringOperatorBuilder<>(createWhere(), operand);
   }
 
   public StringOperatorBuilder<JpqlBuilderWhereChain<T>> where(UnaryOperator<String> operator) {
     writeJoins();
-    return new StringOperatorBuilder<>(new JpqlBuilderWhereChain<>(builder), operator);
+    return new StringOperatorBuilder<>(createWhere(), operator);
   }
 
   public JpqlBuilderWhereChain<T> where(ExpressionChain chain) {
     writeJoins();
-    return new JpqlBuilderWhereChain<>(new Parentheses(chain.getOperator()), builder);
+    return createWhere(new Parentheses(chain.getOperator()));
+  }
+
+  public JpqlBuilderWhereChain<T> where(Function<T, ExpressionChain> chainFunction) {
+    writeJoins();
+    ExpressionChain chain = chainFunction.apply(getPathSpecifier());
+    return createWhere(chain.getOperator());
   }
 
   public JpqlBuilderOrderByChain<T> orderBy(Object operand) {
     writeJoins();
-    return new JpqlBuilderOrderByChain<>(builder, operand);
+    return createOrderBy(operand);
+  }
+
+  public JpqlBuilderOrderByChain<T> orderBy(Function<T, Object> operandFunction) {
+    writeJoins();
+    return createOrderBy(operandFunction.apply(getPathSpecifier()));
   }
 
   public String build() {
@@ -146,6 +159,18 @@ public class JpqlBuilder<T> {
 
   private void writeJoins() {
     joins.forEach(join -> join.writeTo(builder));
+  }
+
+  private JpqlBuilderWhereChain<T> createWhere() {
+    return new JpqlBuilderWhereChain<>(pathResolver, builder);
+  }
+
+  private JpqlBuilderWhereChain<T> createWhere(Operator operator) {
+    return new JpqlBuilderWhereChain<>(operator, pathResolver, builder);
+  }
+
+  private JpqlBuilderOrderByChain<T> createOrderBy(Object operand) {
+    return new JpqlBuilderOrderByChain<>(pathResolver, builder, operand);
   }
 
   public Map<String, Object> getParameters() {

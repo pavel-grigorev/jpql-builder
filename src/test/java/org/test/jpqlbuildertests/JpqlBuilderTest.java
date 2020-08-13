@@ -463,4 +463,25 @@ public class JpqlBuilderTest {
         select.getParameters()
     );
   }
+
+  @Test
+  public void testOneLinerOrderBy() {
+    Assert.assertEquals(
+        "select a from test$Advertiser a order by a.name desc",
+        JpqlBuilder.select(Advertiser.class).orderBy(Advertiser::getName).desc().build()
+    );
+  }
+
+  @Test
+  public void testOneLinerWhereAndOrderBy() {
+    Assert.assertEquals(
+        "select a from test$Campaign a where a.status <> :a and a.advertiser.status <> :b order by a.name desc, a.advertiser.name desc",
+        JpqlBuilder
+            .select(Campaign.class)
+            .where(c -> $(c.getStatus()).isNot(Status.DELETED).and(c.getAdvertiser().getStatus()).isNot(Status.DELETED))
+            .orderBy(Campaign::getName).desc()
+            .orderBy(c -> c.getAdvertiser().getName()).desc()
+            .build()
+    );
+  }
 }
