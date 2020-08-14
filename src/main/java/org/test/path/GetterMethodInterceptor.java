@@ -1,4 +1,4 @@
-package org.test;
+package org.test.path;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

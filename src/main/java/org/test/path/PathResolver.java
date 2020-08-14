@@ -1,4 +1,4 @@
-package org.test;
+package org.test.path;
 
 import org.test.utils.ProxyFactory;
 
@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-class PathResolver<T> {
+public class PathResolver<T> {
   private final Map<String, Object> nameToValue = new HashMap<>();
   private final Map<Object, String> valueToName = new IdentityHashMap<>();
   private final PathResolverList children = new PathResolverList();
   private final String basePath;
   private final T pathSpecifier;
 
-  PathResolver(Class<T> entityClass, String basePath) {
+  public PathResolver(Class<T> entityClass, String basePath) {
     this.basePath = basePath;
     this.pathSpecifier = ProxyFactory.createProxy(entityClass, new GetterMethodInterceptor(this));
   }
@@ -42,11 +42,11 @@ class PathResolver<T> {
     return basePath + '.' + propertyName;
   }
 
-  T getPathSpecifier() {
+  public T getPathSpecifier() {
     return pathSpecifier;
   }
 
-  String getPropertyPath(Object value) {
+  public String getPropertyPath(Object value) {
     if (value == pathSpecifier) {
       return basePath;
     }

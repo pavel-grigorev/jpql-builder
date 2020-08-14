@@ -1,5 +1,7 @@
 package org.test;
 
+import org.test.path.PathResolver;
+import org.test.path.PathResolverList;
 import org.test.query.SelectQuery;
 import org.test.utils.EntityHelper;
 

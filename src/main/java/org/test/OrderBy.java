@@ -2,38 +2,38 @@ package org.test;
 
 import org.test.query.SelectQuery;
 
-public class JpqlBuilderOrderByChain<T> {
+public class OrderBy<T> {
   private final JpqlStringBuilder<T> stringBuilder;
   private final SelectQuery query;
 
-  JpqlBuilderOrderByChain(Object operand, JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
+  OrderBy(Object operand, JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
     this.stringBuilder = stringBuilder;
     this.query = query;
 
     query.addOrderBy(operand);
   }
 
-  public JpqlBuilderOrderByChain<T> orderBy(Object operand) {
+  public OrderBy<T> orderBy(Object operand) {
     query.addOrderBy(operand);
     return this;
   }
 
-  public JpqlBuilderOrderByChain<T> asc() {
+  public OrderBy<T> asc() {
     query.setOrderAsc();
     return this;
   }
 
-  public JpqlBuilderOrderByChain<T> desc() {
+  public OrderBy<T> desc() {
     query.setOrderDesc();
     return this;
   }
 
-  public JpqlBuilderOrderByChain<T> nullsFirst() {
+  public OrderBy<T> nullsFirst() {
     query.setOrderNullsFirst();
     return this;
   }
 
-  public JpqlBuilderOrderByChain<T> nullsLast() {
+  public OrderBy<T> nullsLast() {
     query.setOrderNullsLast();
     return this;
   }

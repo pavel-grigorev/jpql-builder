@@ -7,6 +7,8 @@ import org.test.operators.UnaryOperator;
 import org.test.operators.builders.ExpressionChain;
 import org.test.operators.builders.OperatorBuilder;
 import org.test.operators.builders.StringOperatorBuilder;
+import org.test.path.PathResolver;
+import org.test.path.PathResolverList;
 import org.test.query.JoinClause;
 import org.test.query.JoinType;
 import org.test.query.SelectQuery;
@@ -42,27 +44,27 @@ public class JpqlBuilder<T> {
     return new JpqlBuilder<>(entityType);
   }
 
-  public <P> JpqlBuilderJoinChain<P> join(P path) {
+  public <P> Join<P> join(P path) {
     return joinAssociation(path, JoinType.INNER);
   }
 
-  public <P> JpqlBuilderJoinChain<P> join(Collection<P> path) {
+  public <P> Join<P> join(Collection<P> path) {
     return joinCollection(path, JoinType.INNER);
   }
 
-  public <P> JpqlBuilderJoinChain<P> join(Class<P> entityClass) {
+  public <P> Join<P> join(Class<P> entityClass) {
     return joinClass(entityClass, JoinType.INNER);
   }
 
-  public <P> JpqlBuilderJoinChain<P> leftJoin(P path) {
+  public <P> Join<P> leftJoin(P path) {
     return joinAssociation(path, JoinType.LEFT);
   }
 
-  public <P> JpqlBuilderJoinChain<P> leftJoin(Collection<P> path) {
+  public <P> Join<P> leftJoin(Collection<P> path) {
     return joinCollection(path, JoinType.LEFT);
   }
 
-  public <P> JpqlBuilderJoinChain<P> leftJoin(Class<P> entityClass) {
+  public <P> Join<P> leftJoin(Class<P> entityClass) {
     return joinClass(entityClass, JoinType.LEFT);
   }
 
@@ -74,30 +76,30 @@ public class JpqlBuilder<T> {
     joinCollection(path, JoinType.FETCH);
   }
 
-  public <P> JpqlBuilderJoinChain<P> joinFetchWithAlias(P path) {
+  public <P> Join<P> joinFetchWithAlias(P path) {
     return joinAssociation(path, JoinType.FETCH_WITH_ALIAS);
   }
 
-  public <P> JpqlBuilderJoinChain<P> joinFetchWithAlias(Collection<P> path) {
+  public <P> Join<P> joinFetchWithAlias(Collection<P> path) {
     return joinCollection(path, JoinType.FETCH_WITH_ALIAS);
   }
 
-  private <P> JpqlBuilderJoinChain<P> joinAssociation(P path, JoinType type) {
+  private <P> Join<P> joinAssociation(P path, JoinType type) {
     return join(path, AopUtils.getTargetClass(path), type);
   }
 
-  private <P> JpqlBuilderJoinChain<P> joinCollection(Collection<P> path, JoinType type) {
+  private <P> Join<P> joinCollection(Collection<P> path, JoinType type) {
     P item = path.iterator().next();
     return join(path, item.getClass(), type);
   }
 
-  private <P> JpqlBuilderJoinChain<P> joinClass(Class<P> entityClass, JoinType type) {
+  private <P> Join<P> joinClass(Class<P> entityClass, JoinType type) {
     return join(entityClass, entityClass, type);
   }
 
   // TODO: refactor into JpqlBuilderJoinChainFactory
   @SuppressWarnings("unchecked")
-  private <P> JpqlBuilderJoinChain<P> join(Object joinedThing, Class<?> targetClass, JoinType type) {
+  private <P> Join<P> join(Object joinedThing, Class<?> targetClass, JoinType type) {
     requireEntityClass(targetClass);
 
     Class<P> castedClass = (Class<P>) targetClass;
@@ -109,39 +111,39 @@ public class JpqlBuilder<T> {
     JoinClause joinClause = new JoinClause(alias, joinedThing, type);
     query.addJoin(joinClause);
 
-    return new JpqlBuilderJoinChain<>(joinClause, pathResolver);
+    return new Join<>(joinClause, pathResolver);
   }
 
   private String getNextAlias(JoinType type) {
     return type.hasAlias() ? aliasGenerator.next() : "";
   }
 
-  public <P> OperatorBuilder<P, JpqlBuilderWhereChain<T>> where(P operand) {
+  public <P> OperatorBuilder<P, Where<T>> where(P operand) {
     return new OperatorBuilder<>(createWhere(), operand);
   }
 
-  public StringOperatorBuilder<JpqlBuilderWhereChain<T>> where(String operand) {
+  public StringOperatorBuilder<Where<T>> where(String operand) {
     return new StringOperatorBuilder<>(createWhere(), operand);
   }
 
-  public StringOperatorBuilder<JpqlBuilderWhereChain<T>> where(UnaryOperator<String> operator) {
+  public StringOperatorBuilder<Where<T>> where(UnaryOperator<String> operator) {
     return new StringOperatorBuilder<>(createWhere(), operator);
   }
 
-  public JpqlBuilderWhereChain<T> where(ExpressionChain chain) {
+  public Where<T> where(ExpressionChain chain) {
     return createWhere(new Parentheses(chain.getOperator()));
   }
 
-  private JpqlBuilderWhereChain<T> createWhere() {
-    return new JpqlBuilderWhereChain<>(stringBuilder, query);
+  private Where<T> createWhere() {
+    return new Where<>(stringBuilder, query);
   }
 
-  private JpqlBuilderWhereChain<T> createWhere(Operator operator) {
-    return new JpqlBuilderWhereChain<>(operator, stringBuilder, query);
+  private Where<T> createWhere(Operator operator) {
+    return new Where<>(operator, stringBuilder, query);
   }
 
-  public JpqlBuilderOrderByChain<T> orderBy(Object operand) {
-    return new JpqlBuilderOrderByChain<>(operand, stringBuilder, query);
+  public OrderBy<T> orderBy(Object operand) {
+    return new OrderBy<>(operand, stringBuilder, query);
   }
 
   public String build() {

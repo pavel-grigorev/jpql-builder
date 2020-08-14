@@ -1,15 +1,16 @@
 package org.test;
 
 import org.test.operators.builders.ExpressionChain;
+import org.test.path.PathResolver;
 import org.test.query.JoinClause;
 
 import java.util.function.Function;
 
-public class JpqlBuilderJoinChain<T> {
+public class Join<T> {
   private final JoinClause joinClause;
   private final PathResolver<T> pathResolver;
 
-  JpqlBuilderJoinChain(JoinClause joinClause, PathResolver<T> pathResolver) {
+  Join(JoinClause joinClause, PathResolver<T> pathResolver) {
     this.joinClause = joinClause;
     this.pathResolver = pathResolver;
   }
