@@ -3,12 +3,14 @@ package org.test.jpqlbuildertests;
 import org.junit.Assert;
 import org.junit.Test;
 import org.test.JpqlBuilder;
+import org.test.Where;
 import org.test.entities.AdGroup;
 import org.test.entities.AdGroupBid;
 import org.test.entities.Advertiser;
 import org.test.entities.Campaign;
 import org.test.entities.Publisher;
 import org.test.entities.Status;
+import org.test.operators.builders.ExpressionChain;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -459,6 +461,43 @@ public class JpqlBuilderTest {
     Assert.assertEquals(
         new HashMap<String, Object>() {{
           put("a", "%test%");
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void testDynamicQuery() {
+    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
+    AdGroup adGroup = select.getPathSpecifier();
+
+    Where<AdGroup> where = select.where(adGroup.getStatus()).isNot(Status.DELETED);
+    where.and(adGroup.getName()).like("%test%");
+
+    ExpressionChain idFilter = $(adGroup.getId()).is(1L);
+    idFilter.or(adGroup.getId()).is(2L);
+    idFilter.or(adGroup.getId()).is(3L);
+
+    where.and(idFilter);
+
+    where.orderBy(adGroup.getId()).asc();
+    select.orderBy(adGroup.getName()).desc();
+
+    Assert.assertEquals(
+        "select a from test$AdGroup a " +
+            "where a.status <> :a " +
+            "and a.name like :b " +
+            "and (a.id = :c or a.id = :d or a.id = :e) " +
+            "order by a.id asc, a.name desc",
+        select.build()
+    );
+    Assert.assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+          put("b", "%test%");
+          put("c", 1L);
+          put("d", 2L);
+          put("e", 3L);
         }},
         select.getParameters()
     );

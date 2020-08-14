@@ -22,8 +22,8 @@ public class Where<T> extends BaseExpressionChain<Where<T>> {
   }
 
   @Override
-  protected Where<T> createChain(Operator operator) {
-    return new Where<>(operator, stringBuilder, query);
+  protected void onOperatorChange(Operator operator) {
+    query.setWhere(operator);
   }
 
   public OrderBy<T> orderBy(Object operand) {

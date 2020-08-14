@@ -10,9 +10,4 @@ public class ExpressionChain extends BaseExpressionChain<ExpressionChain> {
   ExpressionChain(Operator operator) {
     super(operator);
   }
-
-  @Override
-  protected ExpressionChain createChain(Operator operator) {
-    return new ExpressionChain(operator);
-  }
 }

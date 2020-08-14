@@ -9,7 +9,7 @@ import org.test.operators.UnaryOperator;
 import java.util.function.BinaryOperator;
 
 public abstract class BaseExpressionChain<B extends BaseExpressionChain<B>> {
-  private final Operator operator;
+  private Operator operator;
   private BinaryOperator<Operator> joiner;
 
   protected BaseExpressionChain() {
@@ -75,10 +75,18 @@ public abstract class BaseExpressionChain<B extends BaseExpressionChain<B>> {
 
   B join(Operator operator) {
     if (this.operator == null) {
-      return createChain(operator);
+      setOperator(operator);
+    } else {
+      setOperator(joiner.apply(this.operator, operator));
     }
-    return createChain(joiner.apply(this.operator, operator));
+    return thisChain();
   }
 
-  protected abstract B createChain(Operator operator);
+  private void setOperator(Operator operator) {
+    this.operator = operator;
+    onOperatorChange(operator);
+  }
+
+  protected void onOperatorChange(Operator operator) {
+  }
 }
