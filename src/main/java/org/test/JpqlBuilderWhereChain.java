@@ -1,55 +1,36 @@
 package org.test;
 
 import org.test.operators.Operator;
-import org.test.query.Where;
+import org.test.query.SelectQuery;
 import org.test.operators.builders.BaseExpressionChain;
 
-import java.util.function.Function;
-
 public class JpqlBuilderWhereChain<T> extends BaseExpressionChain<JpqlBuilderWhereChain<T>> {
-  private final PathResolver<T> pathResolver;
   private final JpqlStringBuilder<T> stringBuilder;
+  private final SelectQuery query;
 
-  JpqlBuilderWhereChain(PathResolver<T> pathResolver, JpqlStringBuilder<T> stringBuilder) {
-    this.pathResolver = pathResolver;
+  JpqlBuilderWhereChain(JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
     this.stringBuilder = stringBuilder;
+    this.query = query;
   }
 
-  JpqlBuilderWhereChain(Operator operator, PathResolver<T> pathResolver, JpqlStringBuilder<T> stringBuilder) {
+  JpqlBuilderWhereChain(Operator operator, JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
     super(operator);
-    this.pathResolver = pathResolver;
     this.stringBuilder = stringBuilder;
+    this.query = query;
+
+    query.setWhere(operator);
   }
 
   @Override
   protected JpqlBuilderWhereChain<T> createChain(Operator operator) {
-    return new JpqlBuilderWhereChain<>(operator, pathResolver, stringBuilder);
+    return new JpqlBuilderWhereChain<>(operator, stringBuilder, query);
   }
 
   public JpqlBuilderOrderByChain<T> orderBy(Object operand) {
-    writeWhereClause();
-    return createOrderBy(operand);
-  }
-
-  public JpqlBuilderOrderByChain<T> orderBy(Function<T, Object> operandFunction) {
-    writeWhereClause();
-    return createOrderBy(operandFunction.apply(getPathSpecifier()));
+    return new JpqlBuilderOrderByChain<>(operand, stringBuilder, query);
   }
 
   public String build() {
-    writeWhereClause();
-    return stringBuilder.build();
-  }
-
-  private void writeWhereClause() {
-    new Where(getOperator()).writeTo(stringBuilder);
-  }
-
-  private JpqlBuilderOrderByChain<T> createOrderBy(Object operand) {
-    return new JpqlBuilderOrderByChain<>(pathResolver, stringBuilder, operand);
-  }
-
-  private T getPathSpecifier() {
-    return pathResolver.getPathSpecifier();
+    return stringBuilder.build(query);
   }
 }

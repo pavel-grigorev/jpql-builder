@@ -1,5 +1,6 @@
 package org.test;
 
+import org.test.query.SelectQuery;
 import org.test.utils.EntityHelper;
 
 import java.util.HashMap;
@@ -17,17 +18,12 @@ public class JpqlStringBuilder<T> {
     this.joins = joins;
   }
 
-  void buildBaseQuery(Class<T> entityClass, String alias) {
-    builder
-        .append("select ")
-        .append(alias)
-        .append(" from ")
-        .append(EntityHelper.getEntityName(entityClass))
-        .append(' ')
-        .append(alias);
-  }
+  String build(SelectQuery query) {
+    builder.delete(0, builder.length());
+    parameters.clear();
+    aliasGenerator.reset();
 
-  String build() {
+    query.writeTo(this);
     return builder.toString();
   }
 

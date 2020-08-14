@@ -7,21 +7,20 @@ import org.test.operators.UnaryOperator;
 import org.test.operators.builders.ExpressionChain;
 import org.test.operators.builders.OperatorBuilder;
 import org.test.operators.builders.StringOperatorBuilder;
+import org.test.query.JoinClause;
 import org.test.query.JoinType;
+import org.test.query.SelectQuery;
 import org.test.utils.EntityHelper;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class JpqlBuilder<T> {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
   private final PathResolverList joinedPathResolvers = new PathResolverList();
-  private final List<JpqlBuilderJoinChain<?>> joins = new ArrayList<>();
   private final PathResolver<T> pathResolver;
-  private final JpqlStringBuilder<T> builder;
+  private final JpqlStringBuilder<T> stringBuilder;
+  private final SelectQuery query;
 
   private JpqlBuilder(Class<T> entityClass) {
     requireEntityClass(entityClass);
@@ -29,8 +28,8 @@ public class JpqlBuilder<T> {
     String rootAlias = aliasGenerator.next();
 
     pathResolver = new PathResolver<>(entityClass, rootAlias);
-    builder = new JpqlStringBuilder<>(pathResolver, joinedPathResolvers);
-    builder.buildBaseQuery(entityClass, rootAlias);
+    stringBuilder = new JpqlStringBuilder<>(pathResolver, joinedPathResolvers);
+    query = new SelectQuery(rootAlias, entityClass);
   }
 
   private static void requireEntityClass(Class<?> entityClass) {
@@ -107,9 +106,10 @@ public class JpqlBuilder<T> {
     PathResolver<P> pathResolver = new PathResolver<>(castedClass, alias);
     joinedPathResolvers.add(pathResolver);
 
-    JpqlBuilderJoinChain<P> joinChain = new JpqlBuilderJoinChain<>(alias, joinedThing, type, pathResolver);
-    joins.add(joinChain);
-    return joinChain;
+    JoinClause joinClause = new JoinClause(alias, joinedThing, type);
+    query.addJoin(joinClause);
+
+    return new JpqlBuilderJoinChain<>(joinClause, pathResolver);
   }
 
   private String getNextAlias(JoinType type) {
@@ -117,64 +117,39 @@ public class JpqlBuilder<T> {
   }
 
   public <P> OperatorBuilder<P, JpqlBuilderWhereChain<T>> where(P operand) {
-    writeJoins();
     return new OperatorBuilder<>(createWhere(), operand);
   }
 
   public StringOperatorBuilder<JpqlBuilderWhereChain<T>> where(String operand) {
-    writeJoins();
     return new StringOperatorBuilder<>(createWhere(), operand);
   }
 
   public StringOperatorBuilder<JpqlBuilderWhereChain<T>> where(UnaryOperator<String> operator) {
-    writeJoins();
     return new StringOperatorBuilder<>(createWhere(), operator);
   }
 
   public JpqlBuilderWhereChain<T> where(ExpressionChain chain) {
-    writeJoins();
     return createWhere(new Parentheses(chain.getOperator()));
   }
 
-  public JpqlBuilderWhereChain<T> where(Function<T, ExpressionChain> chainFunction) {
-    writeJoins();
-    ExpressionChain chain = chainFunction.apply(getPathSpecifier());
-    return createWhere(chain.getOperator());
-  }
-
-  public JpqlBuilderOrderByChain<T> orderBy(Object operand) {
-    writeJoins();
-    return createOrderBy(operand);
-  }
-
-  public JpqlBuilderOrderByChain<T> orderBy(Function<T, Object> operandFunction) {
-    writeJoins();
-    return createOrderBy(operandFunction.apply(getPathSpecifier()));
-  }
-
-  public String build() {
-    writeJoins();
-    return builder.build();
-  }
-
-  private void writeJoins() {
-    joins.forEach(join -> join.writeTo(builder));
-  }
-
   private JpqlBuilderWhereChain<T> createWhere() {
-    return new JpqlBuilderWhereChain<>(pathResolver, builder);
+    return new JpqlBuilderWhereChain<>(stringBuilder, query);
   }
 
   private JpqlBuilderWhereChain<T> createWhere(Operator operator) {
-    return new JpqlBuilderWhereChain<>(operator, pathResolver, builder);
+    return new JpqlBuilderWhereChain<>(operator, stringBuilder, query);
   }
 
-  private JpqlBuilderOrderByChain<T> createOrderBy(Object operand) {
-    return new JpqlBuilderOrderByChain<>(pathResolver, builder, operand);
+  public JpqlBuilderOrderByChain<T> orderBy(Object operand) {
+    return new JpqlBuilderOrderByChain<>(operand, stringBuilder, query);
+  }
+
+  public String build() {
+    return stringBuilder.build(query);
   }
 
   public Map<String, Object> getParameters() {
-    return builder.getParameters();
+    return stringBuilder.getParameters();
   }
 
   public T getPathSpecifier() {

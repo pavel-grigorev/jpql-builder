@@ -1,56 +1,44 @@
 package org.test;
 
-import org.test.query.OrderBy;
-
-import java.util.function.Function;
+import org.test.query.SelectQuery;
 
 public class JpqlBuilderOrderByChain<T> {
-  private final PathResolver<T> pathResolver;
   private final JpqlStringBuilder<T> stringBuilder;
-  private final OrderBy orderBy;
+  private final SelectQuery query;
 
-  JpqlBuilderOrderByChain(PathResolver<T> pathResolver, JpqlStringBuilder<T> stringBuilder, Object operand) {
-    this.pathResolver = pathResolver;
+  JpqlBuilderOrderByChain(Object operand, JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
     this.stringBuilder = stringBuilder;
-    orderBy = new OrderBy(operand);
+    this.query = query;
+
+    query.addOrderBy(operand);
   }
 
   public JpqlBuilderOrderByChain<T> orderBy(Object operand) {
-    orderBy.addItem(operand);
-    return this;
-  }
-
-  public JpqlBuilderOrderByChain<T> orderBy(Function<T, Object> operandFunction) {
-    orderBy.addItem(operandFunction.apply(getPathSpecifier()));
+    query.addOrderBy(operand);
     return this;
   }
 
   public JpqlBuilderOrderByChain<T> asc() {
-    orderBy.setAsc();
+    query.setOrderAsc();
     return this;
   }
 
   public JpqlBuilderOrderByChain<T> desc() {
-    orderBy.setDesc();
+    query.setOrderDesc();
     return this;
   }
 
   public JpqlBuilderOrderByChain<T> nullsFirst() {
-    orderBy.setNullsFirst();
+    query.setOrderNullsFirst();
     return this;
   }
 
   public JpqlBuilderOrderByChain<T> nullsLast() {
-    orderBy.setNullsLast();
+    query.setOrderNullsLast();
     return this;
   }
 
   public String build() {
-    orderBy.writeTo(stringBuilder);
-    return stringBuilder.build();
-  }
-
-  private T getPathSpecifier() {
-    return pathResolver.getPathSpecifier();
+    return stringBuilder.build(query);
   }
 }

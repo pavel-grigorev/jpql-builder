@@ -6,12 +6,8 @@ import org.test.operators.Operator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderBy extends Operator {
+public class OrderByClause extends Operator {
   private final List<Item> items = new ArrayList<>();
-
-  public OrderBy(Object operand) {
-    addItem(operand);
-  }
 
   public void addItem(Object operand) {
     Item item = new Item();
@@ -41,6 +37,9 @@ public class OrderBy extends Operator {
 
   @Override
   public void writeTo(JpqlStringBuilder<?> stringBuilder) {
+    if (items.isEmpty()) {
+      return;
+    }
     stringBuilder.appendString(" order by ");
 
     for (int i = 0; i < items.size(); i++) {

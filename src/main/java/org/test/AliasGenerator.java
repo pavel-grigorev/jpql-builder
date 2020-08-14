@@ -11,6 +11,12 @@ class AliasGenerator {
    */
   private final char[] name = new char[MAX_LENGTH];
 
+  void reset() {
+    for (int i = 0; i < MAX_LENGTH; i++) {
+      name[i] = 0;
+    }
+  }
+
   String next() {
     incrementAt(0);
     return buildAlias();

@@ -1,18 +1,16 @@
 package org.test;
 
 import org.test.operators.builders.ExpressionChain;
-import org.test.query.Join;
-import org.test.query.JoinType;
+import org.test.query.JoinClause;
 
 import java.util.function.Function;
 
 public class JpqlBuilderJoinChain<T> {
-  private final Join joinClause;
+  private final JoinClause joinClause;
   private final PathResolver<T> pathResolver;
-  private ExpressionChain onChain;
 
-  JpqlBuilderJoinChain(String alias, Object joinedThing, JoinType type, PathResolver<T> pathResolver) {
-    this.joinClause = new Join(alias, joinedThing, type);
+  JpqlBuilderJoinChain(JoinClause joinClause, PathResolver<T> pathResolver) {
+    this.joinClause = joinClause;
     this.pathResolver = pathResolver;
   }
 
@@ -21,15 +19,8 @@ public class JpqlBuilderJoinChain<T> {
   }
 
   public On on(Function<T, ExpressionChain> chainFunction) {
-    onChain = chainFunction.apply(getPathSpecifier());
+    joinClause.setOnClause(chainFunction.apply(getPathSpecifier()));
     return new On();
-  }
-
-  void writeTo(JpqlStringBuilder<?> stringBuilder) {
-    if (onChain != null) {
-      joinClause.setOnClause(onChain.getOperator());
-    }
-    joinClause.writeTo(stringBuilder);
   }
 
   public class On {
