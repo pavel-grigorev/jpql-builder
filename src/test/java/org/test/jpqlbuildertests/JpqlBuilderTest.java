@@ -3,6 +3,7 @@ package org.test.jpqlbuildertests;
 import org.junit.Assert;
 import org.junit.Test;
 import org.test.JpqlBuilder;
+import org.test.JpqlQuery;
 import org.test.Where;
 import org.test.entities.AdGroup;
 import org.test.entities.AdGroupBid;
@@ -505,30 +506,46 @@ public class JpqlBuilderTest {
 
   @Test
   public void oneLinerOrderBy() {
+    JpqlQuery query = JpqlBuilder.select(AdGroup.class).orderBy(AdGroup::getName).desc().orderBy(AdGroup::getId);
     Assert.assertEquals(
         "select a from test$AdGroup a order by a.name desc, a.id",
-        JpqlBuilder.select(AdGroup.class).orderBy(AdGroup::getName).desc().orderBy(AdGroup::getId).getQueryString()
+        query.getQueryString()
     );
+    Assert.assertEquals(new HashMap<String, Object>(), query.getParameters());
   }
 
   @Test
   public void oneLinerWhere() {
+    JpqlQuery query = JpqlBuilder.select(AdGroup.class).where(a -> $(a.getStatus()).isNot(Status.DELETED));
     Assert.assertEquals(
         "select a from test$AdGroup a where a.status <> :a",
-        JpqlBuilder.select(AdGroup.class).where(a -> $(a.getStatus()).isNot(Status.DELETED)).getQueryString()
+        query.getQueryString()
+    );
+    Assert.assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+        }},
+        query.getParameters()
     );
   }
 
   @Test
   public void oneLinerWhereAndOrderBy() {
+    JpqlQuery query = JpqlBuilder
+        .select(AdGroup.class)
+        .where(a -> $(a.getStatus()).isNot(Status.DELETED).and(a.getName()).like("%test%"))
+        .orderBy(AdGroup::getName).desc()
+        .orderBy(a -> a.getCampaign().getName()).asc();
     Assert.assertEquals(
         "select a from test$AdGroup a where a.status <> :a and a.name like :b order by a.name desc, a.campaign.name asc",
-        JpqlBuilder
-            .select(AdGroup.class)
-            .where(a -> $(a.getStatus()).isNot(Status.DELETED).and(a.getName()).like("%test%"))
-            .orderBy(AdGroup::getName).desc()
-            .orderBy(a -> a.getCampaign().getName()).asc()
-            .getQueryString()
+        query.getQueryString()
+    );
+    Assert.assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+          put("b", "%test%");
+        }},
+        query.getParameters()
     );
   }
 }
