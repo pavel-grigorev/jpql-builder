@@ -502,4 +502,33 @@ public class JpqlBuilderTest {
         select.getParameters()
     );
   }
+
+  @Test
+  public void oneLinerOrderBy() {
+    Assert.assertEquals(
+        "select a from test$AdGroup a order by a.name desc, a.id",
+        JpqlBuilder.select(AdGroup.class).orderBy(AdGroup::getName).desc().orderBy(AdGroup::getId).getQueryString()
+    );
+  }
+
+  @Test
+  public void oneLinerWhere() {
+    Assert.assertEquals(
+        "select a from test$AdGroup a where a.status <> :a",
+        JpqlBuilder.select(AdGroup.class).where(a -> $(a.getStatus()).isNot(Status.DELETED)).getQueryString()
+    );
+  }
+
+  @Test
+  public void oneLinerWhereAndOrderBy() {
+    Assert.assertEquals(
+        "select a from test$AdGroup a where a.status <> :a and a.name like :b order by a.name desc, a.campaign.name asc",
+        JpqlBuilder
+            .select(AdGroup.class)
+            .where(a -> $(a.getStatus()).isNot(Status.DELETED).and(a.getName()).like("%test%"))
+            .orderBy(AdGroup::getName).desc()
+            .orderBy(a -> a.getCampaign().getName()).asc()
+            .getQueryString()
+    );
+  }
 }

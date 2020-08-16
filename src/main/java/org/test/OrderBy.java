@@ -1,14 +1,18 @@
 package org.test;
 
+import org.test.path.PathResolver;
 import org.test.query.SelectQuery;
 
 import java.util.Map;
+import java.util.function.Function;
 
 public class OrderBy<T> implements JpqlQuery {
+  private final PathResolver<T> pathResolver;
   private final JpqlStringBuilder<T> stringBuilder;
   private final SelectQuery query;
 
-  OrderBy(Object operand, JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
+  OrderBy(Object operand, PathResolver<T> pathResolver, JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
+    this.pathResolver = pathResolver;
     this.stringBuilder = stringBuilder;
     this.query = query;
 
@@ -18,6 +22,14 @@ public class OrderBy<T> implements JpqlQuery {
   public OrderBy<T> orderBy(Object operand) {
     query.addOrderBy(operand);
     return this;
+  }
+
+  public OrderBy<T> orderBy(Function<T, Object> operandFunction) {
+    return orderBy(operandFunction.apply(getPathSpecifier()));
+  }
+
+  private T getPathSpecifier() {
+    return pathResolver.getPathSpecifier();
   }
 
   public OrderBy<T> asc() {

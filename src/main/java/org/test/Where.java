@@ -1,22 +1,27 @@
 package org.test;
 
 import org.test.operators.Operator;
+import org.test.path.PathResolver;
 import org.test.query.SelectQuery;
 import org.test.operators.builders.BaseExpressionChain;
 
 import java.util.Map;
+import java.util.function.Function;
 
 public class Where<T> extends BaseExpressionChain<Where<T>> implements JpqlQuery {
+  private final PathResolver<T> pathResolver;
   private final JpqlStringBuilder<T> stringBuilder;
   private final SelectQuery query;
 
-  Where(JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
+  Where(PathResolver<T> pathResolver, JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
+    this.pathResolver = pathResolver;
     this.stringBuilder = stringBuilder;
     this.query = query;
   }
 
-  Where(Operator operator, JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
+  Where(Operator operator, PathResolver<T> pathResolver, JpqlStringBuilder<T> stringBuilder, SelectQuery query) {
     super(operator);
+    this.pathResolver = pathResolver;
     this.stringBuilder = stringBuilder;
     this.query = query;
 
@@ -29,7 +34,15 @@ public class Where<T> extends BaseExpressionChain<Where<T>> implements JpqlQuery
   }
 
   public OrderBy<T> orderBy(Object operand) {
-    return new OrderBy<>(operand, stringBuilder, query);
+    return new OrderBy<>(operand, pathResolver, stringBuilder, query);
+  }
+
+  public OrderBy<T> orderBy(Function<T, Object> operandFunction) {
+    return orderBy(operandFunction.apply(getPathSpecifier()));
+  }
+
+  private T getPathSpecifier() {
+    return pathResolver.getPathSpecifier();
   }
 
   @Override

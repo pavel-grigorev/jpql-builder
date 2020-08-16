@@ -16,6 +16,7 @@ import org.test.utils.EntityHelper;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Function;
 
 public class JpqlBuilder<T> implements JpqlQuery {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
@@ -134,16 +135,24 @@ public class JpqlBuilder<T> implements JpqlQuery {
     return createWhere(new Parentheses(chain.getOperator()));
   }
 
+  public Where<T> where(Function<T, ExpressionChain> chainFunction) {
+    return createWhere(chainFunction.apply(getPathSpecifier()).getOperator());
+  }
+
   private Where<T> createWhere() {
-    return new Where<>(stringBuilder, query);
+    return new Where<>(pathResolver, stringBuilder, query);
   }
 
   private Where<T> createWhere(Operator operator) {
-    return new Where<>(operator, stringBuilder, query);
+    return new Where<>(operator, pathResolver, stringBuilder, query);
   }
 
   public OrderBy<T> orderBy(Object operand) {
-    return new OrderBy<>(operand, stringBuilder, query);
+    return new OrderBy<>(operand, pathResolver, stringBuilder, query);
+  }
+
+  public OrderBy<T> orderBy(Function<T, Object> operandFunction) {
+    return orderBy(operandFunction.apply(getPathSpecifier()));
   }
 
   @Override
