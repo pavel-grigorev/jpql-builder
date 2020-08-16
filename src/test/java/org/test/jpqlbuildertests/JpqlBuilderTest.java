@@ -25,7 +25,7 @@ public class JpqlBuilderTest {
   @Test
   public void testMinimal() {
     JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    Assert.assertEquals("select a from test$AdGroup a", select.build());
+    Assert.assertEquals("select a from test$AdGroup a", select.getQueryString());
     Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
 
@@ -35,7 +35,7 @@ public class JpqlBuilderTest {
     AdGroup adGroup = select.getPathSpecifier();
     Assert.assertEquals(
         "select a from test$AdGroup a order by lower(a.name) desc, a.id",
-        select.orderBy(lower(adGroup.getName())).desc().orderBy(adGroup.getId()).build()
+        select.orderBy(lower(adGroup.getName())).desc().orderBy(adGroup.getId()).getQueryString()
     );
     Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
@@ -50,7 +50,7 @@ public class JpqlBuilderTest {
             .orderBy(upper(adGroup.getName())).desc().nullsFirst()
             .orderBy(adGroup.getId()).asc().nullsLast()
             .orderBy(adGroup.getCampaign())
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
@@ -63,7 +63,7 @@ public class JpqlBuilderTest {
         "select a from test$AdGroup a where a.status <> :a order by a.name desc",
         select
             .where(adGroup.getStatus()).isNot(Status.DELETED)
-            .orderBy(adGroup.getName()).desc().build()
+            .orderBy(adGroup.getName()).desc().getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{
@@ -79,7 +79,7 @@ public class JpqlBuilderTest {
     AdGroup adGroup = select.getPathSpecifier();
     Assert.assertEquals(
         "select a from test$AdGroup a where a.name like :a",
-        select.where(adGroup.getName()).like("%test%").build()
+        select.where(adGroup.getName()).like("%test%").getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{
@@ -99,7 +99,7 @@ public class JpqlBuilderTest {
                 .or(adGroup.getStatus()).is(Status.ACTIVE)
         )
         .and(adGroup.getId()).isNot(1L)
-        .build();
+        .getQueryString();
     Assert.assertEquals(
         "select a from test$AdGroup a " +
             "where (a.name = :a or a.status = :b) " +
@@ -145,7 +145,7 @@ public class JpqlBuilderTest {
             $(adGroup.getId()).greaterThanOrEqual(0L)
             .and(adGroup.getId()).lessThanOrEqual(100L)
         )
-        .build();
+        .getQueryString();
     Assert.assertEquals(
         "select a from test$AdGroup a " +
             "where a.id <> :a " +
@@ -209,7 +209,7 @@ public class JpqlBuilderTest {
             .orderBy(advertiser.getName())
             .orderBy(campaign.getName())
             .orderBy(adGroup.getName())
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{
@@ -246,7 +246,7 @@ public class JpqlBuilderTest {
             .orderBy(advertiser.getName())
             .orderBy(campaign.getName())
             .orderBy(adGroup.getName())
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{
@@ -284,7 +284,7 @@ public class JpqlBuilderTest {
             .orderBy(advertiser.getName())
             .orderBy(campaign.getName())
             .orderBy(adGroup.getName())
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{
@@ -312,7 +312,7 @@ public class JpqlBuilderTest {
         select
             .where(adGroup.getStatus()).isNot(Status.DELETED)
             .orderBy(adGroup.getName())
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{
@@ -339,7 +339,7 @@ public class JpqlBuilderTest {
             .where(adGroup.getStatus()).isNot(Status.DELETED)
             .and(campaign.getStatus()).isNot(Status.DELETED)
             .orderBy(bid.getValue())
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{
@@ -361,7 +361,7 @@ public class JpqlBuilderTest {
             "where a.status = b.status",
         select
             .where(adGroup.getStatus()).is(publisher.getStatus())
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
@@ -377,7 +377,7 @@ public class JpqlBuilderTest {
             "where a.status = b.status",
         select
             .where(adGroup.getStatus()).is(publisher.getStatus())
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
@@ -398,7 +398,7 @@ public class JpqlBuilderTest {
         select
             .where(adGroup.getStatus()).isNot(Status.DELETED)
             .orderBy(bid.getValue()).desc()
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{
@@ -427,7 +427,7 @@ public class JpqlBuilderTest {
             .where(adGroup.getStatus()).isNot(Status.DELETED)
             .and(publisher.getStatus()).isNot(Status.DELETED)
             .orderBy(publisher.getName()).desc()
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{
@@ -456,7 +456,7 @@ public class JpqlBuilderTest {
             .where(upper(adGroup.getName())).like(upper("%test%"))
             .or(lower(adGroup.getName())).like(lower(publisher.getName()))
             .and(upper(adGroup.getName())).notLike(upper(publisher.getName()))
-            .build()
+            .getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{
@@ -489,7 +489,7 @@ public class JpqlBuilderTest {
             "and a.name like :b " +
             "and (a.id = :c or a.id = :d or a.id = :e) " +
             "order by a.id asc, a.name desc",
-        select.build()
+        select.getQueryString()
     );
     Assert.assertEquals(
         new HashMap<String, Object>() {{

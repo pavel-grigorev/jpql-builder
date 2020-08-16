@@ -2,7 +2,9 @@ package org.test;
 
 import org.test.query.SelectQuery;
 
-public class OrderBy<T> {
+import java.util.Map;
+
+public class OrderBy<T> implements JpqlQuery {
   private final JpqlStringBuilder<T> stringBuilder;
   private final SelectQuery query;
 
@@ -38,7 +40,13 @@ public class OrderBy<T> {
     return this;
   }
 
-  public String build() {
+  @Override
+  public String getQueryString() {
     return stringBuilder.build(query);
+  }
+
+  @Override
+  public Map<String, Object> getParameters() {
+    return stringBuilder.getParameters();
   }
 }

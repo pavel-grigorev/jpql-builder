@@ -4,7 +4,9 @@ import org.test.operators.Operator;
 import org.test.query.SelectQuery;
 import org.test.operators.builders.BaseExpressionChain;
 
-public class Where<T> extends BaseExpressionChain<Where<T>> {
+import java.util.Map;
+
+public class Where<T> extends BaseExpressionChain<Where<T>> implements JpqlQuery {
   private final JpqlStringBuilder<T> stringBuilder;
   private final SelectQuery query;
 
@@ -30,7 +32,13 @@ public class Where<T> extends BaseExpressionChain<Where<T>> {
     return new OrderBy<>(operand, stringBuilder, query);
   }
 
-  public String build() {
+  @Override
+  public String getQueryString() {
     return stringBuilder.build(query);
+  }
+
+  @Override
+  public Map<String, Object> getParameters() {
+    return stringBuilder.getParameters();
   }
 }

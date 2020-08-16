@@ -17,7 +17,7 @@ import org.test.utils.EntityHelper;
 import java.util.Collection;
 import java.util.Map;
 
-public class JpqlBuilder<T> {
+public class JpqlBuilder<T> implements JpqlQuery {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
   private final PathResolverList joinedPathResolvers = new PathResolverList();
   private final PathResolver<T> pathResolver;
@@ -146,10 +146,12 @@ public class JpqlBuilder<T> {
     return new OrderBy<>(operand, stringBuilder, query);
   }
 
-  public String build() {
+  @Override
+  public String getQueryString() {
     return stringBuilder.build(query);
   }
 
+  @Override
   public Map<String, Object> getParameters() {
     return stringBuilder.getParameters();
   }
