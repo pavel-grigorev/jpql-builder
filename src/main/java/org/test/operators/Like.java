@@ -1,7 +1,7 @@
 package org.test.operators;
 
 import org.apache.commons.lang3.StringUtils;
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 
 public class Like extends TernaryOperator<Object, Object, String> {
   public Like(Object operandA, Object operandB) {
@@ -13,21 +13,21 @@ public class Like extends TernaryOperator<Object, Object, String> {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
-    writeOperand(operandA, stringBuilder);
-    stringBuilder.appendString(getLikeOperator());
-    writeOperand(operandB, stringBuilder);
-    appendEscapeChar(stringBuilder);
+  public void writeTo(JpqlStringWriter stringWriter) {
+    writeOperand(operandA, stringWriter);
+    stringWriter.appendString(getLikeOperator());
+    writeOperand(operandB, stringWriter);
+    appendEscapeChar(stringWriter);
   }
 
   String getLikeOperator() {
     return " like ";
   }
 
-  private void appendEscapeChar(JpqlStringBuilder<?> stringBuilder) {
+  private void appendEscapeChar(JpqlStringWriter stringWriter) {
     if (StringUtils.isNotBlank(operandC)) {
-      stringBuilder.appendString(" escape ");
-      writeOperand(operandC, stringBuilder);
+      stringWriter.appendString(" escape ");
+      writeOperand(operandC, stringWriter);
     }
   }
 }

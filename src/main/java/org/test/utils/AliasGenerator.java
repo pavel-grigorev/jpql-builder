@@ -1,6 +1,6 @@
-package org.test;
+package org.test.utils;
 
-class AliasGenerator {
+public class AliasGenerator {
   private static final int MAX_LENGTH = 4;
   private static final char MIN_CHAR = 'a';
   private static final char MAX_CHAR = 'z';
@@ -11,13 +11,13 @@ class AliasGenerator {
    */
   private final char[] name = new char[MAX_LENGTH];
 
-  void reset() {
+  public void reset() {
     for (int i = 0; i < MAX_LENGTH; i++) {
       name[i] = 0;
     }
   }
 
-  String next() {
+  public String next() {
     incrementAt(0);
     return buildAlias();
   }

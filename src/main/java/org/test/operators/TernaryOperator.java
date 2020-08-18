@@ -1,6 +1,6 @@
 package org.test.operators;
 
-public abstract class TernaryOperator<A, B, C> extends Operator {
+public abstract class TernaryOperator<A, B, C> implements Operator {
   protected final A operandA;
   protected final B operandB;
   protected final C operandC;

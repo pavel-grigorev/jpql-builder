@@ -1,6 +1,6 @@
 package org.test.operators;
 
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 
 public class Parentheses extends UnaryOperator<Operator> {
   public Parentheses(Operator operand) {
@@ -8,9 +8,9 @@ public class Parentheses extends UnaryOperator<Operator> {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
-    stringBuilder.appendString("(");
-    writeOperand(operand, stringBuilder);
-    stringBuilder.appendString(")");
+  public void writeTo(JpqlStringWriter stringWriter) {
+    stringWriter.appendString("(");
+    writeOperand(operand, stringWriter);
+    stringWriter.appendString(")");
   }
 }

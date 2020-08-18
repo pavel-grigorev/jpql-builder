@@ -1,6 +1,6 @@
 package org.test.operators;
 
-public abstract class BinaryOperator<A, B> extends Operator {
+public abstract class BinaryOperator<A, B> implements Operator {
   protected final A operandA;
   protected final B operandB;
 

@@ -1,12 +1,12 @@
 package org.test.query;
 
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 import org.test.operators.Operator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectQuery extends Operator {
+public class SelectQuery implements Operator {
   private final SelectClause select;
   private final List<JoinClause> joins = new ArrayList<>();
   private final WhereClause where = new WhereClause();
@@ -45,10 +45,10 @@ public class SelectQuery extends Operator {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
-    select.writeTo(stringBuilder);
-    joins.forEach(join -> join.writeTo(stringBuilder));
-    where.writeTo(stringBuilder);
-    orderBy.writeTo(stringBuilder);
+  public void writeTo(JpqlStringWriter stringWriter) {
+    select.writeTo(stringWriter);
+    joins.forEach(join -> join.writeTo(stringWriter));
+    where.writeTo(stringWriter);
+    orderBy.writeTo(stringWriter);
   }
 }

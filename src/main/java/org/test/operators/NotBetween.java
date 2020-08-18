@@ -1,6 +1,6 @@
 package org.test.operators;
 
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 
 public class NotBetween<T> extends TernaryOperator<T, T, T> {
   public NotBetween(T operandA, T operandB, T operandC) {
@@ -8,11 +8,11 @@ public class NotBetween<T> extends TernaryOperator<T, T, T> {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
-    writeOperand(operandA, stringBuilder);
-    stringBuilder.appendString(" not between ");
-    writeOperand(operandB, stringBuilder);
-    stringBuilder.appendString(" and ");
-    writeOperand(operandC, stringBuilder);
+  public void writeTo(JpqlStringWriter stringWriter) {
+    writeOperand(operandA, stringWriter);
+    stringWriter.appendString(" not between ");
+    writeOperand(operandB, stringWriter);
+    stringWriter.appendString(" and ");
+    writeOperand(operandC, stringWriter);
   }
 }

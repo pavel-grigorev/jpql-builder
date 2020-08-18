@@ -1,6 +1,6 @@
 package org.test.operators;
 
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 
 import java.util.Collection;
 
@@ -10,9 +10,9 @@ public class In<T> extends BinaryOperator<Object, Collection<T>> {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
-    writeOperand(operandA, stringBuilder);
-    stringBuilder.appendString(" in ");
-    writeOperand(operandB, stringBuilder);
+  public void writeTo(JpqlStringWriter stringWriter) {
+    writeOperand(operandA, stringWriter);
+    stringWriter.appendString(" in ");
+    writeOperand(operandB, stringWriter);
   }
 }

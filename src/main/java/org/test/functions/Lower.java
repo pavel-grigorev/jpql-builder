@@ -1,6 +1,6 @@
 package org.test.functions;
 
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 import org.test.operators.UnaryOperator;
 
 public class Lower extends UnaryOperator<String> {
@@ -9,9 +9,9 @@ public class Lower extends UnaryOperator<String> {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
-    stringBuilder.appendString("lower(");
-    writeOperand(operand, stringBuilder);
-    stringBuilder.appendString(")");
+  public void writeTo(JpqlStringWriter stringWriter) {
+    stringWriter.appendString("lower(");
+    writeOperand(operand, stringWriter);
+    stringWriter.appendString(")");
   }
 }

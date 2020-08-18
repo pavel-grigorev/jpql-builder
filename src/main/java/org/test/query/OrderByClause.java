@@ -1,12 +1,12 @@
 package org.test.query;
 
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 import org.test.operators.Operator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderByClause extends Operator {
+public class OrderByClause implements Operator {
   private final List<Item> items = new ArrayList<>();
 
   public void addItem(Object operand) {
@@ -36,29 +36,29 @@ public class OrderByClause extends Operator {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
+  public void writeTo(JpqlStringWriter stringWriter) {
     if (items.isEmpty()) {
       return;
     }
-    stringBuilder.appendString(" order by ");
+    stringWriter.appendString(" order by ");
 
     for (int i = 0; i < items.size(); i++) {
       if (i > 0) {
-        stringBuilder.appendString(", ");
+        stringWriter.appendString(", ");
       }
-      writeItem(items.get(i), stringBuilder);
+      writeItem(items.get(i), stringWriter);
     }
   }
 
-  private void writeItem(Item item, JpqlStringBuilder<?> stringBuilder) {
-    writeOperand(item.operand, stringBuilder);
+  private void writeItem(Item item, JpqlStringWriter stringWriter) {
+    writeOperand(item.operand, stringWriter);
 
     if (item.ordering != null) {
-      stringBuilder.appendString(item.ordering);
+      stringWriter.appendString(item.ordering);
     }
 
     if (item.nullsOrdering != null) {
-      stringBuilder.appendString(item.nullsOrdering);
+      stringWriter.appendString(item.nullsOrdering);
     }
   }
 

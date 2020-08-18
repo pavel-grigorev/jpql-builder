@@ -1,6 +1,6 @@
 package org.test.operators;
 
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 
 public class NotEqual<T> extends BinaryOperator<T, T> {
   public NotEqual(T operandA, T operandB) {
@@ -8,14 +8,14 @@ public class NotEqual<T> extends BinaryOperator<T, T> {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
-    writeOperand(operandA, stringBuilder);
+  public void writeTo(JpqlStringWriter stringWriter) {
+    writeOperand(operandA, stringWriter);
 
     if (operandB == null) {
-      stringBuilder.appendString(" is not null");
+      stringWriter.appendString(" is not null");
     } else {
-      stringBuilder.appendString(" <> ");
-      writeOperand(operandB, stringBuilder);
+      stringWriter.appendString(" <> ");
+      writeOperand(operandB, stringWriter);
     }
   }
 }

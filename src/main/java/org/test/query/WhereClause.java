@@ -1,9 +1,9 @@
 package org.test.query;
 
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 import org.test.operators.Operator;
 
-public class WhereClause extends Operator {
+public class WhereClause implements Operator {
   private Operator operator;
 
   public void setOperator(Operator operator) {
@@ -11,11 +11,11 @@ public class WhereClause extends Operator {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
+  public void writeTo(JpqlStringWriter stringWriter) {
     if (operator == null) {
       return;
     }
-    stringBuilder.appendString(" where ");
-    writeOperand(operator, stringBuilder);
+    stringWriter.appendString(" where ");
+    writeOperand(operator, stringWriter);
   }
 }

@@ -1,5 +1,6 @@
-package org.test;
+package org.test.querystring;
 
+import org.test.utils.AliasGenerator;
 import org.test.path.PathResolver;
 import org.test.path.PathResolverList;
 import org.test.query.SelectQuery;
@@ -8,19 +9,19 @@ import org.test.utils.EntityHelper;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JpqlStringBuilder<T> {
-  private final PathResolver<T> pathResolver;
+public class JpqlStringBuilder implements JpqlStringWriter {
+  private final PathResolver<?> pathResolver;
   private final PathResolverList joins;
   private final StringBuilder builder = new StringBuilder();
   private final Map<String, Object> parameters = new HashMap<>();
   private final AliasGenerator aliasGenerator = new AliasGenerator();
 
-  JpqlStringBuilder(PathResolver<T> pathResolver, PathResolverList joins) {
+  public JpqlStringBuilder(PathResolver<?> pathResolver, PathResolverList joins) {
     this.pathResolver = pathResolver;
     this.joins = joins;
   }
 
-  String build(SelectQuery query) {
+  public String build(SelectQuery query) {
     builder.delete(0, builder.length());
     parameters.clear();
     aliasGenerator.reset();
@@ -29,14 +30,16 @@ public class JpqlStringBuilder<T> {
     return builder.toString();
   }
 
-  Map<String, Object> getParameters() {
+  public Map<String, Object> getParameters() {
     return parameters;
   }
 
-  public void appendString(String s) {
-    builder.append(s);
+  @Override
+  public void appendString(String string) {
+    builder.append(string);
   }
 
+  @Override
   public void appendValue(Object value) {
     if (isEntityClass(value)) {
       builder.append(getEntityName(value));

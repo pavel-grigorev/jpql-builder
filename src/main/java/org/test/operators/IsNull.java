@@ -1,6 +1,6 @@
 package org.test.operators;
 
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 
 public class IsNull<T> extends UnaryOperator<T> {
   public IsNull(T operand) {
@@ -8,8 +8,8 @@ public class IsNull<T> extends UnaryOperator<T> {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
-    writeOperand(operand, stringBuilder);
-    stringBuilder.appendString(" is null");
+  public void writeTo(JpqlStringWriter stringWriter) {
+    writeOperand(operand, stringWriter);
+    stringWriter.appendString(" is null");
   }
 }

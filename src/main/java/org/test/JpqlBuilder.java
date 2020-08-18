@@ -12,6 +12,8 @@ import org.test.path.PathResolverList;
 import org.test.query.JoinClause;
 import org.test.query.JoinType;
 import org.test.query.SelectQuery;
+import org.test.querystring.JpqlStringBuilder;
+import org.test.utils.AliasGenerator;
 import org.test.utils.EntityHelper;
 
 import java.util.Collection;
@@ -22,7 +24,7 @@ public class JpqlBuilder<T> implements JpqlQuery {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
   private final PathResolverList joinedPathResolvers = new PathResolverList();
   private final PathResolver<T> pathResolver;
-  private final JpqlStringBuilder<T> stringBuilder;
+  private final JpqlStringBuilder stringBuilder;
   private final SelectQuery query;
 
   private JpqlBuilder(Class<T> entityClass) {
@@ -31,7 +33,7 @@ public class JpqlBuilder<T> implements JpqlQuery {
     String rootAlias = aliasGenerator.next();
 
     pathResolver = new PathResolver<>(entityClass, rootAlias);
-    stringBuilder = new JpqlStringBuilder<>(pathResolver, joinedPathResolvers);
+    stringBuilder = new JpqlStringBuilder(pathResolver, joinedPathResolvers);
     query = new SelectQuery(rootAlias, entityClass);
   }
 

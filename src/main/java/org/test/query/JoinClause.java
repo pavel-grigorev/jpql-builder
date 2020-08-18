@@ -1,10 +1,10 @@
 package org.test.query;
 
-import org.test.JpqlStringBuilder;
+import org.test.querystring.JpqlStringWriter;
 import org.test.operators.Operator;
 import org.test.operators.builders.ExpressionChain;
 
-public class JoinClause extends Operator {
+public class JoinClause implements Operator {
   private final String alias;
   private final Object joinedThing;
   private final JoinType type;
@@ -21,24 +21,24 @@ public class JoinClause extends Operator {
   }
 
   @Override
-  public void writeTo(JpqlStringBuilder<?> stringBuilder) {
-    stringBuilder.appendString(type.getClause());
-    stringBuilder.appendValue(joinedThing);
-    appendAlias(stringBuilder);
-    appendOnClause(stringBuilder);
+  public void writeTo(JpqlStringWriter stringWriter) {
+    stringWriter.appendString(type.getClause());
+    stringWriter.appendValue(joinedThing);
+    appendAlias(stringWriter);
+    appendOnClause(stringWriter);
   }
 
-  private void appendAlias(JpqlStringBuilder<?> stringBuilder) {
+  private void appendAlias(JpqlStringWriter stringWriter) {
     if (type.hasAlias()) {
-      stringBuilder.appendString(" ");
-      stringBuilder.appendString(alias);
+      stringWriter.appendString(" ");
+      stringWriter.appendString(alias);
     }
   }
 
-  private void appendOnClause(JpqlStringBuilder<?> stringBuilder) {
+  private void appendOnClause(JpqlStringWriter stringWriter) {
     if (onClause != null) {
-      stringBuilder.appendString(" on ");
-      writeOperand(onClause, stringBuilder);
+      stringWriter.appendString(" on ");
+      writeOperand(onClause, stringWriter);
     }
   }
 }
