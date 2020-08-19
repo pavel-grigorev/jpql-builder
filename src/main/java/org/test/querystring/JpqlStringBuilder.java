@@ -21,13 +21,18 @@ public class JpqlStringBuilder implements JpqlStringWriter {
     this.joins = joins;
   }
 
+  @Override
+  public String toString() {
+    return builder.toString();
+  }
+
   public String build(SelectQuery query) {
     builder.delete(0, builder.length());
     parameters.clear();
     aliasGenerator.reset();
 
     query.writeTo(this);
-    return builder.toString();
+    return toString();
   }
 
   public Map<String, Object> getParameters() {
