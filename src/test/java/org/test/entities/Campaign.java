@@ -10,6 +10,7 @@ public class Campaign {
   private Status status;
   private Advertiser advertiser;
   private List<AdGroup> adGroups;
+  private Boolean active;
 
   public Long getId() {
     return id;
@@ -49,5 +50,13 @@ public class Campaign {
 
   public void setAdGroups(List<AdGroup> adGroups) {
     this.adGroups = adGroups;
+  }
+
+  public Boolean isActive() {
+    return active;
+  }
+
+  public void setActive(Boolean active) {
+    this.active = active;
   }
 }
