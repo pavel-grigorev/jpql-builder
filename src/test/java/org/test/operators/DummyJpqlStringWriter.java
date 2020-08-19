@@ -19,4 +19,10 @@ public class DummyJpqlStringWriter implements JpqlStringWriter {
   public String toString() {
     return builder.toString();
   }
+
+  public static String asString(Operator operator) {
+    JpqlStringWriter stringWriter = new DummyJpqlStringWriter();
+    operator.writeTo(stringWriter);
+    return stringWriter.toString();
+  }
 }
