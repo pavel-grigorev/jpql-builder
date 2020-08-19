@@ -1,5 +1,6 @@
-package org.test.operators;
+package org.test;
 
+import org.test.operators.Operator;
 import org.test.querystring.JpqlStringWriter;
 
 public class DummyJpqlStringWriter implements JpqlStringWriter {
@@ -12,6 +13,10 @@ public class DummyJpqlStringWriter implements JpqlStringWriter {
 
   @Override
   public void appendValue(Object value) {
+    if (value instanceof Class) {
+      builder.append(((Class<?>) value).getSimpleName());
+      return;
+    }
     builder.append(value);
   }
 

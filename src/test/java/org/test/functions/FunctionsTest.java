@@ -3,7 +3,7 @@ package org.test.functions;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.test.operators.DummyJpqlStringWriter.asString;
+import static org.test.DummyJpqlStringWriter.asString;
 
 public class FunctionsTest {
   @Test

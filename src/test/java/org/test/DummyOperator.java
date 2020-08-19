@@ -1,5 +1,6 @@
-package org.test.operators;
+package org.test;
 
+import org.test.operators.UnaryOperator;
 import org.test.querystring.JpqlStringWriter;
 
 public class DummyOperator<T> extends UnaryOperator<T> {

@@ -5,8 +5,8 @@ import org.test.operators.Operator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.test.operators.DummyJpqlStringWriter.asString;
-import static org.test.operators.DummyOperator.dummy;
+import static org.test.DummyJpqlStringWriter.asString;
+import static org.test.DummyOperator.dummy;
 import static org.test.operators.builders.OperatorBuilder.$;
 
 public class ExpressionChainTest {
