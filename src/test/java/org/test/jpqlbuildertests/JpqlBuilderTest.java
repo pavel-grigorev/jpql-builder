@@ -4,12 +4,10 @@ import org.junit.Test;
 import org.test.JpqlBuilder;
 import org.test.JpqlQuery;
 import org.test.Where;
-import org.test.entities.AdGroup;
-import org.test.entities.AdGroupBid;
-import org.test.entities.Advertiser;
-import org.test.entities.Campaign;
-import org.test.entities.Publisher;
-import org.test.entities.Status;
+import org.test.model.Company;
+import org.test.model.Department;
+import org.test.model.Employee;
+import org.test.model.Status;
 import org.test.operators.builders.ExpressionChain;
 
 import java.util.Arrays;
@@ -25,32 +23,32 @@ import static org.test.operators.builders.StringOperatorBuilder.$;
 public class JpqlBuilderTest {
   @Test
   public void testMinimal() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    assertEquals("select a from test$AdGroup a", select.getQueryString());
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    assertEquals("select a from test_Employee a", select.getQueryString());
     assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
 
   @Test
   public void testOrderBy() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a order by lower(a.name) desc, a.id",
-        select.orderBy(lower(adGroup.getName())).desc().orderBy(adGroup.getId()).getQueryString()
+        "select a from test_Employee a order by lower(a.name) desc, a.id",
+        select.orderBy(lower(employee.getName())).desc().orderBy(employee.getId()).getQueryString()
     );
     assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
 
   @Test
   public void testOrderByWithNullsOrdering() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a order by upper(a.name) desc nulls first, a.id asc nulls last, a.campaign",
+        "select a from test_Employee a order by upper(a.name) desc nulls first, a.id asc nulls last, a.department",
         select
-            .orderBy(upper(adGroup.getName())).desc().nullsFirst()
-            .orderBy(adGroup.getId()).asc().nullsLast()
-            .orderBy(adGroup.getCampaign())
+            .orderBy(upper(employee.getName())).desc().nullsFirst()
+            .orderBy(employee.getId()).asc().nullsLast()
+            .orderBy(employee.getDepartment())
             .getQueryString()
     );
     assertEquals(new HashMap<String, Object>(), select.getParameters());
@@ -58,13 +56,13 @@ public class JpqlBuilderTest {
 
   @Test
   public void testWhereAndOrderBy() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a where a.status <> :a order by a.name desc",
+        "select a from test_Employee a where a.status <> :a order by a.name desc",
         select
-            .where(adGroup.getStatus()).isNot(Status.DELETED)
-            .orderBy(adGroup.getName()).desc().getQueryString()
+            .where(employee.getStatus()).isNot(Status.DELETED)
+            .orderBy(employee.getName()).desc().getQueryString()
     );
     assertEquals(
         new HashMap<String, Object>() {{
@@ -76,11 +74,11 @@ public class JpqlBuilderTest {
 
   @Test
   public void testWhereString() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a where a.name like :a",
-        select.where(adGroup.getName()).like("%test%").getQueryString()
+        "select a from test_Employee a where a.name like :a",
+        select.where(employee.getName()).like("%test%").getQueryString()
     );
     assertEquals(
         new HashMap<String, Object>() {{
@@ -92,17 +90,17 @@ public class JpqlBuilderTest {
 
   @Test
   public void testWhereExpression() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
     String query = select
         .where(
-            $(adGroup.getName()).is("Test")
-                .or(adGroup.getStatus()).is(Status.ACTIVE)
+            $(employee.getName()).is("Test")
+                .or(employee.getStatus()).is(Status.ACTIVE)
         )
-        .and(adGroup.getId()).isNot(1L)
+        .and(employee.getId()).isNot(1L)
         .getQueryString();
     assertEquals(
-        "select a from test$AdGroup a " +
+        "select a from test_Employee a " +
             "where (a.name = :a or a.status = :b) " +
             "and a.id <> :c",
         query
@@ -119,46 +117,46 @@ public class JpqlBuilderTest {
 
   @Test
   public void testWhere() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
     String query = select
-        .where(adGroup.getId()).isNot(123456L)
-        .and(adGroup.getStatus()).isNot(Status.DELETED)
-        .and(adGroup.getCampaign().getStatus()).isNot(Status.DELETED)
-        .and(adGroup.getCampaign().getAdvertiser().getStatus()).isNot(Status.DELETED)
-        .and(adGroup.getCampaign().getName()).like("%test%")
-        .or(adGroup.getName()).isNull()
-        .or(adGroup.getCampaign().getId()).isNotNull()
+        .where(employee.getId()).isNot(123456L)
+        .and(employee.getStatus()).isNot(Status.DELETED)
+        .and(employee.getDepartment().getStatus()).isNot(Status.DELETED)
+        .and(employee.getDepartment().getCompany().getStatus()).isNot(Status.DELETED)
+        .and(employee.getDepartment().getName()).like("%test%")
+        .or(employee.getName()).isNull()
+        .or(employee.getDepartment().getId()).isNotNull()
         .and(
-            $(adGroup.getCampaign().getName()).notLike("A")
-                .or(adGroup.getCampaign().getAdvertiser().getName()).like("10\\%", "\\")
+            $(employee.getDepartment().getName()).notLike("A")
+                .or(employee.getDepartment().getCompany().getName()).like("10\\%", "\\")
                 .or(not(
-                    $(adGroup.getStatus()).is(Status.ACTIVE)
-                        .and(adGroup.getName()).like("B")
+                    $(employee.getStatus()).is(Status.ACTIVE)
+                        .and(employee.getName()).like("B")
                 ))
-                .and(adGroup.getId()).between(10L, 20L)
+                .and(employee.getId()).between(10L, 20L)
                 .and(
-                    $(adGroup.getStatus()).in(Status.ACTIVE, Status.SUSPENDED)
-                    .or(adGroup.getStatus()).notIn(Status.DELETED, Status.DISABLED)
+                    $(employee.getStatus()).in(Status.ACTIVE, Status.SUSPENDED)
+                    .or(employee.getStatus()).notIn(Status.DELETED, Status.DISABLED)
                 )
         )
         .or(
-            $(adGroup.getId()).greaterThanOrEqual(0L)
-            .and(adGroup.getId()).lessThanOrEqual(100L)
+            $(employee.getId()).greaterThanOrEqual(0L)
+            .and(employee.getId()).lessThanOrEqual(100L)
         )
         .getQueryString();
     assertEquals(
-        "select a from test$AdGroup a " +
+        "select a from test_Employee a " +
             "where a.id <> :a " +
             "and a.status <> :b " +
-            "and a.campaign.status <> :c " +
-            "and a.campaign.advertiser.status <> :d " +
-            "and a.campaign.name like :e " +
+            "and a.department.status <> :c " +
+            "and a.department.company.status <> :d " +
+            "and a.department.name like :e " +
             "or a.name is null " +
-            "or a.campaign.id is not null " +
+            "or a.department.id is not null " +
             "and (" +
-              "a.campaign.name not like :f " +
-              "or a.campaign.advertiser.name like :g escape :h " +
+              "a.department.name not like :f " +
+              "or a.department.company.name like :g escape :h " +
               "or (not (a.status = :i and a.name like :j)) " +
               "and a.id between :k and :l " +
               "and (a.status in :m or a.status not in :n)" +
@@ -191,25 +189,25 @@ public class JpqlBuilderTest {
 
   @Test
   public void testEntityJoins() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
-    Campaign campaign = select.join(adGroup.getCampaign()).getPathSpecifier();
-    Advertiser advertiser = select.join(campaign.getAdvertiser()).getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
+    Department department = select.join(employee.getDepartment()).getPathSpecifier();
+    Company company = select.join(department.getCompany()).getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a " +
-            "join a.campaign b " +
-            "join b.advertiser c " +
+        "select a from test_Employee a " +
+            "join a.department b " +
+            "join b.company c " +
             "where a.status <> :a " +
             "and b.status <> :b " +
             "and c.status <> :c " +
             "order by c.name, b.name, a.name",
         select
-            .where(adGroup.getStatus()).isNot(Status.DELETED)
-            .and(campaign.getStatus()).isNot(Status.DELETED)
-            .and(advertiser.getStatus()).isNot(Status.DELETED)
-            .orderBy(advertiser.getName())
-            .orderBy(campaign.getName())
-            .orderBy(adGroup.getName())
+            .where(employee.getStatus()).isNot(Status.DELETED)
+            .and(department.getStatus()).isNot(Status.DELETED)
+            .and(company.getStatus()).isNot(Status.DELETED)
+            .orderBy(company.getName())
+            .orderBy(department.getName())
+            .orderBy(employee.getName())
             .getQueryString()
     );
     assertEquals(
@@ -224,37 +222,26 @@ public class JpqlBuilderTest {
 
   @Test
   public void testCollectionJoins() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
-    Campaign campaign = select.join(adGroup.getCampaign()).getPathSpecifier();
-    Advertiser advertiser = select.join(campaign.getAdvertiser()).getPathSpecifier();
-    AdGroupBid bid = select.join(adGroup.getBids()).getPathSpecifier();
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company company = select.getPathSpecifier();
+    Department department = select.join(company.getDepartments()).getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a " +
-            "join a.campaign b " +
-            "join b.advertiser c " +
-            "join a.bids d " +
+        "select a from test_Company a " +
+            "join a.departments b " +
             "where a.status <> :a " +
             "and b.status <> :b " +
-            "and c.status <> :c " +
-            "and d.active = :d " +
-            "order by c.name, b.name, a.name",
+            "order by b.name, a.name",
         select
-            .where(adGroup.getStatus()).isNot(Status.DELETED)
-            .and(campaign.getStatus()).isNot(Status.DELETED)
-            .and(advertiser.getStatus()).isNot(Status.DELETED)
-            .and(bid.getActive()).is(Boolean.TRUE)
-            .orderBy(advertiser.getName())
-            .orderBy(campaign.getName())
-            .orderBy(adGroup.getName())
+            .where(company.getStatus()).isNot(Status.DELETED)
+            .and(department.getStatus()).isNot(Status.DELETED)
+            .orderBy(department.getName())
+            .orderBy(company.getName())
             .getQueryString()
     );
     assertEquals(
         new HashMap<String, Object>() {{
           put("a", Status.DELETED);
           put("b", Status.DELETED);
-          put("c", Status.DELETED);
-          put("d", Boolean.TRUE);
         }},
         select.getParameters()
     );
@@ -262,29 +249,25 @@ public class JpqlBuilderTest {
 
   @Test
   public void testLeftJoin() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
-    Campaign campaign = select.leftJoin(adGroup.getCampaign()).getPathSpecifier();
-    Advertiser advertiser = select.leftJoin(campaign.getAdvertiser()).getPathSpecifier();
-    AdGroupBid bid = select.leftJoin(adGroup.getBids()).getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
+    Department department = select.leftJoin(employee.getDepartment()).getPathSpecifier();
+    Company company = select.leftJoin(department.getCompany()).getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a " +
-            "left join a.campaign b " +
-            "left join b.advertiser c " +
-            "left join a.bids d " +
+        "select a from test_Employee a " +
+            "left join a.department b " +
+            "left join b.company c " +
             "where a.status <> :a " +
             "and b.status <> :b " +
             "and c.status <> :c " +
-            "and d.active = :d " +
             "order by c.name, b.name, a.name",
         select
-            .where(adGroup.getStatus()).isNot(Status.DELETED)
-            .and(campaign.getStatus()).isNot(Status.DELETED)
-            .and(advertiser.getStatus()).isNot(Status.DELETED)
-            .and(bid.getActive()).is(Boolean.TRUE)
-            .orderBy(advertiser.getName())
-            .orderBy(campaign.getName())
-            .orderBy(adGroup.getName())
+            .where(employee.getStatus()).isNot(Status.DELETED)
+            .and(department.getStatus()).isNot(Status.DELETED)
+            .and(company.getStatus()).isNot(Status.DELETED)
+            .orderBy(company.getName())
+            .orderBy(department.getName())
+            .orderBy(employee.getName())
             .getQueryString()
     );
     assertEquals(
@@ -292,7 +275,6 @@ public class JpqlBuilderTest {
           put("a", Status.DELETED);
           put("b", Status.DELETED);
           put("c", Status.DELETED);
-          put("d", Boolean.TRUE);
         }},
         select.getParameters()
     );
@@ -300,19 +282,19 @@ public class JpqlBuilderTest {
 
   @Test
   public void testJoinFetch() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
-    select.joinFetch(adGroup.getCampaign());
-    select.joinFetch(adGroup.getBids());
+    JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
+    Department department = select.getPathSpecifier();
+    select.joinFetch(department.getCompany());
+    select.joinFetch(department.getEmployees());
     assertEquals(
-        "select a from test$AdGroup a " +
-            "join fetch a.campaign " +
-            "join fetch a.bids " +
+        "select a from test_Department a " +
+            "join fetch a.company " +
+            "join fetch a.employees " +
             "where a.status <> :a " +
             "order by a.name",
         select
-            .where(adGroup.getStatus()).isNot(Status.DELETED)
-            .orderBy(adGroup.getName())
+            .where(department.getStatus()).isNot(Status.DELETED)
+            .orderBy(department.getName())
             .getQueryString()
     );
     assertEquals(
@@ -325,21 +307,21 @@ public class JpqlBuilderTest {
 
   @Test
   public void testJoinFetchWithAlias() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
-    Campaign campaign = select.joinFetchWithAlias(adGroup.getCampaign()).getPathSpecifier();
-    AdGroupBid bid = select.joinFetchWithAlias(adGroup.getBids()).getPathSpecifier();
+    JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
+    Department department = select.getPathSpecifier();
+    Company company = select.joinFetchWithAlias(department.getCompany()).getPathSpecifier();
+    Employee employee = select.joinFetchWithAlias(department.getEmployees()).getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a " +
-            "join fetch a.campaign b " +
-            "join fetch a.bids c " +
+        "select a from test_Department a " +
+            "join fetch a.company b " +
+            "join fetch a.employees c " +
             "where a.status <> :a " +
             "and b.status <> :b " +
-            "order by c.value",
+            "order by c.name",
         select
-            .where(adGroup.getStatus()).isNot(Status.DELETED)
-            .and(campaign.getStatus()).isNot(Status.DELETED)
-            .orderBy(bid.getValue())
+            .where(department.getStatus()).isNot(Status.DELETED)
+            .and(company.getStatus()).isNot(Status.DELETED)
+            .orderBy(employee.getName())
             .getQueryString()
     );
     assertEquals(
@@ -353,15 +335,15 @@ public class JpqlBuilderTest {
 
   @Test
   public void testClassJoin() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
-    Publisher publisher = select.join(Publisher.class).getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
+    Department department = select.join(Department.class).getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a " +
-            "join test$Publisher b " +
+        "select a from test_Employee a " +
+            "join test_Department b " +
             "where a.status = b.status",
         select
-            .where(adGroup.getStatus()).is(publisher.getStatus())
+            .where(employee.getStatus()).is(department.getStatus())
             .getQueryString()
     );
     assertEquals(new HashMap<String, Object>(), select.getParameters());
@@ -369,15 +351,15 @@ public class JpqlBuilderTest {
 
   @Test
   public void testClassLeftJoin() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
-    Publisher publisher = select.leftJoin(Publisher.class).getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
+    Department department = select.leftJoin(Department.class).getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a " +
-            "left join test$Publisher b " +
+        "select a from test_Employee a " +
+            "left join test_Department b " +
             "where a.status = b.status",
         select
-            .where(adGroup.getStatus()).is(publisher.getStatus())
+            .where(employee.getStatus()).is(department.getStatus())
             .getQueryString()
     );
     assertEquals(new HashMap<String, Object>(), select.getParameters());
@@ -385,25 +367,25 @@ public class JpqlBuilderTest {
 
   @Test
   public void testCollectionJoinOn() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
-    AdGroupBid bid = select
-        .join(adGroup.getBids())
-        .on(b -> $(b.getActive()).is(Boolean.TRUE))
+    JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
+    Department department = select.getPathSpecifier();
+    Employee employee = select
+        .join(department.getEmployees())
+        .on(e -> $(e.getStatus()).isNot(Status.DELETED))
         .getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a " +
-            "join a.bids b on b.active = :a " +
+        "select a from test_Department a " +
+            "join a.employees b on b.status <> :a " +
             "where a.status <> :b " +
-            "order by b.value desc",
+            "order by b.name desc",
         select
-            .where(adGroup.getStatus()).isNot(Status.DELETED)
-            .orderBy(bid.getValue()).desc()
+            .where(department.getStatus()).isNot(Status.DELETED)
+            .orderBy(employee.getName()).desc()
             .getQueryString()
     );
     assertEquals(
         new HashMap<String, Object>() {{
-          put("a", Boolean.TRUE);
+          put("a", Status.DELETED);
           put("b", Status.DELETED);
         }},
         select.getParameters()
@@ -412,22 +394,22 @@ public class JpqlBuilderTest {
 
   @Test
   public void testClassJoinOn() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
-    Publisher publisher = select
-        .join(Publisher.class)
-        .on(p -> $(p.getName()).is(adGroup.getName()))
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
+    Department department = select
+        .join(Department.class)
+        .on(d -> $(d.getName()).is(employee.getName()))
         .getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a " +
-            "join test$Publisher b on b.name = a.name " +
+        "select a from test_Employee a " +
+            "join test_Department b on b.name = a.name " +
             "where a.status <> :a " +
             "and b.status <> :b " +
             "order by b.name desc",
         select
-            .where(adGroup.getStatus()).isNot(Status.DELETED)
-            .and(publisher.getStatus()).isNot(Status.DELETED)
-            .orderBy(publisher.getName()).desc()
+            .where(employee.getStatus()).isNot(Status.DELETED)
+            .and(department.getStatus()).isNot(Status.DELETED)
+            .orderBy(department.getName()).desc()
             .getQueryString()
     );
     assertEquals(
@@ -441,22 +423,22 @@ public class JpqlBuilderTest {
 
   @Test
   public void testLowerUpper() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
-    Publisher publisher = select
-        .join(Publisher.class)
-        .on(p -> $(lower(p.getName())).like(lower(adGroup.getName())))
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
+    Department department = select
+        .join(Department.class)
+        .on(d -> $(lower(d.getName())).like(lower(employee.getName())))
         .getPathSpecifier();
     assertEquals(
-        "select a from test$AdGroup a " +
-            "join test$Publisher b on lower(b.name) like lower(a.name) " +
+        "select a from test_Employee a " +
+            "join test_Department b on lower(b.name) like lower(a.name) " +
             "where upper(a.name) like upper(:a) " +
             "or lower(a.name) like lower(b.name) " +
             "and upper(a.name) not like upper(b.name)",
         select
-            .where(upper(adGroup.getName())).like(upper("%test%"))
-            .or(lower(adGroup.getName())).like(lower(publisher.getName()))
-            .and(upper(adGroup.getName())).notLike(upper(publisher.getName()))
+            .where(upper(employee.getName())).like(upper("%test%"))
+            .or(lower(employee.getName())).like(lower(department.getName()))
+            .and(upper(employee.getName())).notLike(upper(department.getName()))
             .getQueryString()
     );
     assertEquals(
@@ -469,23 +451,23 @@ public class JpqlBuilderTest {
 
   @Test
   public void testDynamicQuery() {
-    JpqlBuilder<AdGroup> select = JpqlBuilder.select(AdGroup.class);
-    AdGroup adGroup = select.getPathSpecifier();
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee employee = select.getPathSpecifier();
 
-    Where<AdGroup> where = select.where(adGroup.getStatus()).isNot(Status.DELETED);
-    where.and(adGroup.getName()).like("%test%");
+    Where<Employee> where = select.where(employee.getStatus()).isNot(Status.DELETED);
+    where.and(employee.getName()).like("%test%");
 
-    ExpressionChain idFilter = $(adGroup.getId()).is(1L);
-    idFilter.or(adGroup.getId()).is(2L);
-    idFilter.or(adGroup.getId()).is(3L);
+    ExpressionChain idFilter = $(employee.getId()).is(1L);
+    idFilter.or(employee.getId()).is(2L);
+    idFilter.or(employee.getId()).is(3L);
 
     where.and(idFilter);
 
-    where.orderBy(adGroup.getId()).asc();
-    select.orderBy(adGroup.getName()).desc();
+    where.orderBy(employee.getId()).asc();
+    select.orderBy(employee.getName()).desc();
 
     assertEquals(
-        "select a from test$AdGroup a " +
+        "select a from test_Employee a " +
             "where a.status <> :a " +
             "and a.name like :b " +
             "and (a.id = :c or a.id = :d or a.id = :e) " +
@@ -506,9 +488,9 @@ public class JpqlBuilderTest {
 
   @Test
   public void oneLinerOrderBy() {
-    JpqlQuery query = JpqlBuilder.select(AdGroup.class).orderBy(AdGroup::getName).desc().orderBy(AdGroup::getId);
+    JpqlQuery query = JpqlBuilder.select(Company.class).orderBy(Company::getName).desc().orderBy(Company::getId);
     assertEquals(
-        "select a from test$AdGroup a order by a.name desc, a.id",
+        "select a from test_Company a order by a.name desc, a.id",
         query.getQueryString()
     );
     assertEquals(new HashMap<String, Object>(), query.getParameters());
@@ -516,9 +498,9 @@ public class JpqlBuilderTest {
 
   @Test
   public void oneLinerWhere() {
-    JpqlQuery query = JpqlBuilder.select(AdGroup.class).where(a -> $(a.getStatus()).isNot(Status.DELETED));
+    JpqlQuery query = JpqlBuilder.select(Company.class).where(c -> $(c.getStatus()).isNot(Status.DELETED));
     assertEquals(
-        "select a from test$AdGroup a where a.status <> :a",
+        "select a from test_Company a where a.status <> :a",
         query.getQueryString()
     );
     assertEquals(
@@ -532,12 +514,11 @@ public class JpqlBuilderTest {
   @Test
   public void oneLinerWhereAndOrderBy() {
     JpqlQuery query = JpqlBuilder
-        .select(AdGroup.class)
-        .where(a -> $(a.getStatus()).isNot(Status.DELETED).and(a.getName()).like("%test%"))
-        .orderBy(AdGroup::getName).desc()
-        .orderBy(a -> a.getCampaign().getName()).asc();
+        .select(Company.class)
+        .where(c -> $(c.getStatus()).isNot(Status.DELETED).and(c.getName()).like("%test%"))
+        .orderBy(Company::getName).desc();
     assertEquals(
-        "select a from test$AdGroup a where a.status <> :a and a.name like :b order by a.name desc, a.campaign.name asc",
+        "select a from test_Company a where a.status <> :a and a.name like :b order by a.name desc",
         query.getQueryString()
     );
     assertEquals(

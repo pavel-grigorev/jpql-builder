@@ -1,7 +1,7 @@
 package org.test.utils;
 
 import org.junit.Test;
-import org.test.entities.Status;
+import org.test.model.Status;
 
 import java.util.Arrays;
 

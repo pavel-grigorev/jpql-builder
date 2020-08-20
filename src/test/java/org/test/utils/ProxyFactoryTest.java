@@ -4,7 +4,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
-import org.test.entities.Advertiser;
+import org.test.model.Company;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 public class ProxyFactoryTest {
   @Test
   public void classProxy() {
-    Advertiser proxy = ProxyFactory.createProxy(Advertiser.class, new DummyAdvice());
+    Company proxy = ProxyFactory.createProxy(Company.class, new DummyAdvice());
 
     assertNotNull(proxy);
     assertTrue(AopUtils.isAopProxy(proxy));
@@ -21,11 +21,11 @@ public class ProxyFactoryTest {
 
   @Test
   public void instanceProxy() {
-    Advertiser advertiser = new Advertiser();
-    Advertiser proxy = ProxyFactory.createProxy(advertiser, new DummyAdvice());
+    Company company = new Company();
+    Company proxy = ProxyFactory.createProxy(company, new DummyAdvice());
 
     assertNotNull(proxy);
-    assertNotSame(advertiser, proxy);
+    assertNotSame(company, proxy);
     assertTrue(AopUtils.isAopProxy(proxy));
   }
 

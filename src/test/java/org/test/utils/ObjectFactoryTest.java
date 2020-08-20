@@ -1,7 +1,7 @@
 package org.test.utils;
 
 import org.junit.Test;
-import org.test.entities.Status;
+import org.test.model.Status;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -99,7 +99,7 @@ public class ObjectFactoryTest {
   }
 
   private static class TestClass {
-    private TestClass(String s) {
+    private TestClass(@SuppressWarnings("unused") String s) {
     }
   }
 }

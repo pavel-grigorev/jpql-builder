@@ -1,8 +1,8 @@
 package org.test.querystring;
 
 import org.junit.Test;
-import org.test.entities.Advertiser;
-import org.test.entities.Campaign;
+import org.test.model.Company;
+import org.test.model.Department;
 import org.test.path.PathResolver;
 import org.test.path.PathResolverList;
 import org.test.query.JoinClause;
@@ -37,19 +37,19 @@ public class JpqlStringBuilderTest {
   @Test
   public void convertsEntityClassToEntityName() {
     JpqlStringBuilder builder = new JpqlStringBuilder(null, null);
-    builder.appendValue(Advertiser.class);
+    builder.appendValue(Company.class);
 
-    assertEquals("test$Advertiser", builder.toString());
+    assertEquals("test_Company", builder.toString());
     assertEquals(new HashMap<String, Object>(), builder.getParameters());
   }
 
   @Test
   public void looksUpPropertyPathInRootPathResolver() {
-    PathResolver<Advertiser> pathResolver = new PathResolver<>(Advertiser.class, "a");
-    Advertiser advertiser = pathResolver.getPathSpecifier();
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    Company company = pathResolver.getPathSpecifier();
 
     JpqlStringBuilder builder = new JpqlStringBuilder(pathResolver, null);
-    builder.appendValue(advertiser.getName());
+    builder.appendValue(company.getName());
 
     assertEquals("a.name", builder.toString());
     assertEquals(new HashMap<String, Object>(), builder.getParameters());
@@ -57,15 +57,15 @@ public class JpqlStringBuilderTest {
 
   @Test
   public void looksUpPropertyPathInJoinedPathResolvers() {
-    PathResolver<Advertiser> pathResolver = new PathResolver<>(Advertiser.class, "a");
-    PathResolver<Campaign> joined = new PathResolver<>(Campaign.class, "b");
-    Campaign campaign = joined.getPathSpecifier();
+    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a");
+    PathResolver<Company> joined = new PathResolver<>(Company.class, "b");
+    Company company = joined.getPathSpecifier();
 
     PathResolverList joins = new PathResolverList();
     joins.add(joined);
 
     JpqlStringBuilder builder = new JpqlStringBuilder(pathResolver, joins);
-    builder.appendValue(campaign.getName());
+    builder.appendValue(company.getName());
 
     assertEquals("b.name", builder.toString());
     assertEquals(new HashMap<String, Object>(), builder.getParameters());
@@ -73,8 +73,8 @@ public class JpqlStringBuilderTest {
 
   @Test
   public void addsParameterForUnrecognizedValue() {
-    PathResolver<Advertiser> pathResolver = new PathResolver<>(Advertiser.class, "a");
-    PathResolver<Campaign> joined = new PathResolver<>(Campaign.class, "b");
+    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a");
+    PathResolver<Company> joined = new PathResolver<>(Company.class, "b");
 
     PathResolverList joins = new PathResolverList();
     joins.add(joined);
@@ -94,26 +94,26 @@ public class JpqlStringBuilderTest {
 
   @Test
   public void buildSelectQuery() {
-    PathResolver<Advertiser> pathResolver = new PathResolver<>(Advertiser.class, "a");
-    Advertiser advertiser = pathResolver.getPathSpecifier();
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    Company company = pathResolver.getPathSpecifier();
 
-    PathResolver<Campaign> joined = new PathResolver<>(Campaign.class, "b");
-    Campaign campaign = joined.getPathSpecifier();
+    PathResolver<Department> joined = new PathResolver<>(Department.class, "b");
+    Department department = joined.getPathSpecifier();
 
     PathResolverList joins = new PathResolverList();
     joins.add(joined);
 
-    SelectQuery query = new SelectQuery("a", Advertiser.class);
-    query.addJoin(new JoinClause("b", advertiser.getCampaigns(), JoinType.INNER));
+    SelectQuery query = new SelectQuery("a", Company.class);
+    query.addJoin(new JoinClause("b", company.getDepartments(), JoinType.INNER));
     query.setWhere(dummy("A"));
-    query.addOrderBy(advertiser.getName());
+    query.addOrderBy(company.getName());
     query.setOrderDesc();
-    query.addOrderBy(campaign.getName());
+    query.addOrderBy(department.getName());
 
     JpqlStringBuilder builder = new JpqlStringBuilder(pathResolver, joins);
 
     assertEquals(
-        "select a from test$Advertiser a join a.campaigns b where dummy(:a) order by a.name desc, b.name",
+        "select a from test_Company a join a.departments b where dummy(:a) order by a.name desc, b.name",
         builder.build(query)
     );
     assertEquals(
@@ -126,9 +126,9 @@ public class JpqlStringBuilderTest {
 
   @Test
   public void buildMultipleTimes() {
-    SelectQuery query = new SelectQuery("a", Advertiser.class);
+    SelectQuery query = new SelectQuery("a", Company.class);
     JpqlStringBuilder builder = new JpqlStringBuilder(null, null);
-    assertEquals("select a from test$Advertiser a", builder.build(query));
-    assertEquals("select a from test$Advertiser a", builder.build(query));
+    assertEquals("select a from test_Company a", builder.build(query));
+    assertEquals("select a from test_Company a", builder.build(query));
   }
 }

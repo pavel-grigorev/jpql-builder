@@ -3,9 +3,9 @@ package org.test.path;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
-import org.test.entities.AdGroup;
-import org.test.entities.Advertiser;
-import org.test.entities.Campaign;
+import org.test.model.Company;
+import org.test.model.Department;
+import org.test.model.Employee;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
@@ -19,35 +19,37 @@ import static org.junit.Assert.assertTrue;
 public class GetterMethodInterceptorTest {
   @Test
   public void skipsNonGetterMethods() throws Throwable {
-    Method method = Campaign.class.getMethod("setName", String.class);
-    interceptor.invoke(new TestMethodInvocation(method));
+    invoke(Company.class, "setName", String.class);
 
     assertTrue(interceptorSkipped);
   }
 
   @Test
-  public void addsValueToPathResolver() throws Throwable {
-    Method method = Campaign.class.getMethod("getName");
-    Object value = interceptor.invoke(new TestMethodInvocation(method));
+  public void getter() throws Throwable {
+    Object value = invoke(Company.class, "getName");
 
     assertNotNull(value);
+    assertTrue(value instanceof String);
     assertSame(value, pathResolver.getValue("name"));
     assertEquals("a.name", pathResolver.getPropertyPath(value));
   }
 
   @Test
   public void booleanGetter() throws Throwable {
-    Method method = Campaign.class.getMethod("isActive");
-    Object value = interceptor.invoke(new TestMethodInvocation(method));
+    Object value = invoke(Employee.class, "isHeadOfDepartment");
 
     assertNotNull(value);
-    assertSame(value, pathResolver.getValue("active"));
-    assertEquals("a.active", pathResolver.getPropertyPath(value));
+    assertTrue(value instanceof Boolean);
+    assertSame(value, pathResolver.getValue("headOfDepartment"));
+    assertEquals("a.headOfDepartment", pathResolver.getPropertyPath(value));
   }
 
   @Test
   public void multipleInvocationsOfTheSameMethod() throws Throwable {
-    Method method = Campaign.class.getMethod("getName");
+    pathResolver = new PathResolver<>(Company.class, "a");
+    interceptor = new GetterMethodInterceptor(pathResolver);
+
+    Method method = Company.class.getMethod("getName");
     Object value1 = interceptor.invoke(new TestMethodInvocation(method));
     Object value2 = interceptor.invoke(new TestMethodInvocation(method));
 
@@ -58,39 +60,45 @@ public class GetterMethodInterceptorTest {
 
   @Test
   public void entityGetter() throws Throwable {
-    Method method = Campaign.class.getMethod("getAdvertiser");
-    Object value = interceptor.invoke(new TestMethodInvocation(method));
+    Object value = invoke(Department.class, "getCompany");
 
     assertNotNull(value);
-    assertTrue(value instanceof Advertiser);
-    assertEquals("a.advertiser", pathResolver.getPropertyPath(value));
+    assertTrue(value instanceof Company);
+    assertSame(value, pathResolver.getValue("company"));
+    assertEquals("a.company", pathResolver.getPropertyPath(value));
   }
 
   @Test
   public void collectionGetter() throws Throwable {
-    Method method = Campaign.class.getMethod("getAdGroups");
-    Object value = interceptor.invoke(new TestMethodInvocation(method));
+    Object value = invoke(Company.class, "getDepartments");
 
     assertNotNull(value);
     assertTrue(value instanceof List);
-    assertEquals("a.adGroups", pathResolver.getPropertyPath(value));
+    assertSame(value, pathResolver.getValue("departments"));
+    assertEquals("a.departments", pathResolver.getPropertyPath(value));
 
     List<?> list = (List<?>) value;
     Object item = list.iterator().next();
 
     assertNotNull(item);
-    assertTrue(item instanceof AdGroup);
+    assertTrue(item instanceof Department);
   }
 
-  private PathResolver<Campaign> pathResolver;
+  private PathResolver<?> pathResolver;
   private GetterMethodInterceptor interceptor;
   private boolean interceptorSkipped;
 
   @Before
   public void setup() {
-    pathResolver = new PathResolver<>(Campaign.class, "a");
-    interceptor = new GetterMethodInterceptor(pathResolver);
     interceptorSkipped = false;
+  }
+
+  private Object invoke(Class<?> type, String methodName, Class<?>... params) throws Throwable {
+    pathResolver = new PathResolver<>(type, "a");
+    interceptor = new GetterMethodInterceptor(pathResolver);
+
+    Method method = type.getMethod(methodName, params);
+    return interceptor.invoke(new TestMethodInvocation(method));
   }
 
   private class TestMethodInvocation implements MethodInvocation {

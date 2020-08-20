@@ -1,7 +1,7 @@
 package org.test.utils;
 
 import org.junit.Test;
-import org.test.entities.Advertiser;
+import org.test.model.Company;
 
 import javax.persistence.Entity;
 
@@ -12,14 +12,14 @@ import static org.junit.Assert.assertTrue;
 public class EntityHelperTest {
   @Test
   public void isEntity() {
-    assertTrue(EntityHelper.isEntity(Advertiser.class));
+    assertTrue(EntityHelper.isEntity(Company.class));
     assertTrue(EntityHelper.isEntity(TestEntity.class));
     assertFalse(EntityHelper.isEntity(String.class));
   }
 
   @Test
   public void getEntityName() {
-    assertEquals("test$Advertiser", EntityHelper.getEntityName(Advertiser.class));
+    assertEquals("test_Company", EntityHelper.getEntityName(Company.class));
     assertEquals("TestEntity", EntityHelper.getEntityName(TestEntity.class));
   }
 

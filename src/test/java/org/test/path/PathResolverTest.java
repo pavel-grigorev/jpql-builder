@@ -2,8 +2,8 @@ package org.test.path;
 
 import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
-import org.test.entities.Advertiser;
-import org.test.entities.Campaign;
+import org.test.model.Company;
+import org.test.model.Department;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 public class PathResolverTest {
   @Test
   public void propertyMap() {
-    PathResolver<Campaign> pathResolver = new PathResolver<>(Campaign.class, "a");
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
     Object value = new Object();
     pathResolver.put("name", value);
 
@@ -24,50 +24,50 @@ public class PathResolverTest {
 
   @Test
   public void childResolver() {
-    PathResolver<Campaign> pathResolver = new PathResolver<>(Campaign.class, "a");
-    PathResolver<Advertiser> childResolver = pathResolver.createChildResolver(new Advertiser(), "advertiser");
-    Advertiser advertiser = childResolver.getPathSpecifier();
+    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a");
+    PathResolver<Company> childResolver = pathResolver.createChildResolver(new Company(), "company");
+    Company company = childResolver.getPathSpecifier();
 
-    assertEquals("a.advertiser", childResolver.getPropertyPath(advertiser));
+    assertEquals("a.company", childResolver.getPropertyPath(company));
   }
 
   @Test
   public void pathSpecifier() {
-    PathResolver<Campaign> pathResolver = new PathResolver<>(Campaign.class, "a");
-    Campaign campaign = pathResolver.getPathSpecifier();
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    Company company = pathResolver.getPathSpecifier();
 
-    assertNotNull(campaign);
-    assertTrue(AopUtils.isAopProxy(campaign));
+    assertNotNull(company);
+    assertTrue(AopUtils.isAopProxy(company));
   }
 
   @Test
   public void rootPropertyPath() {
-    PathResolver<Campaign> pathResolver = new PathResolver<>(Campaign.class, "a");
-    Campaign campaign = pathResolver.getPathSpecifier();
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    Company company = pathResolver.getPathSpecifier();
 
-    assertEquals("a", pathResolver.getPropertyPath(campaign));
+    assertEquals("a", pathResolver.getPropertyPath(company));
   }
 
   @Test
   public void ownPropertyPath() {
-    PathResolver<Campaign> pathResolver = new PathResolver<>(Campaign.class, "a");
-    Campaign campaign = pathResolver.getPathSpecifier();
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    Company company = pathResolver.getPathSpecifier();
 
-    assertEquals("a.name", pathResolver.getPropertyPath(campaign.getName()));
+    assertEquals("a.name", pathResolver.getPropertyPath(company.getName()));
   }
 
   @Test
   public void childPropertyPath() {
-    PathResolver<Campaign> pathResolver = new PathResolver<>(Campaign.class, "a");
-    PathResolver<Advertiser> childResolver = pathResolver.createChildResolver(new Advertiser(), "advertiser");
-    Advertiser advertiser = childResolver.getPathSpecifier();
+    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a");
+    PathResolver<Company> childResolver = pathResolver.createChildResolver(new Company(), "company");
+    Company company = childResolver.getPathSpecifier();
 
-    assertEquals("a.advertiser.status", pathResolver.getPropertyPath(advertiser.getStatus()));
+    assertEquals("a.company.status", pathResolver.getPropertyPath(company.getStatus()));
   }
 
   @Test
   public void unrecognizedPropertyPath() {
-    PathResolver<Campaign> pathResolver = new PathResolver<>(Campaign.class, "a");
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
 
     assertNull(pathResolver.getPropertyPath(new Object()));
   }
