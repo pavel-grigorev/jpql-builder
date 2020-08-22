@@ -1,7 +1,5 @@
 package org.test.utils;
 
-import sun.reflect.ConstructorAccessor;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -25,30 +23,30 @@ public class EnumFactory {
     constructor.setAccessible(true);
 
     try {
-      ConstructorAccessor constructorAccessor = getConstructorAccessor(constructor);
+      Object constructorAccessor = getConstructorAccessor(constructor);
       Object[] parameterValues = getParameterValues(constructor);
-      Object instance = constructorAccessor.newInstance(parameterValues);
+      Object instance = invokeNewInstanceMethod(constructorAccessor, parameterValues);
       return enumClass.cast(instance);
     } catch (ReflectiveOperationException e) {
       throw new RuntimeException(e.getMessage(), e);
     }
   }
 
-  private static ConstructorAccessor getConstructorAccessor(Constructor<?> constructor) throws ReflectiveOperationException {
-    ConstructorAccessor constructorAccessor = getConstructorAccessorThoughField(constructor);
+  private static Object getConstructorAccessor(Constructor<?> constructor) throws ReflectiveOperationException {
+    Object constructorAccessor = getConstructorAccessorThoughField(constructor);
     return constructorAccessor != null ? constructorAccessor : getConstructorAccessorThoughMethod(constructor);
   }
 
-  private static ConstructorAccessor getConstructorAccessorThoughField(Constructor<?> constructor) throws ReflectiveOperationException {
+  private static Object getConstructorAccessorThoughField(Constructor<?> constructor) throws ReflectiveOperationException {
     Field field = Constructor.class.getDeclaredField("constructorAccessor");
     field.setAccessible(true);
-    return (ConstructorAccessor) field.get(constructor);
+    return field.get(constructor);
   }
 
-  private static ConstructorAccessor getConstructorAccessorThoughMethod(Constructor<?> constructor) throws ReflectiveOperationException {
+  private static Object getConstructorAccessorThoughMethod(Constructor<?> constructor) throws ReflectiveOperationException {
     Method method = Constructor.class.getDeclaredMethod("acquireConstructorAccessor");
     method.setAccessible(true);
-    return (ConstructorAccessor) method.invoke(constructor);
+    return method.invoke(constructor);
   }
 
   private static Object[] getParameterValues(Constructor<?> constructor) {
@@ -82,5 +80,11 @@ public class EnumFactory {
       case "char": return CHAR_VALUE;
       default: return null;
     }
+  }
+
+  private static Object invokeNewInstanceMethod(Object constructorAccessor, Object[] parameters) throws ReflectiveOperationException {
+    Method method = constructorAccessor.getClass().getMethod("newInstance", Object[].class);
+    method.setAccessible(true);
+    return method.invoke(constructorAccessor, new Object[] {parameters});
   }
 }
