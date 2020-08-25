@@ -1,6 +1,10 @@
 package org.test.querystring;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.test.JpqlBuilderContext;
+import org.test.factory.DefaultCollectionInstanceFactory;
+import org.test.factory.DefaultInstanceFactory;
 import org.test.model.Company;
 import org.test.model.Department;
 import org.test.path.PathResolver;
@@ -45,7 +49,7 @@ public class JpqlStringBuilderTest {
 
   @Test
   public void looksUpPropertyPathInRootPathResolver() {
-    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
     Company company = pathResolver.getPathSpecifier();
 
     JpqlStringBuilder builder = new JpqlStringBuilder(pathResolver, null);
@@ -57,8 +61,8 @@ public class JpqlStringBuilderTest {
 
   @Test
   public void looksUpPropertyPathInJoinedPathResolvers() {
-    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a");
-    PathResolver<Company> joined = new PathResolver<>(Company.class, "b");
+    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a", context);
+    PathResolver<Company> joined = new PathResolver<>(Company.class, "b", context);
     Company company = joined.getPathSpecifier();
 
     PathResolverList joins = new PathResolverList();
@@ -73,8 +77,8 @@ public class JpqlStringBuilderTest {
 
   @Test
   public void addsParameterForUnrecognizedValue() {
-    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a");
-    PathResolver<Company> joined = new PathResolver<>(Company.class, "b");
+    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a", context);
+    PathResolver<Company> joined = new PathResolver<>(Company.class, "b", context);
 
     PathResolverList joins = new PathResolverList();
     joins.add(joined);
@@ -94,10 +98,10 @@ public class JpqlStringBuilderTest {
 
   @Test
   public void buildSelectQuery() {
-    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
     Company company = pathResolver.getPathSpecifier();
 
-    PathResolver<Department> joined = new PathResolver<>(Department.class, "b");
+    PathResolver<Department> joined = new PathResolver<>(Department.class, "b", context);
     Department department = joined.getPathSpecifier();
 
     PathResolverList joins = new PathResolverList();
@@ -130,5 +134,12 @@ public class JpqlStringBuilderTest {
     JpqlStringBuilder builder = new JpqlStringBuilder(null, null);
     assertEquals("select a from test_Company a", builder.build(query));
     assertEquals("select a from test_Company a", builder.build(query));
+  }
+
+  private JpqlBuilderContext context;
+
+  @Before
+  public void setup() {
+    context = new JpqlBuilderContext(new DefaultInstanceFactory(), new DefaultCollectionInstanceFactory());
   }
 }

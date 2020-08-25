@@ -4,7 +4,6 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.StringUtils;
 import org.test.utils.EntityHelper;
-import org.test.utils.ObjectFactory;
 import org.test.utils.ReflectionHelper;
 
 import java.lang.reflect.Method;
@@ -84,15 +83,23 @@ public class GetterMethodInterceptor implements MethodInterceptor {
     }
     if (Collection.class.isAssignableFrom(returnType)) {
       Class<?> genericClass = ReflectionHelper.getGenericReturnType(method);
-      Object instance = ObjectFactory.newInstance(genericClass);
+      Object instance = newInstance(genericClass);
 
-      Collection<Object> collection = ObjectFactory.newCollectionInstance(returnType);
+      Collection<Object> collection = newCollectionInstance(returnType);
       collection.add(instance);
 
       return pathResolver
           .createChildResolver(collection, propertyName)
           .getPathSpecifier();
     }
-    return ObjectFactory.newInstance(returnType);
+    return newInstance(returnType);
+  }
+
+  private Object newInstance(Class<?> type) throws ReflectiveOperationException {
+    return pathResolver.getContext().newInstance(type);
+  }
+
+  private Collection<Object> newCollectionInstance(Class<?> type) throws ReflectiveOperationException {
+    return pathResolver.getContext().newCollectionInstance(type);
   }
 }

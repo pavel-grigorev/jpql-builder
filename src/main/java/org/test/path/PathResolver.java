@@ -1,5 +1,6 @@
 package org.test.path;
 
+import org.test.JpqlBuilderContext;
 import org.test.utils.ProxyFactory;
 
 import java.util.HashMap;
@@ -12,15 +13,22 @@ public class PathResolver<T> {
   private final PathResolverList children = new PathResolverList();
   private final String basePath;
   private final T pathSpecifier;
+  private final JpqlBuilderContext context;
 
-  public PathResolver(Class<T> entityClass, String basePath) {
+  public PathResolver(Class<T> entityClass, String basePath, JpqlBuilderContext context) {
     this.basePath = basePath;
     this.pathSpecifier = ProxyFactory.createProxy(entityClass, new GetterMethodInterceptor(this));
+    this.context = context;
   }
 
-  private PathResolver(T target, String basePath) {
+  private PathResolver(T target, String basePath, JpqlBuilderContext context) {
     this.basePath = basePath;
     this.pathSpecifier = ProxyFactory.createProxy(target, new GetterMethodInterceptor(this));
+    this.context = context;
+  }
+
+  JpqlBuilderContext getContext() {
+    return context;
   }
 
   Object getValue(String propertyName) {
@@ -33,7 +41,7 @@ public class PathResolver<T> {
   }
 
   <E> PathResolver<E> createChildResolver(E target, String propertyName) {
-    PathResolver<E> pathResolver = new PathResolver<>(target, buildPath(propertyName));
+    PathResolver<E> pathResolver = new PathResolver<>(target, buildPath(propertyName), context);
     children.add(pathResolver);
     return pathResolver;
   }

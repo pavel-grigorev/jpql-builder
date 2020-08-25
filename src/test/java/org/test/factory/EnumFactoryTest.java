@@ -1,4 +1,4 @@
-package org.test.utils;
+package org.test.factory;
 
 import org.junit.Test;
 import org.test.model.Status;
@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 public class EnumFactoryTest {
   @Test
   public void returnsUniqueInstance() {
-    Object instance = EnumFactory.newInstance(Status.class);
+    Object instance = new EnumFactory().newInstance(Status.class);
 
     assertNotNull(instance);
     assertTrue(instance instanceof Status);
@@ -20,6 +20,6 @@ public class EnumFactoryTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void nonEnumClass() {
-    EnumFactory.newInstance(String.class);
+    new EnumFactory().newInstance(String.class);
   }
 }

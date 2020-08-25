@@ -1,6 +1,8 @@
 package org.test;
 
 import org.springframework.aop.support.AopUtils;
+import org.test.factory.DefaultCollectionInstanceFactory;
+import org.test.factory.DefaultInstanceFactory;
 import org.test.operators.Operator;
 import org.test.operators.Parentheses;
 import org.test.operators.UnaryOperator;
@@ -23,6 +25,7 @@ import java.util.function.Function;
 public class JpqlBuilder<T> implements JpqlQuery {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
   private final PathResolverList joinedPathResolvers = new PathResolverList();
+  private final JpqlBuilderContext context;
   private final PathResolver<T> pathResolver;
   private final JpqlStringBuilder stringBuilder;
   private final SelectQuery query;
@@ -30,9 +33,14 @@ public class JpqlBuilder<T> implements JpqlQuery {
   private JpqlBuilder(Class<T> entityClass) {
     requireEntityClass(entityClass);
 
+    context = new JpqlBuilderContext(
+        new DefaultInstanceFactory(),
+        new DefaultCollectionInstanceFactory()
+    );
+
     String rootAlias = aliasGenerator.next();
 
-    pathResolver = new PathResolver<>(entityClass, rootAlias);
+    pathResolver = new PathResolver<>(entityClass, rootAlias, context);
     stringBuilder = new JpqlStringBuilder(pathResolver, joinedPathResolvers);
     query = new SelectQuery(rootAlias, entityClass);
   }
@@ -108,7 +116,7 @@ public class JpqlBuilder<T> implements JpqlQuery {
     Class<P> castedClass = (Class<P>) targetClass;
     String alias = getNextAlias(type);
 
-    PathResolver<P> pathResolver = new PathResolver<>(castedClass, alias);
+    PathResolver<P> pathResolver = new PathResolver<>(castedClass, alias, context);
     joinedPathResolvers.add(pathResolver);
 
     JoinClause joinClause = new JoinClause(alias, joinedThing, type);

@@ -3,6 +3,9 @@ package org.test.path;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
+import org.test.JpqlBuilderContext;
+import org.test.factory.DefaultCollectionInstanceFactory;
+import org.test.factory.DefaultInstanceFactory;
 import org.test.model.Company;
 import org.test.model.Department;
 import org.test.model.Employee;
@@ -46,7 +49,7 @@ public class GetterMethodInterceptorTest {
 
   @Test
   public void multipleInvocationsOfTheSameMethod() throws Throwable {
-    pathResolver = new PathResolver<>(Company.class, "a");
+    pathResolver = new PathResolver<>(Company.class, "a", context);
     interceptor = new GetterMethodInterceptor(pathResolver);
 
     Method method = Company.class.getMethod("getName");
@@ -84,17 +87,19 @@ public class GetterMethodInterceptorTest {
     assertTrue(item instanceof Department);
   }
 
+  private JpqlBuilderContext context;
   private PathResolver<?> pathResolver;
   private GetterMethodInterceptor interceptor;
   private boolean interceptorSkipped;
 
   @Before
   public void setup() {
+    context = new JpqlBuilderContext(new DefaultInstanceFactory(), new DefaultCollectionInstanceFactory());
     interceptorSkipped = false;
   }
 
   private Object invoke(Class<?> type, String methodName, Class<?>... params) throws Throwable {
-    pathResolver = new PathResolver<>(type, "a");
+    pathResolver = new PathResolver<>(type, "a", context);
     interceptor = new GetterMethodInterceptor(pathResolver);
 
     Method method = type.getMethod(methodName, params);

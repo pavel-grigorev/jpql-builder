@@ -1,7 +1,11 @@
 package org.test.path;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
+import org.test.JpqlBuilderContext;
+import org.test.factory.DefaultCollectionInstanceFactory;
+import org.test.factory.DefaultInstanceFactory;
 import org.test.model.Company;
 import org.test.model.Department;
 
@@ -14,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 public class PathResolverTest {
   @Test
   public void propertyMap() {
-    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
     Object value = new Object();
     pathResolver.put("name", value);
 
@@ -24,7 +28,7 @@ public class PathResolverTest {
 
   @Test
   public void childResolver() {
-    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a");
+    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a", context);
     PathResolver<Company> childResolver = pathResolver.createChildResolver(new Company(), "company");
     Company company = childResolver.getPathSpecifier();
 
@@ -33,7 +37,7 @@ public class PathResolverTest {
 
   @Test
   public void pathSpecifier() {
-    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
     Company company = pathResolver.getPathSpecifier();
 
     assertNotNull(company);
@@ -42,7 +46,7 @@ public class PathResolverTest {
 
   @Test
   public void rootPropertyPath() {
-    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
     Company company = pathResolver.getPathSpecifier();
 
     assertEquals("a", pathResolver.getPropertyPath(company));
@@ -50,7 +54,7 @@ public class PathResolverTest {
 
   @Test
   public void ownPropertyPath() {
-    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
     Company company = pathResolver.getPathSpecifier();
 
     assertEquals("a.name", pathResolver.getPropertyPath(company.getName()));
@@ -58,7 +62,7 @@ public class PathResolverTest {
 
   @Test
   public void childPropertyPath() {
-    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a");
+    PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a", context);
     PathResolver<Company> childResolver = pathResolver.createChildResolver(new Company(), "company");
     Company company = childResolver.getPathSpecifier();
 
@@ -67,8 +71,15 @@ public class PathResolverTest {
 
   @Test
   public void unrecognizedPropertyPath() {
-    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a");
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
 
     assertNull(pathResolver.getPropertyPath(new Object()));
+  }
+
+  private JpqlBuilderContext context;
+
+  @Before
+  public void setup() {
+    context = new JpqlBuilderContext(new DefaultInstanceFactory(), new DefaultCollectionInstanceFactory());
   }
 }
