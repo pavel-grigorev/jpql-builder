@@ -1,9 +1,12 @@
 package org.test;
 
 import org.springframework.aop.support.AopUtils;
+import org.test.factory.CollectionInstanceFactory;
 import org.test.factory.DefaultCollectionInstanceFactory;
 import org.test.factory.DefaultInstanceFactory;
 import org.test.factory.DefaultProxyFactory;
+import org.test.factory.InstanceFactory;
+import org.test.factory.ProxyFactory;
 import org.test.operators.Operator;
 import org.test.operators.Parentheses;
 import org.test.operators.UnaryOperator;
@@ -31,14 +34,9 @@ public class JpqlBuilder<T> implements JpqlQuery {
   private final JpqlStringBuilder stringBuilder;
   private final SelectQuery query;
 
-  private JpqlBuilder(Class<T> entityClass) {
+  private JpqlBuilder(Class<T> entityClass, JpqlBuilderContext context) {
     requireEntityClass(entityClass);
-
-    context = new JpqlBuilderContext(
-        new DefaultInstanceFactory(),
-        new DefaultCollectionInstanceFactory(),
-        new DefaultProxyFactory()
-    );
+    this.context = context;
 
     String rootAlias = aliasGenerator.next();
 
@@ -53,8 +51,20 @@ public class JpqlBuilder<T> implements JpqlQuery {
     }
   }
 
+  public static Builder with(InstanceFactory instanceFactory) {
+    return new Builder(instanceFactory);
+  }
+
+  public static Builder with(CollectionInstanceFactory collectionInstanceFactory) {
+    return new Builder(collectionInstanceFactory);
+  }
+
+  public static Builder with(ProxyFactory proxyFactory) {
+    return new Builder(proxyFactory);
+  }
+
   public static <T> JpqlBuilder<T> select(Class<T> entityType) {
-    return new JpqlBuilder<>(entityType);
+    return new JpqlBuilder<>(entityType, JpqlBuilderContext.defaultContext());
   }
 
   public <P> Join<P> join(P path) {
@@ -110,7 +120,7 @@ public class JpqlBuilder<T> implements JpqlQuery {
     return join(entityClass, entityClass, type);
   }
 
-  // TODO: refactor into JpqlBuilderJoinChainFactory
+  // TODO: refactor into JoinFactory
   @SuppressWarnings("unchecked")
   private <P> Join<P> join(Object joinedThing, Class<?> targetClass, JoinType type) {
     requireEntityClass(targetClass);
@@ -179,5 +189,55 @@ public class JpqlBuilder<T> implements JpqlQuery {
 
   public T getPathSpecifier() {
     return pathResolver.getPathSpecifier();
+  }
+
+  public static class Builder {
+    private InstanceFactory instanceFactory;
+    private CollectionInstanceFactory collectionInstanceFactory;
+    private ProxyFactory proxyFactory;
+
+    private Builder(InstanceFactory instanceFactory) {
+      this.instanceFactory = instanceFactory;
+    }
+
+    private Builder(CollectionInstanceFactory collectionInstanceFactory) {
+      this.collectionInstanceFactory = collectionInstanceFactory;
+    }
+
+    private Builder(ProxyFactory proxyFactory) {
+      this.proxyFactory = proxyFactory;
+    }
+
+    public Builder with(InstanceFactory instanceFactory) {
+      this.instanceFactory = instanceFactory;
+      return this;
+    }
+
+    public Builder with(CollectionInstanceFactory collectionInstanceFactory) {
+      this.collectionInstanceFactory = collectionInstanceFactory;
+      return this;
+    }
+
+    public Builder with(ProxyFactory proxyFactory) {
+      this.proxyFactory = proxyFactory;
+      return this;
+    }
+
+    public <T> JpqlBuilder<T> select(Class<T> entityType) {
+      return new JpqlBuilder<>(entityType, createContext());
+    }
+
+    private JpqlBuilderContext createContext() {
+      if (instanceFactory == null) {
+        instanceFactory = new DefaultInstanceFactory();
+      }
+      if (collectionInstanceFactory == null) {
+        collectionInstanceFactory = new DefaultCollectionInstanceFactory();
+      }
+      if (proxyFactory == null) {
+        proxyFactory = new DefaultProxyFactory();
+      }
+      return new JpqlBuilderContext(instanceFactory, collectionInstanceFactory, proxyFactory);
+    }
   }
 }

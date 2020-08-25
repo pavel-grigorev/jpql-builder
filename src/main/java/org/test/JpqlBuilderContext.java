@@ -2,6 +2,9 @@ package org.test;
 
 import org.aopalliance.aop.Advice;
 import org.test.factory.CollectionInstanceFactory;
+import org.test.factory.DefaultCollectionInstanceFactory;
+import org.test.factory.DefaultInstanceFactory;
+import org.test.factory.DefaultProxyFactory;
 import org.test.factory.InstanceFactory;
 import org.test.factory.ProxyFactory;
 
@@ -20,6 +23,14 @@ public class JpqlBuilderContext {
     this.instanceFactory = instanceFactory;
     this.collectionInstanceFactory = collectionInstanceFactory;
     this.proxyFactory = proxyFactory;
+  }
+
+  public static JpqlBuilderContext defaultContext() {
+    return new JpqlBuilderContext(
+        new DefaultInstanceFactory(),
+        new DefaultCollectionInstanceFactory(),
+        new DefaultProxyFactory()
+    );
   }
 
   public <T> T newInstance(Class<T> type) throws ReflectiveOperationException {
