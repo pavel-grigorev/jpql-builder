@@ -23,13 +23,13 @@ public class DefaultCollectionInstanceFactory implements CollectionInstanceFacto
 
   @Override
   @SuppressWarnings("unchecked")
-  public Collection<Object> newInstance(Class<?> type) throws ReflectiveOperationException {
+  public <T extends Collection<E>, E> T newInstance(Class<?> type) throws ReflectiveOperationException {
     checkType(type);
     InstanceCreator<?> creator = instanceCreators.get(type);
     if (creator == null) {
       throw new IllegalArgumentException("Collection type " + type + " is unsupported");
     }
-    return (Collection<Object>) creator.newInstance();
+    return (T) creator.newInstance();
   }
 
   private static void checkType(Class<?> type) {

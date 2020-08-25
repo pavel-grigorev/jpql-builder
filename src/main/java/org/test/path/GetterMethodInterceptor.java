@@ -77,10 +77,9 @@ public class GetterMethodInterceptor implements MethodInterceptor {
 
     if (EntityHelper.isEntity(returnType)) {
       Object instance = returnType.newInstance();
-      return pathResolver
-          .createChildResolver(instance, propertyName)
-          .getPathSpecifier();
+      return createPathSpecifier(instance, propertyName);
     }
+
     if (Collection.class.isAssignableFrom(returnType)) {
       Class<?> genericClass = ReflectionHelper.getGenericReturnType(method);
       Object instance = newInstance(genericClass);
@@ -88,18 +87,27 @@ public class GetterMethodInterceptor implements MethodInterceptor {
       Collection<Object> collection = newCollectionInstance(returnType);
       collection.add(instance);
 
-      return pathResolver
-          .createChildResolver(collection, propertyName)
-          .getPathSpecifier();
+      return createPathSpecifier(collection, propertyName);
     }
+
     return newInstance(returnType);
   }
 
+  private Object createPathSpecifier(Object target, String propertyName) {
+    return pathResolver
+        .createChildResolver(target, propertyName)
+        .getPathSpecifier();
+  }
+
   private Object newInstance(Class<?> type) throws ReflectiveOperationException {
-    return pathResolver.getContext().newInstance(type);
+    return pathResolver
+        .getContext()
+        .newInstance(type);
   }
 
   private Collection<Object> newCollectionInstance(Class<?> type) throws ReflectiveOperationException {
-    return pathResolver.getContext().newCollectionInstance(type);
+    return pathResolver
+        .getContext()
+        .newCollectionInstance(type);
   }
 }
