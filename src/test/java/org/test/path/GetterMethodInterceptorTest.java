@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.test.JpqlBuilderContext;
 import org.test.factory.DefaultCollectionInstanceFactory;
 import org.test.factory.DefaultInstanceFactory;
+import org.test.factory.DefaultProxyFactory;
 import org.test.model.Company;
 import org.test.model.Department;
 import org.test.model.Employee;
@@ -94,7 +95,11 @@ public class GetterMethodInterceptorTest {
 
   @Before
   public void setup() {
-    context = new JpqlBuilderContext(new DefaultInstanceFactory(), new DefaultCollectionInstanceFactory());
+    context = new JpqlBuilderContext(
+        new DefaultInstanceFactory(),
+        new DefaultCollectionInstanceFactory(),
+        new DefaultProxyFactory()
+    );
     interceptorSkipped = false;
   }
 

@@ -3,6 +3,7 @@ package org.test;
 import org.springframework.aop.support.AopUtils;
 import org.test.factory.DefaultCollectionInstanceFactory;
 import org.test.factory.DefaultInstanceFactory;
+import org.test.factory.DefaultProxyFactory;
 import org.test.operators.Operator;
 import org.test.operators.Parentheses;
 import org.test.operators.UnaryOperator;
@@ -35,7 +36,8 @@ public class JpqlBuilder<T> implements JpqlQuery {
 
     context = new JpqlBuilderContext(
         new DefaultInstanceFactory(),
-        new DefaultCollectionInstanceFactory()
+        new DefaultCollectionInstanceFactory(),
+        new DefaultProxyFactory()
     );
 
     String rootAlias = aliasGenerator.next();

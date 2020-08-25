@@ -1,10 +1,11 @@
-package org.test.utils;
+package org.test.factory;
 
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.framework.ProxyFactoryBean;
 
-public class ProxyFactory {
-  public static <T> T createProxy(Class<T> type, Advice advice) {
+public class DefaultProxyFactory implements ProxyFactory {
+  @Override
+  public <T> T createProxy(Class<T> type, Advice advice) {
     ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
     proxyFactoryBean.setAutodetectInterfaces(false);
     proxyFactoryBean.setTargetClass(type);
@@ -12,8 +13,9 @@ public class ProxyFactory {
     return type.cast(proxyFactoryBean.getObject());
   }
 
+  @Override
   @SuppressWarnings("unchecked")
-  public static <T> T createProxy(T target, Advice advice) {
+  public <T> T createProxy(T target, Advice advice) {
     ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
     proxyFactoryBean.setAutodetectInterfaces(false);
     proxyFactoryBean.setTarget(target);

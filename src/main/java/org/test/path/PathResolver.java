@@ -1,7 +1,6 @@
 package org.test.path;
 
 import org.test.JpqlBuilderContext;
-import org.test.utils.ProxyFactory;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -17,13 +16,13 @@ public class PathResolver<T> {
 
   public PathResolver(Class<T> entityClass, String basePath, JpqlBuilderContext context) {
     this.basePath = basePath;
-    this.pathSpecifier = ProxyFactory.createProxy(entityClass, new GetterMethodInterceptor(this));
+    this.pathSpecifier = context.createProxy(entityClass, new GetterMethodInterceptor(this));
     this.context = context;
   }
 
   private PathResolver(T target, String basePath, JpqlBuilderContext context) {
     this.basePath = basePath;
-    this.pathSpecifier = ProxyFactory.createProxy(target, new GetterMethodInterceptor(this));
+    this.pathSpecifier = context.createProxy(target, new GetterMethodInterceptor(this));
     this.context = context;
   }
 
