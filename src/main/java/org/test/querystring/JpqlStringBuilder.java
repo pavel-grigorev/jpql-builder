@@ -36,7 +36,7 @@ public class JpqlStringBuilder implements JpqlStringWriter {
   }
 
   public Map<String, Object> getParameters() {
-    return parameters;
+    return new HashMap<>(parameters);
   }
 
   @Override
