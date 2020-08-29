@@ -1,9 +1,11 @@
 package org.test.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity(name = "test_Employee")
 public class Employee {
+  @Id
   private Long id;
   private Status status;
   private String name;
