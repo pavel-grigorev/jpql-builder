@@ -3,20 +3,20 @@ package org.test.functions;
 import org.test.querystring.JpqlStringWriter;
 
 public class Lower extends JpqlFunction<String> {
-  private final Object operand;
+  private final Object parameter;
 
-  Lower(String operand) {
-    this.operand = operand;
+  Lower(String parameter) {
+    this.parameter = parameter;
   }
 
   Lower(JpqlFunction<String> nested) {
-    this.operand = nested;
+    this.parameter = nested;
   }
 
   @Override
   public void writeTo(JpqlStringWriter stringWriter) {
     stringWriter.appendString("lower(");
-    writeOperand(operand, stringWriter);
+    writeOperand(parameter, stringWriter);
     stringWriter.appendString(")");
   }
 }

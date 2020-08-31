@@ -2,6 +2,7 @@ package org.test.samples;
 
 import org.junit.Test;
 import org.test.JpqlBuilder;
+import org.test.model.Company;
 import org.test.model.Department;
 import org.test.model.Employee;
 
@@ -9,6 +10,9 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.functions.Functions.lower;
+import static org.test.functions.Functions.ltrim;
+import static org.test.functions.Functions.rtrim;
+import static org.test.functions.Functions.trim;
 import static org.test.functions.Functions.upper;
 import static org.test.operators.builders.OperatorBuilder.$;
 
@@ -38,6 +42,78 @@ public class FunctionsTest {
     assertEquals(
         new HashMap<String, Object>() {{
           put("a", "%test%");
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void trimTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(trim(c.getName())).is(trim(c.getName(), '-'))
+        .and(trim(lower(c.getName()))).is(trim(lower(c.getName()), '+'))
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where trim(a.name) = trim(:a from a.name) " +
+        "and trim(lower(a.name)) = trim(:b from lower(a.name))";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", '-');
+          put("b", '+');
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void ltrimTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(ltrim(c.getName())).is(ltrim(c.getName(), '-'))
+        .and(ltrim(lower(c.getName()))).is(ltrim(lower(c.getName()), '+'))
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where trim(leading from a.name) = trim(leading :a from a.name) " +
+        "and trim(leading from lower(a.name)) = trim(leading :b from lower(a.name))";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", '-');
+          put("b", '+');
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void rtrimTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(rtrim(c.getName())).is(rtrim(c.getName(), '-'))
+        .and(rtrim(lower(c.getName()))).is(rtrim(lower(c.getName()), '+'))
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where trim(trailing from a.name) = trim(trailing :a from a.name) " +
+        "and trim(trailing from lower(a.name)) = trim(trailing :b from lower(a.name))";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", '-');
+          put("b", '+');
         }},
         select.getParameters()
     );

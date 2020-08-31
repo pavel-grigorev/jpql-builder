@@ -3,20 +3,20 @@ package org.test.functions;
 import org.test.querystring.JpqlStringWriter;
 
 public class Upper extends JpqlFunction<String> {
-  private final Object operand;
+  private final Object parameter;
 
-  Upper(String operand) {
-    this.operand = operand;
+  Upper(String parameter) {
+    this.parameter = parameter;
   }
 
   Upper(JpqlFunction<String> nested) {
-    this.operand = nested;
+    this.parameter = nested;
   }
 
   @Override
   public void writeTo(JpqlStringWriter stringWriter) {
     stringWriter.appendString("upper(");
-    writeOperand(operand, stringWriter);
+    writeOperand(parameter, stringWriter);
     stringWriter.appendString(")");
   }
 }
