@@ -1,5 +1,6 @@
 package org.test.operators.builders;
 
+import org.test.functions.JpqlFunction;
 import org.test.operators.Between;
 import org.test.operators.Equal;
 import org.test.operators.GreaterThan;
@@ -16,7 +17,6 @@ import org.test.operators.NotEqual;
 import org.test.operators.NotIn;
 import org.test.operators.NotLike;
 import org.test.operators.Parentheses;
-import org.test.operators.UnaryOperator;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +30,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     this.operand = operand;
   }
 
-  public OperatorBuilder(B chain, UnaryOperator<T> operator) {
+  public OperatorBuilder(B chain, JpqlFunction<T> operator) {
     this.chain = chain;
     this.operand = operator;
   }
@@ -39,7 +39,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return new OperatorBuilder<>(new ExpressionChain(), operand);
   }
 
-  public static <T> OperatorBuilder<T, ExpressionChain> $(UnaryOperator<T> operator) {
+  public static <T> OperatorBuilder<T, ExpressionChain> $(JpqlFunction<T> operator) {
     return new OperatorBuilder<>(new ExpressionChain(), operator);
   }
 
@@ -55,7 +55,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new Equal<>(operand, value));
   }
 
-  public B is(UnaryOperator<T> operator) {
+  public B is(JpqlFunction<T> operator) {
     return chain.join(new Equal<>(operand, operator));
   }
 
@@ -63,7 +63,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new NotEqual<>(operand, value));
   }
 
-  public B isNot(UnaryOperator<T> operator) {
+  public B isNot(JpqlFunction<T> operator) {
     return chain.join(new NotEqual<>(operand, operator));
   }
 
@@ -79,15 +79,15 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new Between<>(operand, min, max));
   }
 
-  public B between(UnaryOperator<T> min, T max) {
+  public B between(JpqlFunction<T> min, T max) {
     return chain.join(new Between<>(operand, min, max));
   }
 
-  public B between(T min, UnaryOperator<T> max) {
+  public B between(T min, JpqlFunction<T> max) {
     return chain.join(new Between<>(operand, min, max));
   }
 
-  public B between(UnaryOperator<T> min, UnaryOperator<T> max) {
+  public B between(JpqlFunction<T> min, JpqlFunction<T> max) {
     return chain.join(new Between<>(operand, min, max));
   }
 
@@ -95,15 +95,15 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new NotBetween<>(operand, min, max));
   }
 
-  public B notBetween(UnaryOperator<T> min, T max) {
+  public B notBetween(JpqlFunction<T> min, T max) {
     return chain.join(new NotBetween<>(operand, min, max));
   }
 
-  public B notBetween(T min, UnaryOperator<T> max) {
+  public B notBetween(T min, JpqlFunction<T> max) {
     return chain.join(new NotBetween<>(operand, min, max));
   }
 
-  public B notBetween(UnaryOperator<T> min, UnaryOperator<T> max) {
+  public B notBetween(JpqlFunction<T> min, JpqlFunction<T> max) {
     return chain.join(new NotBetween<>(operand, min, max));
   }
 
@@ -129,7 +129,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new GreaterThan<>(operand, value));
   }
 
-  public B greaterThan(UnaryOperator<T> operator) {
+  public B greaterThan(JpqlFunction<T> operator) {
     return chain.join(new GreaterThan<>(operand, operator));
   }
 
@@ -137,7 +137,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new GreaterThanOrEqual<>(operand, value));
   }
 
-  public B greaterThanOrEqual(UnaryOperator<T> operator) {
+  public B greaterThanOrEqual(JpqlFunction<T> operator) {
     return chain.join(new GreaterThanOrEqual<>(operand, operator));
   }
 
@@ -145,7 +145,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new LessThan<>(operand, value));
   }
 
-  public B lessThan(UnaryOperator<T> operator) {
+  public B lessThan(JpqlFunction<T> operator) {
     return chain.join(new LessThan<>(operand, operator));
   }
 
@@ -153,7 +153,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new LessThanOrEqual<>(operand, value));
   }
 
-  public B lessThanOrEqual(UnaryOperator<T> operator) {
+  public B lessThanOrEqual(JpqlFunction<T> operator) {
     return chain.join(new LessThanOrEqual<>(operand, operator));
   }
 
@@ -161,7 +161,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new Like(operand, value));
   }
 
-  public B like(UnaryOperator<T> operator) {
+  public B like(JpqlFunction<T> operator) {
     return chain.join(new Like(operand, operator));
   }
 
@@ -169,7 +169,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new Like(operand, value, escapeChar));
   }
 
-  public B like(UnaryOperator<T> operator, String escapeChar) {
+  public B like(JpqlFunction<T> operator, String escapeChar) {
     return chain.join(new Like(operand, operator, escapeChar));
   }
 
@@ -177,7 +177,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new NotLike(operand, value));
   }
 
-  public B notLike(UnaryOperator<T> operator) {
+  public B notLike(JpqlFunction<T> operator) {
     return chain.join(new NotLike(operand, operator));
   }
 
@@ -185,7 +185,7 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new NotLike(operand, value, escapeChar));
   }
 
-  public B notLike(UnaryOperator<T> operator, String escapeChar) {
+  public B notLike(JpqlFunction<T> operator, String escapeChar) {
     return chain.join(new NotLike(operand, operator, escapeChar));
   }
 }

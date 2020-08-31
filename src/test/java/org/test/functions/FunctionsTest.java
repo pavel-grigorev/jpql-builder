@@ -15,4 +15,14 @@ public class FunctionsTest {
   public void upper() {
     assertEquals("upper(A)", asString(new Upper("A")));
   }
+
+  @Test
+  public void upperLower() {
+    assertEquals("upper(lower(A))", asString(new Upper(new Lower("A"))));
+  }
+
+  @Test
+  public void lowerUpper() {
+    assertEquals("lower(upper(A))", asString(new Lower(new Upper("A"))));
+  }
 }

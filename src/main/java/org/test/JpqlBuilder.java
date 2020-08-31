@@ -7,9 +7,9 @@ import org.test.factory.DefaultInstanceFactory;
 import org.test.factory.DefaultProxyFactory;
 import org.test.factory.InstanceFactory;
 import org.test.factory.ProxyFactory;
+import org.test.functions.JpqlFunction;
 import org.test.operators.Operator;
 import org.test.operators.Parentheses;
-import org.test.operators.UnaryOperator;
 import org.test.operators.builders.ExpressionChain;
 import org.test.operators.builders.OperatorBuilder;
 import org.test.path.PathResolver;
@@ -144,7 +144,7 @@ public class JpqlBuilder<T> implements JpqlQuery {
     return new OperatorBuilder<>(createWhere(), operand);
   }
 
-  public <P> OperatorBuilder<P, Where<T>> where(UnaryOperator<P> operator) {
+  public <P> OperatorBuilder<P, Where<T>> where(JpqlFunction<P> operator) {
     return new OperatorBuilder<>(createWhere(), operator);
   }
 

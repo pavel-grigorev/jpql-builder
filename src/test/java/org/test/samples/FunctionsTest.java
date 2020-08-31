@@ -25,14 +25,14 @@ public class FunctionsTest {
     String query = select
         .where(upper(employee.getName())).like(upper("%test%"))
         .or(lower(employee.getName())).like(lower(department.getName()))
-        .and(upper(employee.getName())).notLike(upper(department.getName()))
+        .and(upper(lower(employee.getName()))).notLike(upper(lower(department.getName())))
         .getQueryString();
 
     String expected = "select a from test_Employee a " +
         "join test_Department b on lower(b.name) like lower(a.name) " +
         "where upper(a.name) like upper(:a) " +
         "or lower(a.name) like lower(b.name) " +
-        "and upper(a.name) not like upper(b.name)";
+        "and upper(lower(a.name)) not like upper(lower(b.name))";
 
     assertEquals(expected, query);
     assertEquals(

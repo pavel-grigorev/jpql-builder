@@ -1,10 +1,10 @@
 package org.test.operators.builders;
 
+import org.test.functions.JpqlFunction;
 import org.test.operators.And;
 import org.test.operators.Operator;
 import org.test.operators.Or;
 import org.test.operators.Parentheses;
-import org.test.operators.UnaryOperator;
 
 import java.util.function.BinaryOperator;
 
@@ -29,7 +29,7 @@ public abstract class BaseExpressionChain<B extends BaseExpressionChain<B>> {
     return new OperatorBuilder<>(thisChain(), operand);
   }
 
-  public <T> OperatorBuilder<T, B> and(UnaryOperator<T> operator) {
+  public <T> OperatorBuilder<T, B> and(JpqlFunction<T> operator) {
     joiner = And::new;
     return new OperatorBuilder<>(thisChain(), operator);
   }
@@ -44,7 +44,7 @@ public abstract class BaseExpressionChain<B extends BaseExpressionChain<B>> {
     return new OperatorBuilder<>(thisChain(), operand);
   }
 
-  public <T> OperatorBuilder<T, B> or(UnaryOperator<T> operator) {
+  public <T> OperatorBuilder<T, B> or(JpqlFunction<T> operator) {
     joiner = Or::new;
     return new OperatorBuilder<>(thisChain(), operator);
   }

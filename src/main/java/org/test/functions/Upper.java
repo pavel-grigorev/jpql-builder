@@ -1,11 +1,16 @@
 package org.test.functions;
 
 import org.test.querystring.JpqlStringWriter;
-import org.test.operators.UnaryOperator;
 
-public class Upper extends UnaryOperator<String> {
+public class Upper extends JpqlFunction<String> {
+  private final Object operand;
+
   Upper(String operand) {
-    super(operand);
+    this.operand = operand;
+  }
+
+  Upper(JpqlFunction<String> nested) {
+    this.operand = nested;
   }
 
   @Override

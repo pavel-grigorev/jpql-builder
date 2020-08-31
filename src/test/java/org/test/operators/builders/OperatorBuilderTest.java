@@ -24,8 +24,8 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
+import static org.test.DummyFunction.dummy;
 import static org.test.DummyJpqlStringWriter.asString;
-import static org.test.DummyOperator.dummy;
 
 public class OperatorBuilderTest {
   @Test
