@@ -63,6 +63,15 @@ public class OperatorBuilderTest {
   }
 
   @Test
+  public void isOperator() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").is(dummy("B")).getOperator();
+
+    assertTrue(operator instanceof Equal);
+    assertEquals("A = dummy(B)", asString(operator));
+  }
+
+  @Test
   public void isNot() {
     ExpressionChain chain = new ExpressionChain();
     Operator operator = new OperatorBuilder<>(chain, "A").isNot("B").getOperator();
@@ -78,6 +87,15 @@ public class OperatorBuilderTest {
 
     assertTrue(operator instanceof NotEqual);
     assertEquals("dummy(A) <> B", asString(operator));
+  }
+
+  @Test
+  public void isNotOperator() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").isNot(dummy("B")).getOperator();
+
+    assertTrue(operator instanceof NotEqual);
+    assertEquals("A <> dummy(B)", asString(operator));
   }
 
   @Test
@@ -135,6 +153,33 @@ public class OperatorBuilderTest {
   }
 
   @Test
+  public void betweenOperator1() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").between(dummy("B"), "C").getOperator();
+
+    assertTrue(operator instanceof Between);
+    assertEquals("A between dummy(B) and C", asString(operator));
+  }
+
+  @Test
+  public void betweenOperator2() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").between("B", dummy("C")).getOperator();
+
+    assertTrue(operator instanceof Between);
+    assertEquals("A between B and dummy(C)", asString(operator));
+  }
+
+  @Test
+  public void betweenOperator3() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").between(dummy("B"), dummy("C")).getOperator();
+
+    assertTrue(operator instanceof Between);
+    assertEquals("A between dummy(B) and dummy(C)", asString(operator));
+  }
+
+  @Test
   public void notBetween() {
     ExpressionChain chain = new ExpressionChain();
     Operator operator = new OperatorBuilder<>(chain, "A").notBetween("B", "C").getOperator();
@@ -150,6 +195,33 @@ public class OperatorBuilderTest {
 
     assertTrue(operator instanceof NotBetween);
     assertEquals("dummy(A) not between B and C", asString(operator));
+  }
+
+  @Test
+  public void notBetweenOperator1() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").notBetween(dummy("B"), "C").getOperator();
+
+    assertTrue(operator instanceof NotBetween);
+    assertEquals("A not between dummy(B) and C", asString(operator));
+  }
+
+  @Test
+  public void notBetweenOperator2() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").notBetween("B", dummy("C")).getOperator();
+
+    assertTrue(operator instanceof NotBetween);
+    assertEquals("A not between B and dummy(C)", asString(operator));
+  }
+
+  @Test
+  public void notBetweenOperator3() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").notBetween(dummy("B"), dummy("C")).getOperator();
+
+    assertTrue(operator instanceof NotBetween);
+    assertEquals("A not between dummy(B) and dummy(C)", asString(operator));
   }
 
   @Test
@@ -243,6 +315,15 @@ public class OperatorBuilderTest {
   }
 
   @Test
+  public void greaterThanOperator() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").greaterThan(dummy("B")).getOperator();
+
+    assertTrue(operator instanceof GreaterThan);
+    assertEquals("A > dummy(B)", asString(operator));
+  }
+
+  @Test
   public void greaterThanOrEqual() {
     ExpressionChain chain = new ExpressionChain();
     Operator operator = new OperatorBuilder<>(chain, "A").greaterThanOrEqual("B").getOperator();
@@ -258,6 +339,15 @@ public class OperatorBuilderTest {
 
     assertTrue(operator instanceof GreaterThanOrEqual);
     assertEquals("dummy(A) >= B", asString(operator));
+  }
+
+  @Test
+  public void greaterThanOrEqualOperator() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").greaterThanOrEqual(dummy("B")).getOperator();
+
+    assertTrue(operator instanceof GreaterThanOrEqual);
+    assertEquals("A >= dummy(B)", asString(operator));
   }
 
   @Test
@@ -279,6 +369,15 @@ public class OperatorBuilderTest {
   }
 
   @Test
+  public void lessThanOperator() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").lessThan(dummy("B")).getOperator();
+
+    assertTrue(operator instanceof LessThan);
+    assertEquals("A < dummy(B)", asString(operator));
+  }
+
+  @Test
   public void lessThanOrEqual() {
     ExpressionChain chain = new ExpressionChain();
     Operator operator = new OperatorBuilder<>(chain, "A").lessThanOrEqual("B").getOperator();
@@ -294,5 +393,14 @@ public class OperatorBuilderTest {
 
     assertTrue(operator instanceof LessThanOrEqual);
     assertEquals("dummy(A) <= B", asString(operator));
+  }
+
+  @Test
+  public void lessThanOrEqualOperator() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").lessThanOrEqual(dummy("B")).getOperator();
+
+    assertTrue(operator instanceof LessThanOrEqual);
+    assertEquals("A <= dummy(B)", asString(operator));
   }
 }

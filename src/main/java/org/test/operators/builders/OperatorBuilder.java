@@ -49,8 +49,16 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new Equal<>(operand, value));
   }
 
+  public B is(UnaryOperator<T> operator) {
+    return chain.join(new Equal<>(operand, operator));
+  }
+
   public B isNot(T value) {
     return chain.join(new NotEqual<>(operand, value));
+  }
+
+  public B isNot(UnaryOperator<T> operator) {
+    return chain.join(new NotEqual<>(operand, operator));
   }
 
   public B isNull() {
@@ -65,7 +73,31 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new Between<>(operand, min, max));
   }
 
+  public B between(UnaryOperator<T> min, T max) {
+    return chain.join(new Between<>(operand, min, max));
+  }
+
+  public B between(T min, UnaryOperator<T> max) {
+    return chain.join(new Between<>(operand, min, max));
+  }
+
+  public B between(UnaryOperator<T> min, UnaryOperator<T> max) {
+    return chain.join(new Between<>(operand, min, max));
+  }
+
   public B notBetween(T min, T max) {
+    return chain.join(new NotBetween<>(operand, min, max));
+  }
+
+  public B notBetween(UnaryOperator<T> min, T max) {
+    return chain.join(new NotBetween<>(operand, min, max));
+  }
+
+  public B notBetween(T min, UnaryOperator<T> max) {
+    return chain.join(new NotBetween<>(operand, min, max));
+  }
+
+  public B notBetween(UnaryOperator<T> min, UnaryOperator<T> max) {
     return chain.join(new NotBetween<>(operand, min, max));
   }
 
@@ -91,15 +123,31 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return chain.join(new GreaterThan<>(operand, value));
   }
 
+  public B greaterThan(UnaryOperator<T> operator) {
+    return chain.join(new GreaterThan<>(operand, operator));
+  }
+
   public B greaterThanOrEqual(T value) {
     return chain.join(new GreaterThanOrEqual<>(operand, value));
+  }
+
+  public B greaterThanOrEqual(UnaryOperator<T> operator) {
+    return chain.join(new GreaterThanOrEqual<>(operand, operator));
   }
 
   public B lessThan(T value) {
     return chain.join(new LessThan<>(operand, value));
   }
 
+  public B lessThan(UnaryOperator<T> operator) {
+    return chain.join(new LessThan<>(operand, operator));
+  }
+
   public B lessThanOrEqual(T value) {
     return chain.join(new LessThanOrEqual<>(operand, value));
+  }
+
+  public B lessThanOrEqual(UnaryOperator<T> operator) {
+    return chain.join(new LessThanOrEqual<>(operand, operator));
   }
 }
