@@ -2,6 +2,10 @@ package org.test.functions;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.test.DummyJpqlStringWriter.asString;
 
@@ -84,5 +88,31 @@ public class FunctionsTest {
   @Test
   public void nestedRtrimWithChar() {
     assertEquals("trim(trailing x from lower(A))", asString(new Rtrim(new Lower("A"), 'x')));
+  }
+
+  @Test
+  public void concatSingle() {
+    assertEquals("concat(A)", asString(new Concat("A")));
+  }
+
+  @Test
+  public void concatSingleList() {
+    assertEquals("concat(A)", asString(new Concat(Collections.singletonList("A"))));
+  }
+
+  @Test
+  public void concatMulti() {
+    assertEquals("concat(A, B, C)", asString(new Concat("A", "B", "C")));
+  }
+
+  @Test
+  public void concatMultiList() {
+    assertEquals("concat(A, B, C)", asString(new Concat(Arrays.asList("A", "B", "C"))));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void concatNullParameters() {
+    List<String> list = null;
+    new Concat(list);
   }
 }

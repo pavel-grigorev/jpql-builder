@@ -1,5 +1,7 @@
 package org.test.functions;
 
+import java.util.List;
+
 public class Functions {
   private Functions() {
   }
@@ -66,5 +68,13 @@ public class Functions {
 
   public static Rtrim rtrim(JpqlFunction<String> nested, char trimChar) {
     return new Rtrim(nested, trimChar);
+  }
+
+  public static Concat concat(String... parameters) {
+    return new Concat(parameters);
+  }
+
+  public static Concat concat(List<String> parameters) {
+    return new Concat(parameters);
   }
 }

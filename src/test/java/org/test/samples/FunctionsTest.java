@@ -9,6 +9,7 @@ import org.test.model.Employee;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.test.functions.Functions.concat;
 import static org.test.functions.Functions.lower;
 import static org.test.functions.Functions.ltrim;
 import static org.test.functions.Functions.rtrim;
@@ -114,6 +115,28 @@ public class FunctionsTest {
         new HashMap<String, Object>() {{
           put("a", '-');
           put("b", '+');
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void concatTest() {
+    JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
+    Department d = select.getPathSpecifier();
+
+    String query = select
+        .where(concat(d.getName(), " in Google")).is(concat("RnD in ", d.getCompany().getName()))
+        .getQueryString();
+
+    String expected = "select a from test_Department a " +
+        "where concat(a.name, :a) = concat(:b, a.company.name)";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", " in Google");
+          put("b", "RnD in ");
         }},
         select.getParameters()
     );
