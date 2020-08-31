@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.operators.builders.OperatorBuilder.not;
-import static org.test.operators.builders.StringOperatorBuilder.$;
+import static org.test.operators.builders.OperatorBuilder.$;
 
 public class WhereTest {
   @Test

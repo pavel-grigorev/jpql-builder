@@ -9,10 +9,12 @@ import org.test.operators.IsNotNull;
 import org.test.operators.IsNull;
 import org.test.operators.LessThan;
 import org.test.operators.LessThanOrEqual;
+import org.test.operators.Like;
 import org.test.operators.Not;
 import org.test.operators.NotBetween;
 import org.test.operators.NotEqual;
 import org.test.operators.NotIn;
+import org.test.operators.NotLike;
 import org.test.operators.Parentheses;
 import org.test.operators.UnaryOperator;
 
@@ -35,6 +37,10 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
 
   public static <T> OperatorBuilder<T, ExpressionChain> $(T operand) {
     return new OperatorBuilder<>(new ExpressionChain(), operand);
+  }
+
+  public static <T> OperatorBuilder<T, ExpressionChain> $(UnaryOperator<T> operator) {
+    return new OperatorBuilder<>(new ExpressionChain(), operator);
   }
 
   public static ExpressionChain $(ExpressionChain chain) {
@@ -149,5 +155,37 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
 
   public B lessThanOrEqual(UnaryOperator<T> operator) {
     return chain.join(new LessThanOrEqual<>(operand, operator));
+  }
+
+  public B like(T value) {
+    return chain.join(new Like(operand, value));
+  }
+
+  public B like(UnaryOperator<T> operator) {
+    return chain.join(new Like(operand, operator));
+  }
+
+  public B like(T value, String escapeChar) {
+    return chain.join(new Like(operand, value, escapeChar));
+  }
+
+  public B like(UnaryOperator<T> operator, String escapeChar) {
+    return chain.join(new Like(operand, operator, escapeChar));
+  }
+
+  public B notLike(T value) {
+    return chain.join(new NotLike(operand, value));
+  }
+
+  public B notLike(UnaryOperator<T> operator) {
+    return chain.join(new NotLike(operand, operator));
+  }
+
+  public B notLike(T value, String escapeChar) {
+    return chain.join(new NotLike(operand, value, escapeChar));
+  }
+
+  public B notLike(UnaryOperator<T> operator, String escapeChar) {
+    return chain.join(new NotLike(operand, operator, escapeChar));
   }
 }

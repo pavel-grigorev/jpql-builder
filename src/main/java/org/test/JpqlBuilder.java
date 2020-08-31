@@ -12,7 +12,6 @@ import org.test.operators.Parentheses;
 import org.test.operators.UnaryOperator;
 import org.test.operators.builders.ExpressionChain;
 import org.test.operators.builders.OperatorBuilder;
-import org.test.operators.builders.StringOperatorBuilder;
 import org.test.path.PathResolver;
 import org.test.path.PathResolverList;
 import org.test.query.JoinClause;
@@ -145,12 +144,8 @@ public class JpqlBuilder<T> implements JpqlQuery {
     return new OperatorBuilder<>(createWhere(), operand);
   }
 
-  public StringOperatorBuilder<Where<T>> where(String operand) {
-    return new StringOperatorBuilder<>(createWhere(), operand);
-  }
-
-  public StringOperatorBuilder<Where<T>> where(UnaryOperator<String> operator) {
-    return new StringOperatorBuilder<>(createWhere(), operator);
+  public <P> OperatorBuilder<P, Where<T>> where(UnaryOperator<P> operator) {
+    return new OperatorBuilder<>(createWhere(), operator);
   }
 
   public Where<T> where(ExpressionChain chain) {

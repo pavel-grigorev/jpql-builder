@@ -29,14 +29,9 @@ public abstract class BaseExpressionChain<B extends BaseExpressionChain<B>> {
     return new OperatorBuilder<>(thisChain(), operand);
   }
 
-  public StringOperatorBuilder<B> and(String operand) {
+  public <T> OperatorBuilder<T, B> and(UnaryOperator<T> operator) {
     joiner = And::new;
-    return new StringOperatorBuilder<>(thisChain(), operand);
-  }
-
-  public StringOperatorBuilder<B> and(UnaryOperator<String> operator) {
-    joiner = And::new;
-    return new StringOperatorBuilder<>(thisChain(), operator);
+    return new OperatorBuilder<>(thisChain(), operator);
   }
 
   public B and(ExpressionChain chain) {
@@ -49,14 +44,9 @@ public abstract class BaseExpressionChain<B extends BaseExpressionChain<B>> {
     return new OperatorBuilder<>(thisChain(), operand);
   }
 
-  public StringOperatorBuilder<B> or(String operand) {
+  public <T> OperatorBuilder<T, B> or(UnaryOperator<T> operator) {
     joiner = Or::new;
-    return new StringOperatorBuilder<>(thisChain(), operand);
-  }
-
-  public StringOperatorBuilder<B> or(UnaryOperator<String> operator) {
-    joiner = Or::new;
-    return new StringOperatorBuilder<>(thisChain(), operator);
+    return new OperatorBuilder<>(thisChain(), operator);
   }
 
   public B or(ExpressionChain chain) {

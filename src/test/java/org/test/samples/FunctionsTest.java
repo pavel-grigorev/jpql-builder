@@ -10,7 +10,7 @@ import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import static org.test.functions.Functions.lower;
 import static org.test.functions.Functions.upper;
-import static org.test.operators.builders.StringOperatorBuilder.$;
+import static org.test.operators.builders.OperatorBuilder.$;
 
 public class FunctionsTest {
   @Test

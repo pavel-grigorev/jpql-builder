@@ -13,7 +13,6 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.operators.builders.OperatorBuilder.$;
-import static org.test.operators.builders.StringOperatorBuilder.$;
 
 public class DynamicQueryTest {
   @Test
