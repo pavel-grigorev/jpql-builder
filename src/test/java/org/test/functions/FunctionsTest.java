@@ -198,4 +198,17 @@ public class FunctionsTest {
     assertEquals("length(A) - 2", asString(new Sub<>(new Length("A"), 2)));
     assertEquals("1.2 - length(B)", asString(new Sub<>(1.2, new Length("B"))));
   }
+
+  @Test
+  public void multi() {
+    assertEquals("1 * 2", asString(new Multi<>(1, 2)));
+    assertEquals("1 * 2", asString(new Multi<>(1, 2L)));
+    assertEquals("1 * 2.3", asString(new Multi<>(1, 2.3)));
+  }
+
+  @Test
+  public void multiNested() {
+    assertEquals("length(A) * 2", asString(new Multi<>(new Length("A"), 2)));
+    assertEquals("1.2 * length(B)", asString(new Multi<>(1.2, new Length("B"))));
+  }
 }
