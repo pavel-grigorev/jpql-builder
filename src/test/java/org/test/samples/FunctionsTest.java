@@ -2,6 +2,7 @@ package org.test.samples;
 
 import org.junit.Test;
 import org.test.JpqlBuilder;
+import org.test.functions.Concat;
 import org.test.model.Company;
 import org.test.model.Department;
 import org.test.model.Employee;
@@ -125,18 +126,27 @@ public class FunctionsTest {
     JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
     Department d = select.getPathSpecifier();
 
+    Concat mixed = concat("%").concat(lower(d.getCompany().getName())).concat("%");
+
     String query = select
         .where(concat(d.getName(), " in Google")).is(concat("RnD in ", d.getCompany().getName()))
+        .or(concat(lower(d.getName()), upper(d.getName()))).is("dummy")
+        .or(lower(d.getName())).like(mixed)
         .getQueryString();
 
     String expected = "select a from test_Department a " +
-        "where concat(a.name, :a) = concat(:b, a.company.name)";
+        "where concat(a.name, :a) = concat(:b, a.company.name) " +
+        "or concat(lower(a.name), upper(a.name)) = :c " +
+        "or lower(a.name) like concat(:d, lower(a.company.name), :e)";
 
     assertEquals(expected, query);
     assertEquals(
         new HashMap<String, Object>() {{
           put("a", " in Google");
           put("b", "RnD in ");
+          put("c", "dummy");
+          put("d", "%");
+          put("e", "%");
         }},
         select.getParameters()
     );

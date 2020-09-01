@@ -1,7 +1,5 @@
 package org.test.functions;
 
-import java.util.List;
-
 public class Functions {
   private Functions() {
   }
@@ -74,7 +72,8 @@ public class Functions {
     return new Concat(parameters);
   }
 
-  public static Concat concat(List<String> parameters) {
-    return new Concat(parameters);
+  @SafeVarargs
+  public static Concat concat(JpqlFunction<String>... nested) {
+    return new Concat(nested);
   }
 }

@@ -4,19 +4,32 @@ import org.test.querystring.JpqlStringWriter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Concat extends JpqlFunction<String> {
-  private final List<String> parameters;
+  private final List<Object> parameters;
 
   public Concat(String... parameters) {
-    this(Arrays.asList(parameters));
+    this.parameters = toList(parameters);
   }
 
-  public Concat(List<String> parameters) {
-    if (parameters == null) {
-      throw new NullPointerException("parameters must not be null");
-    }
-    this.parameters = parameters;
+  @SafeVarargs
+  public Concat(JpqlFunction<String>... nested) {
+    parameters = toList(nested);
+  }
+
+  private static List<Object> toList(Object[] array) {
+    return Arrays.stream(array).collect(Collectors.toList());
+  }
+
+  public Concat concat(JpqlFunction<String> nested) {
+    parameters.add(nested);
+    return this;
+  }
+
+  public Concat concat(String parameter) {
+    parameters.add(parameter);
+    return this;
   }
 
   @Override

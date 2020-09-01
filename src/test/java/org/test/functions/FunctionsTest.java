@@ -2,10 +2,6 @@ package org.test.functions;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.test.DummyJpqlStringWriter.asString;
 
@@ -96,8 +92,8 @@ public class FunctionsTest {
   }
 
   @Test
-  public void concatSingleList() {
-    assertEquals("concat(A)", asString(new Concat(Collections.singletonList("A"))));
+  public void concatSingleNested() {
+    assertEquals("concat(lower(A))", asString(new Concat(new Lower("A"))));
   }
 
   @Test
@@ -106,13 +102,7 @@ public class FunctionsTest {
   }
 
   @Test
-  public void concatMultiList() {
-    assertEquals("concat(A, B, C)", asString(new Concat(Arrays.asList("A", "B", "C"))));
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void concatNullParameters() {
-    List<String> list = null;
-    new Concat(list);
+  public void concatMultiNested() {
+    assertEquals("concat(lower(A), upper(B))", asString(new Concat(new Lower("A"), new Upper("B"))));
   }
 }
