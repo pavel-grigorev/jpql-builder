@@ -196,4 +196,20 @@ public class Functions {
   public static <T extends Number> Add<T> add(JpqlFunction<? extends Number> argument1, JpqlFunction<? extends Number> argument2) {
     return new Add<>(argument1, argument2);
   }
+
+  public static <T extends Number> Sub<T> sub(Number argument1, Number argument2) {
+    return new Sub<>(argument1, argument2);
+  }
+
+  public static <T extends Number> Sub<T> sub(JpqlFunction<? extends Number> argument1, Number argument2) {
+    return new Sub<>(argument1, argument2);
+  }
+
+  public static <T extends Number> Sub<T> sub(Number argument1, JpqlFunction<? extends Number> argument2) {
+    return new Sub<>(argument1, argument2);
+  }
+
+  public static <T extends Number> Sub<T> sub(JpqlFunction<? extends Number> argument1, JpqlFunction<? extends Number> argument2) {
+    return new Sub<>(argument1, argument2);
+  }
 }

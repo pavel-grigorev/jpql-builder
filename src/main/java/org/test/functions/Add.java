@@ -29,7 +29,11 @@ public class Add<T extends Number> extends JpqlFunction<T> {
   @Override
   public void writeTo(JpqlStringWriter stringWriter) {
     writeOperand(argument1, stringWriter);
-    stringWriter.appendString(" + ");
+    stringWriter.appendString(getOperator());
     writeOperand(argument2, stringWriter);
+  }
+
+  String getOperator() {
+    return " + ";
   }
 }

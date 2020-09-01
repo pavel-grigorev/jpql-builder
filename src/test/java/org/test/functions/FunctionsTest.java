@@ -185,4 +185,17 @@ public class FunctionsTest {
     assertEquals("length(A) + 2", asString(new Add<>(new Length("A"), 2)));
     assertEquals("1.2 + length(B)", asString(new Add<>(1.2, new Length("B"))));
   }
+
+  @Test
+  public void sub() {
+    assertEquals("1 - 2", asString(new Sub<>(1, 2)));
+    assertEquals("1 - 2", asString(new Sub<>(1, 2L)));
+    assertEquals("1 - 2.3", asString(new Sub<>(1, 2.3)));
+  }
+
+  @Test
+  public void subNested() {
+    assertEquals("length(A) - 2", asString(new Sub<>(new Length("A"), 2)));
+    assertEquals("1.2 - length(B)", asString(new Sub<>(1.2, new Length("B"))));
+  }
 }
