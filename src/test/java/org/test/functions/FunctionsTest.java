@@ -184,6 +184,10 @@ public class FunctionsTest {
   public void addNested() {
     assertEquals("length(A) + 2", asString(new Add<>(new Length("A"), 2)));
     assertEquals("1.2 + length(B)", asString(new Add<>(1.2, new Length("B"))));
+    assertEquals("1 + 2 + 3 + 4", asString(new Add<>(new Add<>(1, 2), new Add<>(3, 4))));
+    assertEquals("1 + 2 + 3 - 4", asString(new Add<>(new Add<>(1, 2), new Sub<>(3, 4))));
+    assertEquals("1 + 2 + 3 * 4", asString(new Add<>(new Add<>(1, 2), new Multi<>(3, 4))));
+    assertEquals("1 + 2 + 3 / 4", asString(new Add<>(new Add<>(1, 2), new Div<>(3, 4))));
   }
 
   @Test
@@ -197,6 +201,10 @@ public class FunctionsTest {
   public void subNested() {
     assertEquals("length(A) - 2", asString(new Sub<>(new Length("A"), 2)));
     assertEquals("1.2 - length(B)", asString(new Sub<>(1.2, new Length("B"))));
+    assertEquals("1 + 2 - (3 + 4)", asString(new Sub<>(new Add<>(1, 2), new Add<>(3, 4))));
+    assertEquals("1 + 2 - (3 - 4)", asString(new Sub<>(new Add<>(1, 2), new Sub<>(3, 4))));
+    assertEquals("1 + 2 - 3 * 4", asString(new Sub<>(new Add<>(1, 2), new Multi<>(3, 4))));
+    assertEquals("1 + 2 - 3 / 4", asString(new Sub<>(new Add<>(1, 2), new Div<>(3, 4))));
   }
 
   @Test
@@ -210,6 +218,9 @@ public class FunctionsTest {
   public void multiNested() {
     assertEquals("length(A) * 2", asString(new Multi<>(new Length("A"), 2)));
     assertEquals("1.2 * length(B)", asString(new Multi<>(1.2, new Length("B"))));
+    assertEquals("(1 + 2) * (3 - 4)", asString(new Multi<>(new Add<>(1, 2), new Sub<>(3, 4))));
+    assertEquals("1 * 2 * (3 / 4)", asString(new Multi<>(new Multi<>(1, 2), new Div<>(3, 4))));
+    assertEquals("1 * 2 * 3 * 4", asString(new Multi<>(new Multi<>(1, 2), new Multi<>(3, 4))));
   }
 
   @Test
@@ -223,5 +234,7 @@ public class FunctionsTest {
   public void divNested() {
     assertEquals("length(A) / 2", asString(new Div<>(new Length("A"), 2)));
     assertEquals("1.2 / length(B)", asString(new Div<>(1.2, new Length("B"))));
+    assertEquals("(1 + 2) / (3 - 4)", asString(new Div<>(new Add<>(1, 2), new Sub<>(3, 4))));
+    assertEquals("(1 / 2) / (3 * 4)", asString(new Div<>(new Div<>(1, 2), new Multi<>(3, 4))));
   }
 }

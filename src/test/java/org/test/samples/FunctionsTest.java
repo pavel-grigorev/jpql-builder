@@ -289,16 +289,26 @@ public class FunctionsTest {
 
     String query = select
         .where(multi(length(c.getName()), 10)).is(15)
+        .and(multi(add(1, 2), multi(3, 4))).is(multi(sub(1, 2), div(3, 4)))
         .getQueryString();
 
     String expected = "select a from test_Company a " +
-        "where length(a.name) * :a = :b";
+        "where length(a.name) * :a = :b " +
+        "and (:c + :d) * :e * :f = (:g - :h) * (:i / :j)";
 
     assertEquals(expected, query);
     assertEquals(
         new HashMap<String, Object>() {{
           put("a", 10);
           put("b", 15);
+          put("c", 1);
+          put("d", 2);
+          put("e", 3);
+          put("f", 4);
+          put("g", 1);
+          put("h", 2);
+          put("i", 3);
+          put("j", 4);
         }},
         select.getParameters()
     );
@@ -311,16 +321,26 @@ public class FunctionsTest {
 
     String query = select
         .where(div(length(c.getName()), 10)).is(15)
+        .and(multi(add(1, 2), sub(3, 4))).is(div(add(1, 2), sub(3, 4)))
         .getQueryString();
 
     String expected = "select a from test_Company a " +
-        "where length(a.name) / :a = :b";
+        "where length(a.name) / :a = :b " +
+        "and (:c + :d) * (:e - :f) = (:g + :h) / (:i - :j)";
 
     assertEquals(expected, query);
     assertEquals(
         new HashMap<String, Object>() {{
           put("a", 10);
           put("b", 15);
+          put("c", 1);
+          put("d", 2);
+          put("e", 3);
+          put("f", 4);
+          put("g", 1);
+          put("h", 2);
+          put("i", 3);
+          put("j", 4);
         }},
         select.getParameters()
     );
