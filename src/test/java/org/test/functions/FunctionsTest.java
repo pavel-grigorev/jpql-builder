@@ -48,43 +48,43 @@ public class FunctionsTest {
   }
 
   @Test
-  public void ltrim() {
-    assertEquals("trim(leading from A)", asString(new Ltrim("A")));
+  public void leftTrim() {
+    assertEquals("trim(leading from A)", asString(new LeftTrim("A")));
   }
 
   @Test
-  public void ltrimWithChar() {
-    assertEquals("trim(leading x from A)", asString(new Ltrim("A", 'x')));
+  public void leftTrimWithChar() {
+    assertEquals("trim(leading x from A)", asString(new LeftTrim("A", 'x')));
   }
 
   @Test
-  public void nestedLtrim() {
-    assertEquals("trim(leading from lower(A))", asString(new Ltrim(new Lower("A"))));
+  public void nestedLeftTrim() {
+    assertEquals("trim(leading from lower(A))", asString(new LeftTrim(new Lower("A"))));
   }
 
   @Test
-  public void nestedLtrimWithChar() {
-    assertEquals("trim(leading x from lower(A))", asString(new Ltrim(new Lower("A"), 'x')));
+  public void nestedLeftTrimWithChar() {
+    assertEquals("trim(leading x from lower(A))", asString(new LeftTrim(new Lower("A"), 'x')));
   }
 
   @Test
-  public void rtrim() {
-    assertEquals("trim(trailing from A)", asString(new Rtrim("A")));
+  public void rightTrim() {
+    assertEquals("trim(trailing from A)", asString(new RightTrim("A")));
   }
 
   @Test
-  public void rtrimWithChar() {
-    assertEquals("trim(trailing x from A)", asString(new Rtrim("A", 'x')));
+  public void rightTrimWithChar() {
+    assertEquals("trim(trailing x from A)", asString(new RightTrim("A", 'x')));
   }
 
   @Test
-  public void nestedRtrim() {
-    assertEquals("trim(trailing from lower(A))", asString(new Rtrim(new Lower("A"))));
+  public void nestedRightTrim() {
+    assertEquals("trim(trailing from lower(A))", asString(new RightTrim(new Lower("A"))));
   }
 
   @Test
-  public void nestedRtrimWithChar() {
-    assertEquals("trim(trailing x from lower(A))", asString(new Rtrim(new Lower("A"), 'x')));
+  public void nestedRightTrimWithChar() {
+    assertEquals("trim(trailing x from lower(A))", asString(new RightTrim(new Lower("A"), 'x')));
   }
 
   @Test

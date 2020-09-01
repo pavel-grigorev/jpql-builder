@@ -36,36 +36,36 @@ public class Functions {
     return new Trim(nested, trimChar);
   }
 
-  public static Ltrim ltrim(String parameter) {
-    return new Ltrim(parameter);
+  public static LeftTrim leftTrim(String parameter) {
+    return new LeftTrim(parameter);
   }
 
-  public static Ltrim ltrim(String parameter, char trimChar) {
-    return new Ltrim(parameter, trimChar);
+  public static LeftTrim leftTrim(String parameter, char trimChar) {
+    return new LeftTrim(parameter, trimChar);
   }
 
-  public static Ltrim ltrim(JpqlFunction<String> nested) {
-    return new Ltrim(nested);
+  public static LeftTrim leftTrim(JpqlFunction<String> nested) {
+    return new LeftTrim(nested);
   }
 
-  public static Ltrim ltrim(JpqlFunction<String> nested, char trimChar) {
-    return new Ltrim(nested, trimChar);
+  public static LeftTrim leftTrim(JpqlFunction<String> nested, char trimChar) {
+    return new LeftTrim(nested, trimChar);
   }
 
-  public static Rtrim rtrim(String parameter) {
-    return new Rtrim(parameter);
+  public static RightTrim rightTrim(String parameter) {
+    return new RightTrim(parameter);
   }
 
-  public static Rtrim rtrim(String parameter, char trimChar) {
-    return new Rtrim(parameter, trimChar);
+  public static RightTrim rightTrim(String parameter, char trimChar) {
+    return new RightTrim(parameter, trimChar);
   }
 
-  public static Rtrim rtrim(JpqlFunction<String> nested) {
-    return new Rtrim(nested);
+  public static RightTrim rightTrim(JpqlFunction<String> nested) {
+    return new RightTrim(nested);
   }
 
-  public static Rtrim rtrim(JpqlFunction<String> nested, char trimChar) {
-    return new Rtrim(nested, trimChar);
+  public static RightTrim rightTrim(JpqlFunction<String> nested, char trimChar) {
+    return new RightTrim(nested, trimChar);
   }
 
   public static Concat concat(String... parameters) {

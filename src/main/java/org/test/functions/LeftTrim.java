@@ -2,26 +2,26 @@ package org.test.functions;
 
 import org.test.querystring.JpqlStringWriter;
 
-public class Ltrim extends JpqlFunction<String> {
+public class LeftTrim extends JpqlFunction<String> {
   private static final char DEFAULT_TRIM_CHAR = ' ';
 
   private final Object parameter;
   private final char trimChar;
 
-  public Ltrim(String parameter) {
+  public LeftTrim(String parameter) {
     this(parameter, DEFAULT_TRIM_CHAR);
   }
 
-  public Ltrim(String parameter, char trimChar) {
+  public LeftTrim(String parameter, char trimChar) {
     this.parameter = parameter;
     this.trimChar = trimChar;
   }
 
-  public Ltrim(JpqlFunction<String> nested) {
+  public LeftTrim(JpqlFunction<String> nested) {
     this(nested, DEFAULT_TRIM_CHAR);
   }
 
-  public Ltrim(JpqlFunction<String> nested, char trimChar) {
+  public LeftTrim(JpqlFunction<String> nested, char trimChar) {
     this.parameter = nested;
     this.trimChar = trimChar;
   }

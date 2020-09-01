@@ -11,10 +11,10 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.functions.Functions.concat;
+import static org.test.functions.Functions.leftTrim;
 import static org.test.functions.Functions.length;
 import static org.test.functions.Functions.lower;
-import static org.test.functions.Functions.ltrim;
-import static org.test.functions.Functions.rtrim;
+import static org.test.functions.Functions.rightTrim;
 import static org.test.functions.Functions.substring;
 import static org.test.functions.Functions.trim;
 import static org.test.functions.Functions.upper;
@@ -81,8 +81,8 @@ public class FunctionsTest {
     Company c = select.getPathSpecifier();
 
     String query = select
-        .where(ltrim(c.getName())).is(ltrim(c.getName(), '-'))
-        .and(ltrim(lower(c.getName()))).is(ltrim(lower(c.getName()), '+'))
+        .where(leftTrim(c.getName())).is(leftTrim(c.getName(), '-'))
+        .and(leftTrim(lower(c.getName()))).is(leftTrim(lower(c.getName()), '+'))
         .getQueryString();
 
     String expected = "select a from test_Company a " +
@@ -105,8 +105,8 @@ public class FunctionsTest {
     Company c = select.getPathSpecifier();
 
     String query = select
-        .where(rtrim(c.getName())).is(rtrim(c.getName(), '-'))
-        .and(rtrim(lower(c.getName()))).is(rtrim(lower(c.getName()), '+'))
+        .where(rightTrim(c.getName())).is(rightTrim(c.getName(), '-'))
+        .and(rightTrim(lower(c.getName()))).is(rightTrim(lower(c.getName()), '+'))
         .getQueryString();
 
     String expected = "select a from test_Company a " +
