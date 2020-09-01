@@ -12,6 +12,7 @@ import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import static org.test.functions.Functions.add;
 import static org.test.functions.Functions.concat;
+import static org.test.functions.Functions.div;
 import static org.test.functions.Functions.leftTrim;
 import static org.test.functions.Functions.length;
 import static org.test.functions.Functions.locate;
@@ -292,6 +293,28 @@ public class FunctionsTest {
 
     String expected = "select a from test_Company a " +
         "where length(a.name) * :a = :b";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 10);
+          put("b", 15);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void divTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(div(length(c.getName()), 10)).is(15)
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where length(a.name) / :a = :b";
 
     assertEquals(expected, query);
     assertEquals(

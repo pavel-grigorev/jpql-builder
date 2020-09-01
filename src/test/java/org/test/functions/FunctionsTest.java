@@ -211,4 +211,17 @@ public class FunctionsTest {
     assertEquals("length(A) * 2", asString(new Multi<>(new Length("A"), 2)));
     assertEquals("1.2 * length(B)", asString(new Multi<>(1.2, new Length("B"))));
   }
+
+  @Test
+  public void div() {
+    assertEquals("1 / 2", asString(new Div<>(1, 2)));
+    assertEquals("1 / 2", asString(new Div<>(1, 2L)));
+    assertEquals("1 / 2.3", asString(new Div<>(1, 2.3)));
+  }
+
+  @Test
+  public void divNested() {
+    assertEquals("length(A) / 2", asString(new Div<>(new Length("A"), 2)));
+    assertEquals("1.2 / length(B)", asString(new Div<>(1.2, new Length("B"))));
+  }
 }

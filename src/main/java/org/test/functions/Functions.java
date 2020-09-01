@@ -228,4 +228,20 @@ public class Functions {
   public static <T extends Number> Multi<T> multi(JpqlFunction<? extends Number> argument1, JpqlFunction<? extends Number> argument2) {
     return new Multi<>(argument1, argument2);
   }
+
+  public static <T extends Number> Div<T> div(Number argument1, Number argument2) {
+    return new Div<>(argument1, argument2);
+  }
+
+  public static <T extends Number> Div<T> div(JpqlFunction<? extends Number> argument1, Number argument2) {
+    return new Div<>(argument1, argument2);
+  }
+
+  public static <T extends Number> Div<T> div(Number argument1, JpqlFunction<? extends Number> argument2) {
+    return new Div<>(argument1, argument2);
+  }
+
+  public static <T extends Number> Div<T> div(JpqlFunction<? extends Number> argument1, JpqlFunction<? extends Number> argument2) {
+    return new Div<>(argument1, argument2);
+  }
 }
