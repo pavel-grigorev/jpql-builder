@@ -144,4 +144,32 @@ public class FunctionsTest {
   public void lengthNested() {
     assertEquals("length(lower(A))", asString(new Length(new Lower("A"))));
   }
+
+  @Test
+  public void locateNoPosition() {
+    assertEquals("locate(A, B)", asString(new Locate("A", "B")));
+  }
+
+  @Test
+  public void locateNoPositionNested() {
+    assertEquals("locate(lower(A), B)", asString(new Locate(new Lower("A"), "B")));
+    assertEquals("locate(A, lower(B))", asString(new Locate("A", new Lower("B"))));
+    assertEquals("locate(lower(A), lower(B))", asString(new Locate(new Lower("A"), new Lower("B"))));
+  }
+
+  @Test
+  public void locate() {
+    assertEquals("locate(A, B, 1)", asString(new Locate("A", "B", 1)));
+  }
+
+  @Test
+  public void locateNested() {
+    assertEquals("locate(A, lower(B), 1)", asString(new Locate("A", new Lower("B"), 1)));
+    assertEquals("locate(A, B, dummy(1))", asString(new Locate("A", "B", dummy(1))));
+    assertEquals("locate(A, lower(B), dummy(1))", asString(new Locate("A", new Lower("B"), dummy(1))));
+    assertEquals("locate(lower(A), B, 1)", asString(new Locate(new Lower("A"), "B", 1)));
+    assertEquals("locate(lower(A), lower(B), 1)", asString(new Locate(new Lower("A"), new Lower("B"), 1)));
+    assertEquals("locate(lower(A), B, dummy(1))", asString(new Locate(new Lower("A"), "B", dummy(1))));
+    assertEquals("locate(lower(A), lower(B), dummy(1))", asString(new Locate(new Lower("A"), new Lower("B"), dummy(1))));
+  }
 }

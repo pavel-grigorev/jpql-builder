@@ -132,4 +132,52 @@ public class Functions {
   public static Length length(JpqlFunction<String> string) {
     return new Length(string);
   }
+
+  public static Locate locate(String searchString, String string) {
+    return new Locate(searchString, string);
+  }
+
+  public static Locate locate(String searchString, JpqlFunction<String> string) {
+    return new Locate(searchString, string);
+  }
+
+  public static Locate locate(JpqlFunction<String> searchString, String string) {
+    return new Locate(searchString, string);
+  }
+
+  public static Locate locate(JpqlFunction<String> searchString, JpqlFunction<String> string) {
+    return new Locate(searchString, string);
+  }
+
+  public static Locate locate(String searchString, String string, Integer position) {
+    return new Locate(searchString, string, position);
+  }
+
+  public static Locate locate(String searchString, JpqlFunction<String> string, Integer position) {
+    return new Locate(searchString, string, position);
+  }
+
+  public static Locate locate(String searchString, String string, JpqlFunction<Integer> position) {
+    return new Locate(searchString, string, position);
+  }
+
+  public static Locate locate(String searchString, JpqlFunction<String> string, JpqlFunction<Integer> position) {
+    return new Locate(searchString, string, position);
+  }
+
+  public static Locate locate(JpqlFunction<String> searchString, String string, Integer position) {
+    return new Locate(searchString, string, position);
+  }
+
+  public static Locate locate(JpqlFunction<String> searchString, JpqlFunction<String> string, Integer position) {
+    return new Locate(searchString, string, position);
+  }
+
+  public static Locate locate(JpqlFunction<String> searchString, String string, JpqlFunction<Integer> position) {
+    return new Locate(searchString, string, position);
+  }
+
+  public static Locate locate(JpqlFunction<String> searchString, JpqlFunction<String> string, JpqlFunction<Integer> position) {
+    return new Locate(searchString, string, position);
+  }
 }
