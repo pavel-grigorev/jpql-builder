@@ -3,6 +3,7 @@ package org.test.functions;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.test.DummyFunction.dummy;
 import static org.test.DummyJpqlStringWriter.asString;
 
 public class FunctionsTest {
@@ -104,5 +105,33 @@ public class FunctionsTest {
   @Test
   public void concatMultiNested() {
     assertEquals("concat(lower(A), upper(B))", asString(new Concat(new Lower("A"), new Upper("B"))));
+  }
+
+  @Test
+  public void substringNoLength() {
+    assertEquals("substring(A, 1)", asString(new Substring("A", 1)));
+  }
+
+  @Test
+  public void substringNoLengthNested() {
+    assertEquals("substring(lower(A), 1)", asString(new Substring(new Lower("A"), 1)));
+    assertEquals("substring(A, dummy(1))", asString(new Substring("A", dummy(1))));
+    assertEquals("substring(lower(A), dummy(1))", asString(new Substring(new Lower("A"), dummy(1))));
+  }
+
+  @Test
+  public void substring() {
+    assertEquals("substring(A, 1, 2)", asString(new Substring("A", 1, 2)));
+  }
+
+  @Test
+  public void substringNested() {
+    assertEquals("substring(A, dummy(1), 2)", asString(new Substring("A", dummy(1), 2)));
+    assertEquals("substring(A, 1, dummy(2))", asString(new Substring("A", 1, dummy(2))));
+    assertEquals("substring(A, dummy(1), dummy(2))", asString(new Substring("A", dummy(1), dummy(2))));
+    assertEquals("substring(lower(A), 1, 2)", asString(new Substring(new Lower("A"), 1, 2)));
+    assertEquals("substring(lower(A), dummy(1), 2)", asString(new Substring(new Lower("A"), dummy(1), 2)));
+    assertEquals("substring(lower(A), 1, dummy(2))", asString(new Substring(new Lower("A"), 1, dummy(2))));
+    assertEquals("substring(lower(A), dummy(1), dummy(2))", asString(new Substring(new Lower("A"), dummy(1), dummy(2))));
   }
 }

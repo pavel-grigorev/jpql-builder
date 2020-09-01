@@ -14,6 +14,7 @@ import static org.test.functions.Functions.concat;
 import static org.test.functions.Functions.lower;
 import static org.test.functions.Functions.ltrim;
 import static org.test.functions.Functions.rtrim;
+import static org.test.functions.Functions.substring;
 import static org.test.functions.Functions.trim;
 import static org.test.functions.Functions.upper;
 import static org.test.operators.builders.OperatorBuilder.$;
@@ -147,6 +148,33 @@ public class FunctionsTest {
           put("c", "dummy");
           put("d", "%");
           put("e", "%");
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void substringTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(substring(c.getName(), 1, 2)).is("Go")
+        .or(substring(lower(c.getName()), 3)).is("ogle")
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where substring(a.name, :a, :b) = :c " +
+        "or substring(lower(a.name), :d) = :e";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 1);
+          put("b", 2);
+          put("c", "Go");
+          put("d", 3);
+          put("e", "ogle");
         }},
         select.getParameters()
     );

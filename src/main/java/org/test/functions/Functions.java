@@ -76,4 +76,52 @@ public class Functions {
   public static Concat concat(JpqlFunction<String>... nested) {
     return new Concat(nested);
   }
+
+  public static Substring substring(String string, Integer index) {
+    return new Substring(string, index);
+  }
+
+  public static Substring substring(String string, JpqlFunction<Integer> index) {
+    return new Substring(string, index);
+  }
+
+  public static Substring substring(JpqlFunction<String> string, Integer index) {
+    return new Substring(string, index);
+  }
+
+  public static Substring substring(JpqlFunction<String> string, JpqlFunction<Integer> index) {
+    return new Substring(string, index);
+  }
+
+  public static Substring substring(String string, Integer index, Integer length) {
+    return new Substring(string, index, length);
+  }
+
+  public static Substring substring(String string, JpqlFunction<Integer> index, Integer length) {
+    return new Substring(string, index, length);
+  }
+
+  public static Substring substring(String string, Integer index, JpqlFunction<Integer> length) {
+    return new Substring(string, index, length);
+  }
+
+  public static Substring substring(String string, JpqlFunction<Integer> index, JpqlFunction<Integer> length) {
+    return new Substring(string, index, length);
+  }
+
+  public static Substring substring(JpqlFunction<String> string, Integer index, Integer length) {
+    return new Substring(string, index, length);
+  }
+
+  public static Substring substring(JpqlFunction<String> string, JpqlFunction<Integer> index, Integer length) {
+    return new Substring(string, index, length);
+  }
+
+  public static Substring substring(JpqlFunction<String> string, Integer index, JpqlFunction<Integer> length) {
+    return new Substring(string, index, length);
+  }
+
+  public static Substring substring(JpqlFunction<String> string, JpqlFunction<Integer> index, JpqlFunction<Integer> length) {
+    return new Substring(string, index, length);
+  }
 }
