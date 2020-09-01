@@ -124,4 +124,12 @@ public class Functions {
   public static Substring substring(JpqlFunction<String> string, JpqlFunction<Integer> index, JpqlFunction<Integer> length) {
     return new Substring(string, index, length);
   }
+
+  public static Length length(String string) {
+    return new Length(string);
+  }
+
+  public static Length length(JpqlFunction<String> string) {
+    return new Length(string);
+  }
 }

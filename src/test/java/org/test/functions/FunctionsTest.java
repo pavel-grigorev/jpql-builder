@@ -134,4 +134,14 @@ public class FunctionsTest {
     assertEquals("substring(lower(A), 1, dummy(2))", asString(new Substring(new Lower("A"), 1, dummy(2))));
     assertEquals("substring(lower(A), dummy(1), dummy(2))", asString(new Substring(new Lower("A"), dummy(1), dummy(2))));
   }
+
+  @Test
+  public void length() {
+    assertEquals("length(A)", asString(new Length("A")));
+  }
+
+  @Test
+  public void lengthNested() {
+    assertEquals("length(lower(A))", asString(new Length(new Lower("A"))));
+  }
 }

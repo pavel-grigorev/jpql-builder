@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.functions.Functions.concat;
+import static org.test.functions.Functions.length;
 import static org.test.functions.Functions.lower;
 import static org.test.functions.Functions.ltrim;
 import static org.test.functions.Functions.rtrim;
@@ -175,6 +176,31 @@ public class FunctionsTest {
           put("c", "Go");
           put("d", 3);
           put("e", "ogle");
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void lengthTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(length(c.getName())).is(6)
+        .or(length(concat(c.getName(), "dummy"))).is(10)
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where length(a.name) = :a " +
+        "or length(concat(a.name, :b)) = :c";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 6);
+          put("b", "dummy");
+          put("c", 10);
         }},
         select.getParameters()
     );
