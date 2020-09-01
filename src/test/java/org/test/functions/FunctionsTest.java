@@ -172,4 +172,17 @@ public class FunctionsTest {
     assertEquals("locate(lower(A), B, dummy(1))", asString(new Locate(new Lower("A"), "B", dummy(1))));
     assertEquals("locate(lower(A), lower(B), dummy(1))", asString(new Locate(new Lower("A"), new Lower("B"), dummy(1))));
   }
+
+  @Test
+  public void add() {
+    assertEquals("1 + 2", asString(new Add<>(1, 2)));
+    assertEquals("1 + 2", asString(new Add<>(1, 2L)));
+    assertEquals("1 + 2.3", asString(new Add<>(1, 2.3)));
+  }
+
+  @Test
+  public void addNested() {
+    assertEquals("length(A) + 2", asString(new Add<>(new Length("A"), 2)));
+    assertEquals("1.2 + length(B)", asString(new Add<>(1.2, new Length("B"))));
+  }
 }

@@ -180,4 +180,20 @@ public class Functions {
   public static Locate locate(JpqlFunction<String> searchString, JpqlFunction<String> string, JpqlFunction<Integer> position) {
     return new Locate(searchString, string, position);
   }
+
+  public static <T extends Number> Add<T> add(Number argument1, Number argument2) {
+    return new Add<>(argument1, argument2);
+  }
+
+  public static <T extends Number> Add<T> add(JpqlFunction<? extends Number> argument1, Number argument2) {
+    return new Add<>(argument1, argument2);
+  }
+
+  public static <T extends Number> Add<T> add(Number argument1, JpqlFunction<? extends Number> argument2) {
+    return new Add<>(argument1, argument2);
+  }
+
+  public static <T extends Number> Add<T> add(JpqlFunction<? extends Number> argument1, JpqlFunction<? extends Number> argument2) {
+    return new Add<>(argument1, argument2);
+  }
 }

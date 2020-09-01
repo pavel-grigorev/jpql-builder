@@ -10,6 +10,7 @@ import org.test.model.Employee;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.test.functions.Functions.add;
 import static org.test.functions.Functions.concat;
 import static org.test.functions.Functions.leftTrim;
 import static org.test.functions.Functions.length;
@@ -229,6 +230,28 @@ public class FunctionsTest {
           put("c", "test");
           put("d", 1);
           put("e", 10);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void addTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(add(length(c.getName()), 10)).is(15)
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where length(a.name) + :a = :b";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 10);
+          put("b", 15);
         }},
         select.getParameters()
     );
