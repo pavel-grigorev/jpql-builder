@@ -268,4 +268,12 @@ public class Functions {
   public static CurrentDate currentDate() {
     return new CurrentDate();
   }
+
+  public static CurrentTime currentTime() {
+    return new CurrentTime();
+  }
+
+  public static CurrentTimestamp currentTimestamp() {
+    return new CurrentTimestamp();
+  }
 }

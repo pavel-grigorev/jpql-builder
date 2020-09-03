@@ -267,4 +267,14 @@ public class FunctionsTest {
   public void currentDate() {
     assertEquals("current_date", asString(new CurrentDate()));
   }
+
+  @Test
+  public void currentTime() {
+    assertEquals("current_time", asString(new CurrentTime()));
+  }
+
+  @Test
+  public void currentTimestamp() {
+    assertEquals("current_timestamp", asString(new CurrentTimestamp()));
+  }
 }
