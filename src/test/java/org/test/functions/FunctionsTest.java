@@ -237,4 +237,14 @@ public class FunctionsTest {
     assertEquals("(1 + 2) / (3 - 4)", asString(new Div<>(new Add<>(1, 2), new Sub<>(3, 4))));
     assertEquals("(1 / 2) / (3 * 4)", asString(new Div<>(new Div<>(1, 2), new Multi<>(3, 4))));
   }
+
+  @Test
+  public void abs() {
+    assertEquals("abs(1)", asString(new Abs<>(1)));
+  }
+
+  @Test
+  public void absNested() {
+    assertEquals("abs(1 - 2)", asString(new Abs<>(new Sub<>(1, 2))));
+  }
 }

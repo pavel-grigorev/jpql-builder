@@ -244,4 +244,12 @@ public class Functions {
   public static <T extends Number> Div<T> div(JpqlFunction<? extends Number> argument1, JpqlFunction<? extends Number> argument2) {
     return new Div<>(argument1, argument2);
   }
+
+  public static <T extends Number> Abs<T> abs(Number argument) {
+    return new Abs<>(argument);
+  }
+
+  public static <T extends Number> Abs<T> abs(JpqlFunction<? extends Number> argument) {
+    return new Abs<>(argument);
+  }
 }
