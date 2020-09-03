@@ -2,8 +2,8 @@ package org.test.samples;
 
 import org.junit.Test;
 import org.test.JpqlBuilder;
-import org.test.functions.Case;
 import org.test.functions.Concat;
+import org.test.functions.JpqlFunction;
 import org.test.model.Company;
 import org.test.model.Department;
 import org.test.model.Employee;
@@ -482,13 +482,13 @@ public class FunctionsTest {
     JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
     Employee e = select.getPathSpecifier();
 
-    Case.Expression<String, Integer> title = _case(substring(e.getName(), 1, 2))
+    JpqlFunction<Integer> code = _case(substring(e.getName(), 1, 2))
         .when("Mr").then(1)
         .when("Ms").then(2)
         .orElse(0);
 
     String query = select
-        .where(title).is(0)
+        .where(code).is(0)
         .getQueryString();
 
     String expected = "select a from test_Employee a " +
@@ -505,6 +505,37 @@ public class FunctionsTest {
           put("f", 2);
           put("g", 0);
           put("h", 0);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void casePredicateTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    JpqlFunction<Integer> code = _case()
+        .when(c.getName()).is("Google").then(1)
+        .when(c.getName()).is("Apple").then(2)
+        .orElse(0);
+
+    String query = select
+        .where(code).is(0)
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where case when a.name = :a then :b when a.name = :c then :d else :e end = :f";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", "Google");
+          put("b", 1);
+          put("c", "Apple");
+          put("d", 2);
+          put("e", 0);
+          put("f", 0);
         }},
         select.getParameters()
     );

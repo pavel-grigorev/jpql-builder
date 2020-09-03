@@ -293,4 +293,20 @@ public class FunctionsTest {
         asString(new Case<>(new Add<>(1, 2)).when(new Add<>(1, 2)).then(new Add<>(3, 4)).when(new Add<>(5, 6)).then(new Add<>(7, 8)).orElse(new Add<>(9, 10)))
     );
   }
+
+  @Test
+  public void casePredicate() {
+    assertEquals(
+        "case when 1 = 2 then 3 when 4 = 5 then 6 else 7 end",
+        asString(new CasePredicate().when(1).is(2).then(3).when(4).is(5).then(6).orElse(7))
+    );
+  }
+
+  @Test
+  public void casePredicateNested() {
+    assertEquals(
+        "case when 1 + 2 = 3 then 4 + 5 when 6 + 7 = 8 then 9 + 10 else 11 + 12 end",
+        asString(new CasePredicate().when(new Add<>(1, 2)).is(3).then(new Add<>(4, 5)).when(new Add<>(6, 7)).is(8).then(new Add<>(9, 10)).orElse(new Add<>(11, 12)))
+    );
+  }
 }

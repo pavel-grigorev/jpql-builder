@@ -284,4 +284,8 @@ public class Functions {
   public static <P> Case<P> _case(JpqlFunction<P> expression) {
     return new Case<>(expression);
   }
+
+  public static CasePredicate _case() {
+    return new CasePredicate();
+  }
 }
