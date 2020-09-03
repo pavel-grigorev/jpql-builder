@@ -247,4 +247,9 @@ public class FunctionsTest {
   public void absNested() {
     assertEquals("abs(1 - 2)", asString(new Abs<>(new Sub<>(1, 2))));
   }
+
+  @Test
+  public void mod() {
+    assertEquals("mod(10 / 20)", asString(new Mod<>(new Div<>(10, 20))));
+  }
 }

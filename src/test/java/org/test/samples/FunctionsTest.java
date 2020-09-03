@@ -18,6 +18,7 @@ import static org.test.functions.Functions.leftTrim;
 import static org.test.functions.Functions.length;
 import static org.test.functions.Functions.locate;
 import static org.test.functions.Functions.lower;
+import static org.test.functions.Functions.mod;
 import static org.test.functions.Functions.multi;
 import static org.test.functions.Functions.rightTrim;
 import static org.test.functions.Functions.sub;
@@ -358,6 +359,28 @@ public class FunctionsTest {
 
     String expected = "select a from test_Company a " +
         "where abs(length(a.name) - :a) = :b";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 10);
+          put("b", 1);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void modTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(mod(div(length(c.getName()), 10))).is(1)
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where mod(length(a.name) / :a) = :b";
 
     assertEquals(expected, query);
     assertEquals(

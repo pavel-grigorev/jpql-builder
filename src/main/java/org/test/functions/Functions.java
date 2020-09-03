@@ -252,4 +252,8 @@ public class Functions {
   public static <T extends Number> Abs<T> abs(JpqlFunction<? extends Number> argument) {
     return new Abs<>(argument);
   }
+
+  public static <T extends Number> Mod<T> mod(Div<T> argument) {
+    return new Mod<>(argument);
+  }
 }
