@@ -21,6 +21,7 @@ import static org.test.functions.Functions.lower;
 import static org.test.functions.Functions.mod;
 import static org.test.functions.Functions.multi;
 import static org.test.functions.Functions.rightTrim;
+import static org.test.functions.Functions.sqrt;
 import static org.test.functions.Functions.sub;
 import static org.test.functions.Functions.substring;
 import static org.test.functions.Functions.trim;
@@ -387,6 +388,28 @@ public class FunctionsTest {
         new HashMap<String, Object>() {{
           put("a", 10);
           put("b", 1);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void sqrtTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(sqrt(add(length(c.getName()), 10))).is(10)
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where sqrt(length(a.name) + :a) = :b";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 10);
+          put("b", 10);
         }},
         select.getParameters()
     );

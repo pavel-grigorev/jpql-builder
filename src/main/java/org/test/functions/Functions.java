@@ -256,4 +256,12 @@ public class Functions {
   public static <T extends Number> Mod<T> mod(Div<T> argument) {
     return new Mod<>(argument);
   }
+
+  public static <T extends Number> Sqrt<T> sqrt(Number argument) {
+    return new Sqrt<>(argument);
+  }
+
+  public static <T extends Number> Sqrt<T> sqrt(JpqlFunction<? extends Number> argument) {
+    return new Sqrt<>(argument);
+  }
 }

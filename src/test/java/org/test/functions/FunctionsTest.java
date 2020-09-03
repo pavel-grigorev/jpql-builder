@@ -252,4 +252,14 @@ public class FunctionsTest {
   public void mod() {
     assertEquals("mod(10 / 20)", asString(new Mod<>(new Div<>(10, 20))));
   }
+
+  @Test
+  public void sqrt() {
+    assertEquals("sqrt(1)", asString(new Sqrt<>(1)));
+  }
+
+  @Test
+  public void sqrtNested() {
+    assertEquals("sqrt(1 + 2)", asString(new Sqrt<>(new Add<>(1, 2))));
+  }
 }
