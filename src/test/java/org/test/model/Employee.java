@@ -2,6 +2,7 @@ package org.test.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity(name = "test_Employee")
 public class Employee {
@@ -11,6 +12,7 @@ public class Employee {
   private String name;
   private Department department;
   private Boolean headOfDepartment;
+  private Date employmentDate;
 
   public Long getId() {
     return id;
@@ -50,5 +52,13 @@ public class Employee {
 
   public void setHeadOfDepartment(Boolean headOfDepartment) {
     this.headOfDepartment = headOfDepartment;
+  }
+
+  public Date getEmploymentDate() {
+    return employmentDate;
+  }
+
+  public void setEmploymentDate(Date employmentDate) {
+    this.employmentDate = employmentDate;
   }
 }

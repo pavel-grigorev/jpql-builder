@@ -264,4 +264,8 @@ public class Functions {
   public static <T extends Number> Sqrt<T> sqrt(JpqlFunction<? extends Number> argument) {
     return new Sqrt<>(argument);
   }
+
+  public static CurrentDate currentDate() {
+    return new CurrentDate();
+  }
 }

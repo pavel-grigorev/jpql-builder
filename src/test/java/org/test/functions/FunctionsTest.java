@@ -262,4 +262,9 @@ public class FunctionsTest {
   public void sqrtNested() {
     assertEquals("sqrt(1 + 2)", asString(new Sqrt<>(new Add<>(1, 2))));
   }
+
+  @Test
+  public void currentDate() {
+    assertEquals("current_date", asString(new CurrentDate()));
+  }
 }

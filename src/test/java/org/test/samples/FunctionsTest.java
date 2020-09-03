@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.test.functions.Functions.abs;
 import static org.test.functions.Functions.add;
 import static org.test.functions.Functions.concat;
+import static org.test.functions.Functions.currentDate;
 import static org.test.functions.Functions.div;
 import static org.test.functions.Functions.leftTrim;
 import static org.test.functions.Functions.length;
@@ -411,6 +412,25 @@ public class FunctionsTest {
           put("a", 10);
           put("b", 10);
         }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void currentDateTest() {
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee e = select.getPathSpecifier();
+
+    String query = select
+        .where(e.getEmploymentDate()).is(currentDate())
+        .getQueryString();
+
+    String expected = "select a from test_Employee a " +
+        "where a.employmentDate = current_date";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>(),
         select.getParameters()
     );
   }
