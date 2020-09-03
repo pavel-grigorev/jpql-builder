@@ -277,4 +277,20 @@ public class FunctionsTest {
   public void currentTimestamp() {
     assertEquals("current_timestamp", asString(new CurrentTimestamp()));
   }
+
+  @Test
+  public void caseTest() {
+    assertEquals(
+        "case 1 when 2 then 3 when 4 then 5 else 6 end",
+        asString(new Case<>(1).when(2).then(3).when(4).then(5).orElse(6))
+    );
+  }
+
+  @Test
+  public void caseNestedTest() {
+    assertEquals(
+        "case 1 + 2 when 1 + 2 then 3 + 4 when 5 + 6 then 7 + 8 else 9 + 10 end",
+        asString(new Case<>(new Add<>(1, 2)).when(new Add<>(1, 2)).then(new Add<>(3, 4)).when(new Add<>(5, 6)).then(new Add<>(7, 8)).orElse(new Add<>(9, 10)))
+    );
+  }
 }

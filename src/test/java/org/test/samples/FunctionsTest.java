@@ -2,6 +2,7 @@ package org.test.samples;
 
 import org.junit.Test;
 import org.test.JpqlBuilder;
+import org.test.functions.Case;
 import org.test.functions.Concat;
 import org.test.model.Company;
 import org.test.model.Department;
@@ -10,6 +11,7 @@ import org.test.model.Employee;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.test.functions.Functions._case;
 import static org.test.functions.Functions.abs;
 import static org.test.functions.Functions.add;
 import static org.test.functions.Functions.concat;
@@ -471,6 +473,39 @@ public class FunctionsTest {
     assertEquals(expected, query);
     assertEquals(
         new HashMap<String, Object>(),
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void caseTest() {
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee e = select.getPathSpecifier();
+
+    Case.Expression<String, Integer> title = _case(substring(e.getName(), 1, 2))
+        .when("Mr").then(1)
+        .when("Ms").then(2)
+        .orElse(0);
+
+    String query = select
+        .where(title).is(0)
+        .getQueryString();
+
+    String expected = "select a from test_Employee a " +
+        "where case substring(a.name, :a, :b) when :c then :d when :e then :f else :g end = :h";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 1);
+          put("b", 2);
+          put("c", "Mr");
+          put("d", 1);
+          put("e", "Ms");
+          put("f", 2);
+          put("g", 0);
+          put("h", 0);
+        }},
         select.getParameters()
     );
   }

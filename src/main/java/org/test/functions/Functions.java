@@ -276,4 +276,12 @@ public class Functions {
   public static CurrentTimestamp currentTimestamp() {
     return new CurrentTimestamp();
   }
+
+  public static <P> Case<P> _case(P expression) {
+    return new Case<>(expression);
+  }
+
+  public static <P> Case<P> _case(JpqlFunction<P> expression) {
+    return new Case<>(expression);
+  }
 }
