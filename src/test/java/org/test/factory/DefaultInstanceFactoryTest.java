@@ -5,6 +5,11 @@ import org.junit.Test;
 import org.test.model.Status;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.Currency;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import static org.junit.Assert.assertNotSame;
@@ -61,8 +66,48 @@ public class DefaultInstanceFactoryTest {
   }
 
   @Test
+  public void newBigInteger() throws ReflectiveOperationException {
+    assertNotSame(factory.newInstance(BigInteger.class), factory.newInstance(BigInteger.class));
+  }
+
+  @Test
   public void newUuid() throws ReflectiveOperationException {
     assertNotSame(factory.newInstance(UUID.class), factory.newInstance(UUID.class));
+  }
+
+  @Test
+  public void newJavaSqlDate() throws ReflectiveOperationException {
+    assertNotSame(factory.newInstance(java.sql.Date.class), factory.newInstance(java.sql.Date.class));
+  }
+
+  @Test
+  public void newJavaUtilDate() throws ReflectiveOperationException {
+    assertNotSame(factory.newInstance(java.util.Date.class), factory.newInstance(java.util.Date.class));
+  }
+
+  @Test
+  public void newCalendar() throws ReflectiveOperationException {
+    assertNotSame(factory.newInstance(Calendar.class), factory.newInstance(Calendar.class));
+  }
+
+  @Test
+  public void newLocale() throws ReflectiveOperationException {
+    assertNotSame(factory.newInstance(Locale.class), factory.newInstance(Locale.class));
+  }
+
+  @Test
+  public void newTimeZone() throws ReflectiveOperationException {
+    assertNotSame(factory.newInstance(TimeZone.class), factory.newInstance(TimeZone.class));
+  }
+
+  @Test
+  public void newCurrency() throws ReflectiveOperationException {
+    assertNotSame(factory.newInstance(Currency.class), factory.newInstance(Currency.class));
+  }
+
+  @Test
+  public void newByteArray() throws ReflectiveOperationException {
+    assertNotSame(factory.newInstance(byte[].class), factory.newInstance(byte[].class));
   }
 
   @Test
