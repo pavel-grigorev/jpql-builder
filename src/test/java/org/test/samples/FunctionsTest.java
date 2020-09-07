@@ -2,6 +2,7 @@ package org.test.samples;
 
 import org.junit.Test;
 import org.test.JpqlBuilder;
+import org.test.functions.Cast;
 import org.test.functions.Concat;
 import org.test.functions.JpqlFunction;
 import org.test.model.Company;
@@ -14,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.test.functions.Functions._case;
 import static org.test.functions.Functions.abs;
 import static org.test.functions.Functions.add;
+import static org.test.functions.Functions.cast;
 import static org.test.functions.Functions.coalesce;
 import static org.test.functions.Functions.concat;
 import static org.test.functions.Functions.currentDate;
@@ -581,6 +583,27 @@ public class FunctionsTest {
     assertEquals(
         new HashMap<String, Object>() {{
           put("a", "google");
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void castTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(cast(c.getStatus(), Cast.Type.STRING)).is("active")
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where cast(a.status string) = :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", "active");
         }},
         select.getParameters()
     );

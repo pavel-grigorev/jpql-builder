@@ -314,4 +314,8 @@ public class Functions {
   public static <T> Nullif<T> nullif(JpqlFunction<T> argument1, JpqlFunction<T> argument2) {
     return new Nullif<T>(argument1, argument2);
   }
+
+  public static <T> Cast<T> cast(Object argument, Cast.Type type) {
+    return new Cast<>(argument, type);
+  }
 }

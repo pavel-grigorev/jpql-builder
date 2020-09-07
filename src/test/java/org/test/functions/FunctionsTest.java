@@ -345,4 +345,42 @@ public class FunctionsTest {
   public void nullifNested() {
     assertEquals("nullif(lower(A), lower(B))", asString(new Nullif<>(new Lower("A"), new Lower("B"))));
   }
+
+  @Test
+  public void cast() {
+    assertEquals("cast(A byte)", asString(new Cast<>("A", Cast.Type.BYTE)));
+    assertEquals("cast(A short)", asString(new Cast<>("A", Cast.Type.SHORT)));
+    assertEquals("cast(A integer)", asString(new Cast<>("A", Cast.Type.INTEGER)));
+    assertEquals("cast(A long)", asString(new Cast<>("A", Cast.Type.LONG)));
+    assertEquals("cast(A float)", asString(new Cast<>("A", Cast.Type.FLOAT)));
+    assertEquals("cast(A double)", asString(new Cast<>("A", Cast.Type.DOUBLE)));
+    assertEquals("cast(A character)", asString(new Cast<>("A", Cast.Type.CHAR)));
+    assertEquals("cast(A boolean)", asString(new Cast<>("A", Cast.Type.BOOLEAN)));
+    assertEquals("cast(A yes_no)", asString(new Cast<>("A", Cast.Type.YES_NO)));
+    assertEquals("cast(A true_false)", asString(new Cast<>("A", Cast.Type.TRUE_FALSE)));
+    assertEquals("cast(A string)", asString(new Cast<>("A", Cast.Type.STRING)));
+    assertEquals("cast(A date)", asString(new Cast<>("A", Cast.Type.DATE)));
+    assertEquals("cast(A time)", asString(new Cast<>("A", Cast.Type.TIME)));
+    assertEquals("cast(A timestamp)", asString(new Cast<>("A", Cast.Type.TIMESTAMP)));
+    assertEquals("cast(A calendar)", asString(new Cast<>("A", Cast.Type.CALENDAR)));
+    assertEquals("cast(A calendar_date)", asString(new Cast<>("A", Cast.Type.CALENDAR_DATE)));
+    assertEquals("cast(A big_decimal)", asString(new Cast<>("A", Cast.Type.BIG_DECIMAL)));
+    assertEquals("cast(A big_integer)", asString(new Cast<>("A", Cast.Type.BIG_INTEGER)));
+    assertEquals("cast(A locale)", asString(new Cast<>("A", Cast.Type.LOCALE)));
+    assertEquals("cast(A timezone)", asString(new Cast<>("A", Cast.Type.TIME_ZONE)));
+    assertEquals("cast(A currency)", asString(new Cast<>("A", Cast.Type.CURRENCY)));
+    assertEquals("cast(A class)", asString(new Cast<>("A", Cast.Type.CLASS)));
+    assertEquals("cast(A binary)", asString(new Cast<>("A", Cast.Type.BINARY)));
+    assertEquals("cast(A text)", asString(new Cast<>("A", Cast.Type.TEXT)));
+    assertEquals("cast(A serializable)", asString(new Cast<>("A", Cast.Type.SERIALIZABLE)));
+    assertEquals("cast(A clob)", asString(new Cast<>("A", Cast.Type.CLOB)));
+    assertEquals("cast(A blob)", asString(new Cast<>("A", Cast.Type.BLOB)));
+    assertEquals("cast(A imm_date)", asString(new Cast<>("A", Cast.Type.IMM_DATE)));
+    assertEquals("cast(A imm_time)", asString(new Cast<>("A", Cast.Type.IMM_TIME)));
+    assertEquals("cast(A imm_timestamp)", asString(new Cast<>("A", Cast.Type.IMM_TIMESTAMP)));
+    assertEquals("cast(A imm_calendar)", asString(new Cast<>("A", Cast.Type.IMM_CALENDAR)));
+    assertEquals("cast(A imm_calendar_date)", asString(new Cast<>("A", Cast.Type.IMM_CALENDAR_DATE)));
+    assertEquals("cast(A imm_serializable)", asString(new Cast<>("A", Cast.Type.IMM_SERIALIZABLE)));
+    assertEquals("cast(A imm_binary)", asString(new Cast<>("A", Cast.Type.IMM_BINARY)));
+  }
 }
