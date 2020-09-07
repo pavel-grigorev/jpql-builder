@@ -26,6 +26,7 @@ import static org.test.functions.Functions.locate;
 import static org.test.functions.Functions.lower;
 import static org.test.functions.Functions.mod;
 import static org.test.functions.Functions.multi;
+import static org.test.functions.Functions.nullif;
 import static org.test.functions.Functions.rightTrim;
 import static org.test.functions.Functions.sqrt;
 import static org.test.functions.Functions.sub;
@@ -559,6 +560,27 @@ public class FunctionsTest {
         new HashMap<String, Object>() {{
           put("a", "dummy");
           put("b", 4);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void nullifTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(nullif(lower(c.getName()), "google")).isNull()
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where nullif(lower(a.name), :a) is null";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", "google");
         }},
         select.getParameters()
     );

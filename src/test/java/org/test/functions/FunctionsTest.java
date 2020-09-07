@@ -335,4 +335,14 @@ public class FunctionsTest {
     assertEquals("coalesce(A, lower(B))", asString(new Coalesce<>("A").coalesce(new Lower("B"))));
     assertEquals("coalesce(lower(A), B)", asString(new Coalesce<>(new Lower("A")).coalesce("B")));
   }
+
+  @Test
+  public void nullif() {
+    assertEquals("nullif(A, B)", asString(new Nullif<>("A", "B")));
+  }
+
+  @Test
+  public void nullifNested() {
+    assertEquals("nullif(lower(A), lower(B))", asString(new Nullif<>(new Lower("A"), new Lower("B"))));
+  }
 }

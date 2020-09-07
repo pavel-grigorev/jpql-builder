@@ -298,4 +298,20 @@ public class Functions {
   public static <T> Coalesce<T> coalesce(JpqlFunction<T>... parameters) {
     return new Coalesce<>(parameters);
   }
+
+  public static <T> Nullif<T> nullif(T argument1, T argument2) {
+    return new Nullif<T>(argument1, argument2);
+  }
+
+  public static <T> Nullif<T> nullif(JpqlFunction<T> argument1, T argument2) {
+    return new Nullif<T>(argument1, argument2);
+  }
+
+  public static <T> Nullif<T> nullif(T argument1, JpqlFunction<T> argument2) {
+    return new Nullif<T>(argument1, argument2);
+  }
+
+  public static <T> Nullif<T> nullif(JpqlFunction<T> argument1, JpqlFunction<T> argument2) {
+    return new Nullif<T>(argument1, argument2);
+  }
 }
