@@ -2,6 +2,10 @@ package org.test.functions;
 
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.test.DummyFunction.dummy;
 import static org.test.DummyJpqlStringWriter.asString;
@@ -382,5 +386,27 @@ public class FunctionsTest {
     assertEquals("cast(A imm_calendar_date)", asString(new Cast<>("A", Cast.Type.IMM_CALENDAR_DATE)));
     assertEquals("cast(A imm_serializable)", asString(new Cast<>("A", Cast.Type.IMM_SERIALIZABLE)));
     assertEquals("cast(A imm_binary)", asString(new Cast<>("A", Cast.Type.IMM_BINARY)));
+  }
+
+  @Test
+  public void castNested() {
+    assertEquals("cast(lower(A) text)", asString(new Cast<>(new Lower("A"), Cast.Type.TEXT)));
+  }
+
+  @Test
+  public void extract() {
+    Date date = Date.from(LocalDate.of(2020, 1, 1).atStartOfDay(ZoneOffset.UTC).toInstant());
+
+    assertEquals("extract(YEAR from 2020-01-01)", asString(new Extract(date, Extract.Part.YEAR)));
+    assertEquals("extract(MONTH from 2020-01-01)", asString(new Extract(date, Extract.Part.MONTH)));
+    assertEquals("extract(DAY from 2020-01-01)", asString(new Extract(date, Extract.Part.DAY)));
+    assertEquals("extract(HOUR from 2020-01-01)", asString(new Extract(date, Extract.Part.HOUR)));
+    assertEquals("extract(MINUTE from 2020-01-01)", asString(new Extract(date, Extract.Part.MINUTE)));
+    assertEquals("extract(SECOND from 2020-01-01)", asString(new Extract(date, Extract.Part.SECOND)));
+  }
+
+  @Test
+  public void extractNested() {
+    assertEquals("extract(YEAR from current_date)", asString(new Extract(new CurrentDate(), Extract.Part.YEAR)));
   }
 }

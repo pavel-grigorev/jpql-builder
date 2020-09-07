@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.test.JpqlBuilder;
 import org.test.functions.Cast;
 import org.test.functions.Concat;
+import org.test.functions.Extract;
 import org.test.functions.JpqlFunction;
 import org.test.model.Company;
 import org.test.model.Department;
@@ -22,6 +23,7 @@ import static org.test.functions.Functions.currentDate;
 import static org.test.functions.Functions.currentTime;
 import static org.test.functions.Functions.currentTimestamp;
 import static org.test.functions.Functions.div;
+import static org.test.functions.Functions.extract;
 import static org.test.functions.Functions.leftTrim;
 import static org.test.functions.Functions.length;
 import static org.test.functions.Functions.locate;
@@ -607,5 +609,21 @@ public class FunctionsTest {
         }},
         select.getParameters()
     );
+  }
+
+  @Test
+  public void extractTest() {
+    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
+    Employee e = select.getPathSpecifier();
+
+    String query = select
+        .where(extract(e.getEmploymentDate(), Extract.Part.YEAR)).is(extract(currentDate(), Extract.Part.YEAR))
+        .getQueryString();
+
+    String expected = "select a from test_Employee a " +
+        "where extract(YEAR from a.employmentDate) = extract(YEAR from current_date)";
+
+    assertEquals(expected, query);
+    assertEquals(new HashMap<String, Object>(), select.getParameters());
   }
 }

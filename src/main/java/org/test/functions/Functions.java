@@ -1,5 +1,7 @@
 package org.test.functions;
 
+import java.util.Date;
+
 public class Functions {
   private Functions() {
   }
@@ -300,22 +302,30 @@ public class Functions {
   }
 
   public static <T> Nullif<T> nullif(T argument1, T argument2) {
-    return new Nullif<T>(argument1, argument2);
+    return new Nullif<>(argument1, argument2);
   }
 
   public static <T> Nullif<T> nullif(JpqlFunction<T> argument1, T argument2) {
-    return new Nullif<T>(argument1, argument2);
+    return new Nullif<>(argument1, argument2);
   }
 
   public static <T> Nullif<T> nullif(T argument1, JpqlFunction<T> argument2) {
-    return new Nullif<T>(argument1, argument2);
+    return new Nullif<>(argument1, argument2);
   }
 
   public static <T> Nullif<T> nullif(JpqlFunction<T> argument1, JpqlFunction<T> argument2) {
-    return new Nullif<T>(argument1, argument2);
+    return new Nullif<>(argument1, argument2);
   }
 
   public static <T> Cast<T> cast(Object argument, Cast.Type type) {
     return new Cast<>(argument, type);
+  }
+
+  public static Extract extract(Date argument, Extract.Part part) {
+    return new Extract(argument, part);
+  }
+
+  public static Extract extract(JpqlFunction<Date> argument, Extract.Part part) {
+    return new Extract(argument, part);
   }
 }

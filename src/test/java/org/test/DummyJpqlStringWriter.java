@@ -3,7 +3,11 @@ package org.test;
 import org.test.operators.Operator;
 import org.test.querystring.JpqlStringWriter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DummyJpqlStringWriter implements JpqlStringWriter {
+  private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
   private final StringBuilder builder = new StringBuilder();
 
   @Override
@@ -15,6 +19,10 @@ public class DummyJpqlStringWriter implements JpqlStringWriter {
   public void appendValue(Object value) {
     if (value instanceof Class) {
       builder.append(((Class<?>) value).getSimpleName());
+      return;
+    }
+    if (value instanceof Date) {
+      builder.append(dateFormat.format((Date) value));
       return;
     }
     builder.append(value);
