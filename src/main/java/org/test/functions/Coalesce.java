@@ -6,31 +6,32 @@ import java.util.List;
 
 import static org.test.utils.CollectionUtils.toList;
 
-public class Concat extends JpqlFunction<String> {
+public class Coalesce<T> extends JpqlFunction<T> {
   private final List<Object> parameters;
 
-  public Concat(String... parameters) {
+  @SafeVarargs
+  public Coalesce(T... parameters) {
     this.parameters = toList(parameters);
   }
 
   @SafeVarargs
-  public Concat(JpqlFunction<String>... parameters) {
+  public Coalesce(JpqlFunction<T>... parameters) {
     this.parameters = toList(parameters);
   }
 
-  public Concat concat(JpqlFunction<String> nested) {
-    parameters.add(nested);
+  public Coalesce<T> coalesce(T parameter) {
+    parameters.add(parameter);
     return this;
   }
 
-  public Concat concat(String parameter) {
+  public Coalesce<T> coalesce(JpqlFunction<T> parameter) {
     parameters.add(parameter);
     return this;
   }
 
   @Override
   public void writeTo(JpqlStringWriter stringWriter) {
-    stringWriter.appendString("concat(");
+    stringWriter.appendString("coalesce(");
     appendParameters(stringWriter);
     stringWriter.appendString(")");
   }

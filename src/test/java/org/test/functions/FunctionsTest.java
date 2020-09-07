@@ -309,4 +309,30 @@ public class FunctionsTest {
         asString(new CasePredicate().when(new Add<>(1, 2)).is(3).then(new Add<>(4, 5)).when(new Add<>(6, 7)).is(8).then(new Add<>(9, 10)).orElse(new Add<>(11, 12)))
     );
   }
+
+  @Test
+  public void coalesceSingle() {
+    assertEquals("coalesce(A)", asString(new Coalesce<>("A")));
+  }
+
+  @Test
+  public void coalesceSingleNested() {
+    assertEquals("coalesce(lower(A))", asString(new Coalesce<>(new Lower("A"))));
+  }
+
+  @Test
+  public void coalesceMulti() {
+    assertEquals("coalesce(A, B)", asString(new Coalesce<>("A", "B")));
+  }
+
+  @Test
+  public void coalesceMultiNested() {
+    assertEquals("coalesce(lower(A), lower(B))", asString(new Coalesce<>(new Lower("A"), new Lower("B"))));
+  }
+
+  @Test
+  public void coalesceMixed() {
+    assertEquals("coalesce(A, lower(B))", asString(new Coalesce<>("A").coalesce(new Lower("B"))));
+    assertEquals("coalesce(lower(A), B)", asString(new Coalesce<>(new Lower("A")).coalesce("B")));
+  }
 }

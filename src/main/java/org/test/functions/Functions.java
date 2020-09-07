@@ -288,4 +288,14 @@ public class Functions {
   public static CasePredicate _case() {
     return new CasePredicate();
   }
+
+  @SafeVarargs
+  public static <T> Coalesce<T> coalesce(T... parameters) {
+    return new Coalesce<>(parameters);
+  }
+
+  @SafeVarargs
+  public static <T> Coalesce<T> coalesce(JpqlFunction<T>... parameters) {
+    return new Coalesce<>(parameters);
+  }
 }

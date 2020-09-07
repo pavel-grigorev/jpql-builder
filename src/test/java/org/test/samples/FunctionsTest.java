@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.test.functions.Functions._case;
 import static org.test.functions.Functions.abs;
 import static org.test.functions.Functions.add;
+import static org.test.functions.Functions.coalesce;
 import static org.test.functions.Functions.concat;
 import static org.test.functions.Functions.currentDate;
 import static org.test.functions.Functions.currentTime;
@@ -536,6 +537,28 @@ public class FunctionsTest {
           put("d", 2);
           put("e", 0);
           put("f", 0);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void coalesceTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(length(coalesce(c.getName(), "dummy"))).greaterThan(4)
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where length(coalesce(a.name, :a)) > :b";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", "dummy");
+          put("b", 4);
         }},
         select.getParameters()
     );
