@@ -31,6 +31,7 @@ import static org.test.functions.Functions.lower;
 import static org.test.functions.Functions.mod;
 import static org.test.functions.Functions.multi;
 import static org.test.functions.Functions.nullif;
+import static org.test.functions.Functions.regexp;
 import static org.test.functions.Functions.rightTrim;
 import static org.test.functions.Functions.sqrt;
 import static org.test.functions.Functions.sub;
@@ -625,5 +626,27 @@ public class FunctionsTest {
 
     assertEquals(expected, query);
     assertEquals(new HashMap<String, Object>(), select.getParameters());
+  }
+
+  @Test
+  public void regexpTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(regexp(c.getName(), "^Go*")).is(Boolean.TRUE)
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where a.name regexp :a = :b";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", "^Go*");
+          put("b", Boolean.TRUE);
+        }},
+        select.getParameters()
+    );
   }
 }

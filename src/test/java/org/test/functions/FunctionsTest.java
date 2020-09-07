@@ -409,4 +409,14 @@ public class FunctionsTest {
   public void extractNested() {
     assertEquals("extract(YEAR from current_date)", asString(new Extract(new CurrentDate(), Extract.Part.YEAR)));
   }
+
+  @Test
+  public void regexp() {
+    assertEquals("A regexp B", asString(new RegExp("A", "B")));
+  }
+
+  @Test
+  public void regexpNested() {
+    assertEquals("lower(A) regexp B", asString(new RegExp(new Lower("A"), "B")));
+  }
 }

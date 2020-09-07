@@ -328,4 +328,12 @@ public class Functions {
   public static Extract extract(JpqlFunction<Date> argument, Extract.Part part) {
     return new Extract(argument, part);
   }
+
+  public static RegExp regexp(String argument, String regExp) {
+    return new RegExp(argument, regExp);
+  }
+
+  public static RegExp regexp(JpqlFunction<String> argument, String regExp) {
+    return new RegExp(argument, regExp);
+  }
 }
