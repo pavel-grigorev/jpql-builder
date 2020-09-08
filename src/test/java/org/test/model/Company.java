@@ -12,7 +12,7 @@ public class Company {
   private Status status;
   private String name;
   private List<Department> departments;
-  private Map<Department, Employee> heads;
+  private Map<Long, Employee> heads;
 
   public Long getId() {
     return id;
@@ -46,11 +46,11 @@ public class Company {
     this.departments = departments;
   }
 
-  public Map<Department, Employee> getHeads() {
+  public Map<Long, Employee> getHeads() {
     return heads;
   }
 
-  public void setHeads(Map<Department, Employee> heads) {
+  public void setHeads(Map<Long, Employee> heads) {
     this.heads = heads;
   }
 }

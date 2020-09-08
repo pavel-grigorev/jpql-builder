@@ -266,7 +266,7 @@ public class JoinTest {
   public void joinMap() {
     JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
     Company c = select.getPathSpecifier();
-    Map<Department, Employee> heads = select.join(c.getHeads()).getPathSpecifier();
+    Map<Long, Employee> heads = select.join(c.getHeads()).getPathSpecifier();
 
     String query = select
         .where(heads).is(new HashMap<>())
