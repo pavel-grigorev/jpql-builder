@@ -345,4 +345,8 @@ public class Functions {
   public static <T> Key<T> key(Map<T, ?> argument) {
     return new Key<>(argument);
   }
+
+  public static <T> Value<T> value(Map<?, T> argument) {
+    return new Value<>(argument);
+  }
 }

@@ -40,6 +40,7 @@ import static org.test.functions.Functions.sub;
 import static org.test.functions.Functions.substring;
 import static org.test.functions.Functions.trim;
 import static org.test.functions.Functions.upper;
+import static org.test.functions.Functions.value;
 import static org.test.operators.builders.OperatorBuilder.$;
 
 public class FunctionsTest {
@@ -687,6 +688,26 @@ public class FunctionsTest {
         new HashMap<String, Object>() {{
           put("a", 1L);
           put("b", 10L);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void valueTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+    Employee e = new Employee();
+
+    select.join(c.getHeads()).on(h -> $(value(h)).is(e));
+
+    String expected = "select a from test_Company a " +
+        "join a.heads b on value(b) = :a";
+
+    assertEquals(expected, select.getQueryString());
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", e);
         }},
         select.getParameters()
     );
