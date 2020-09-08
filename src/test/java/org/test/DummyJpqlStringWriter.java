@@ -1,5 +1,6 @@
 package org.test;
 
+import org.springframework.aop.support.AopUtils;
 import org.test.operators.Operator;
 import org.test.querystring.JpqlStringWriter;
 
@@ -23,6 +24,10 @@ public class DummyJpqlStringWriter implements JpqlStringWriter {
     }
     if (value instanceof Date) {
       builder.append(dateFormat.format((Date) value));
+      return;
+    }
+    if (AopUtils.isAopProxy(value)) {
+      builder.append(AopUtils.getTargetClass(value).getSimpleName());
       return;
     }
     builder.append(value);

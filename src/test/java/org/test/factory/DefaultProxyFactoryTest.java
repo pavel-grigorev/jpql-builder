@@ -1,10 +1,9 @@
 package org.test.factory;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
+import org.test.DummyAdvice;
 import org.test.model.Company;
 
 import static org.junit.Assert.assertNotNull;
@@ -35,12 +34,5 @@ public class DefaultProxyFactoryTest {
   @Before
   public void setup() {
     factory = new DefaultProxyFactory();
-  }
-
-  private static class DummyAdvice implements MethodInterceptor {
-    @Override
-    public Object invoke(MethodInvocation invocation) {
-      return null;
-    }
   }
 }

@@ -1,6 +1,9 @@
 package org.test.functions;
 
 import org.junit.Test;
+import org.test.DummyAdvice;
+import org.test.factory.DefaultProxyFactory;
+import org.test.model.Company;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -418,5 +421,25 @@ public class FunctionsTest {
   @Test
   public void regexpNested() {
     assertEquals("lower(A) regexp B", asString(new RegExp(new Lower("A"), "B")));
+  }
+
+  @Test
+  public void index() {
+    Company company = new DefaultProxyFactory().createProxy(Company.class, new DummyAdvice());
+    assertEquals("index(Company)", asString(new Index(company)));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void indexNonProxy() {
+    assertEquals("index(Company)", asString(new Index(new Company())));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void indexNonEntity() {
+    TestEntity testEntity = new DefaultProxyFactory().createProxy(TestEntity.class, new DummyAdvice());
+    assertEquals("index(TestEntity)", asString(new Index(testEntity)));
+  }
+
+  public static class TestEntity {
   }
 }

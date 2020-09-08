@@ -1,6 +1,9 @@
 package org.test.utils;
 
 import org.junit.Test;
+import org.test.DummyAdvice;
+import org.test.factory.DefaultProxyFactory;
+import org.test.factory.ProxyFactory;
 import org.test.model.Company;
 
 import javax.persistence.Entity;
@@ -28,7 +31,22 @@ public class EntityHelperTest {
     EntityHelper.getEntityName(String.class);
   }
 
+  @Test
+  public void isProxiedEntity() {
+    ProxyFactory factory = new DefaultProxyFactory();
+
+    Company company = factory.createProxy(Company.class, new DummyAdvice());
+    NonEntity nonEntity = factory.createProxy(NonEntity.class, new DummyAdvice());
+
+    assertTrue(EntityHelper.isProxiedEntity(company));
+    assertFalse(EntityHelper.isProxiedEntity(nonEntity));
+    assertFalse(EntityHelper.isProxiedEntity(new Company()));
+  }
+
   @Entity
   private static class TestEntity {
+  }
+
+  public static class NonEntity {
   }
 }

@@ -1,7 +1,5 @@
 package org.test;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
@@ -47,12 +45,5 @@ public class JpqlBuilderContextTest {
   @Before
   public void setup() {
     context = JpqlBuilderContext.defaultContext();
-  }
-
-  private static class DummyAdvice implements MethodInterceptor {
-    @Override
-    public Object invoke(MethodInvocation invocation) {
-      return null;
-    }
   }
 }

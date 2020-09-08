@@ -336,4 +336,8 @@ public class Functions {
   public static RegExp regexp(JpqlFunction<String> argument, String regExp) {
     return new RegExp(argument, regExp);
   }
+
+  public static Index index(Object argument) {
+    return new Index(argument);
+  }
 }

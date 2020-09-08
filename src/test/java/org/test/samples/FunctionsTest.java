@@ -24,6 +24,7 @@ import static org.test.functions.Functions.currentTime;
 import static org.test.functions.Functions.currentTimestamp;
 import static org.test.functions.Functions.div;
 import static org.test.functions.Functions.extract;
+import static org.test.functions.Functions.index;
 import static org.test.functions.Functions.leftTrim;
 import static org.test.functions.Functions.length;
 import static org.test.functions.Functions.locate;
@@ -645,6 +646,25 @@ public class FunctionsTest {
         new HashMap<String, Object>() {{
           put("a", "^Go*");
           put("b", Boolean.TRUE);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void indexTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+    select.join(c.getDepartments()).on(d -> $(index(d)).between(1, 10)).getPathSpecifier();
+
+    String expected = "select a from test_Company a " +
+        "join a.departments b on index(b) between :a and :b";
+
+    assertEquals(expected, select.getQueryString());
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 1);
+          put("b", 10);
         }},
         select.getParameters()
     );
