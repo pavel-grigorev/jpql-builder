@@ -1,6 +1,7 @@
 package org.test.functions;
 
 import java.util.Date;
+import java.util.Map;
 
 public class Functions {
   private Functions() {
@@ -339,5 +340,9 @@ public class Functions {
 
   public static Index index(Object argument) {
     return new Index(argument);
+  }
+
+  public static <T> Key<T> key(Map<T, ?> argument) {
+    return new Key<>(argument);
   }
 }

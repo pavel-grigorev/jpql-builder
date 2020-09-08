@@ -8,6 +8,7 @@ import org.test.model.Company;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.DummyFunction.dummy;
@@ -438,6 +439,11 @@ public class FunctionsTest {
   public void indexNonEntity() {
     TestEntity testEntity = new DefaultProxyFactory().createProxy(TestEntity.class, new DummyAdvice());
     assertEquals("index(TestEntity)", asString(new Index(testEntity)));
+  }
+
+  @Test
+  public void key() {
+    assertEquals("key({})", asString(new Key<>(new HashMap<>())));
   }
 
   public static class TestEntity {

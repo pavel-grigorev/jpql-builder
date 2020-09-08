@@ -25,6 +25,7 @@ import static org.test.functions.Functions.currentTimestamp;
 import static org.test.functions.Functions.div;
 import static org.test.functions.Functions.extract;
 import static org.test.functions.Functions.index;
+import static org.test.functions.Functions.key;
 import static org.test.functions.Functions.leftTrim;
 import static org.test.functions.Functions.length;
 import static org.test.functions.Functions.locate;
@@ -655,6 +656,7 @@ public class FunctionsTest {
   public void indexTest() {
     JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
     Company c = select.getPathSpecifier();
+
     select.join(c.getDepartments()).on(d -> $(index(d)).between(1, 10)).getPathSpecifier();
 
     String expected = "select a from test_Company a " +
@@ -665,6 +667,26 @@ public class FunctionsTest {
         new HashMap<String, Object>() {{
           put("a", 1);
           put("b", 10);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void keyTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    select.join(c.getHeads()).on(h -> $(key(h)).between(1L, 10L));
+
+    String expected = "select a from test_Company a " +
+        "join a.heads b on key(b) between :a and :b";
+
+    assertEquals(expected, select.getQueryString());
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 1L);
+          put("b", 10L);
         }},
         select.getParameters()
     );
