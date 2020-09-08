@@ -122,7 +122,9 @@ public class JpqlBuilder<T> implements JpqlQuery {
   // TODO: refactor into JoinFactory
   @SuppressWarnings("unchecked")
   private <P> Join<P> join(Object joinedThing, Class<?> targetClass, JoinType type) {
-    requireEntityClass(targetClass);
+    if (!isMap(targetClass)) {
+      requireEntityClass(targetClass);
+    }
 
     Class<P> castedClass = (Class<P>) targetClass;
     String alias = getNextAlias(type);
@@ -134,6 +136,10 @@ public class JpqlBuilder<T> implements JpqlQuery {
     query.addJoin(joinClause);
 
     return new Join<>(joinClause, pathResolver);
+  }
+
+  private static boolean isMap(Class<?> targetClass) {
+    return Map.class.isAssignableFrom(targetClass);
   }
 
   private String getNextAlias(JoinType type) {

@@ -8,6 +8,7 @@ import org.test.model.Employee;
 import org.test.model.Status;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.operators.builders.OperatorBuilder.$;
@@ -259,5 +260,33 @@ public class JoinTest {
         }},
         select.getParameters()
     );
+  }
+
+  @Test
+  public void joinMap() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+    Map<Department, Employee> heads = select.join(c.getHeads()).getPathSpecifier();
+
+    String query = select
+        .where(heads).is(new HashMap<>())
+        .getQueryString();
+
+    String expected = "select a from test_Company a join a.heads b where b = :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", new HashMap<>());
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void joinNonEntity() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+    select.join(c.getStatus());
   }
 }
