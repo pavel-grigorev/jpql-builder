@@ -3,6 +3,7 @@ package org.test.model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.List;
+import java.util.Map;
 
 @Entity(name = "test_Company")
 public class Company {
@@ -11,6 +12,7 @@ public class Company {
   private Status status;
   private String name;
   private List<Department> departments;
+  private Map<Department, Employee> heads;
 
   public Long getId() {
     return id;
@@ -42,5 +44,13 @@ public class Company {
 
   public void setDepartments(List<Department> departments) {
     this.departments = departments;
+  }
+
+  public Map<Department, Employee> getHeads() {
+    return heads;
+  }
+
+  public void setHeads(Map<Department, Employee> heads) {
+    this.heads = heads;
   }
 }
