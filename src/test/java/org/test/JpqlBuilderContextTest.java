@@ -6,6 +6,7 @@ import org.springframework.aop.support.AopUtils;
 import org.test.model.Company;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -20,6 +21,11 @@ public class JpqlBuilderContextTest {
   @Test
   public void newCollectionInstance() throws ReflectiveOperationException {
     assertNotSame(context.newCollectionInstance(List.class), context.newCollectionInstance(List.class));
+  }
+
+  @Test
+  public void newMapInstance() throws ReflectiveOperationException {
+    assertNotSame(context.newMapInstance(Map.class), context.newMapInstance(Map.class));
   }
 
   @Test

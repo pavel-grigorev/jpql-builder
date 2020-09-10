@@ -8,7 +8,6 @@ import org.test.model.Employee;
 import org.test.model.Status;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.operators.builders.OperatorBuilder.$;
