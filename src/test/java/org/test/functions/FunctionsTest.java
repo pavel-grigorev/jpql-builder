@@ -7,6 +7,7 @@ import org.test.model.Company;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -444,6 +445,11 @@ public class FunctionsTest {
   @Test
   public void key() {
     assertEquals("key({})", asString(new Key<>(new HashMap<>())));
+  }
+
+  @Test
+  public void size() {
+    assertEquals("size([])", asString(new Size(new ArrayList<>())));
   }
 
   public static class TestEntity {

@@ -354,4 +354,8 @@ public class Functions {
     }
     return values.iterator().next();
   }
+
+  public static Size size(Collection<?> argument) {
+    return new Size(argument);
+  }
 }

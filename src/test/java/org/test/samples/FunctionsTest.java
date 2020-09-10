@@ -36,6 +36,7 @@ import static org.test.functions.Functions.multi;
 import static org.test.functions.Functions.nullif;
 import static org.test.functions.Functions.regexp;
 import static org.test.functions.Functions.rightTrim;
+import static org.test.functions.Functions.size;
 import static org.test.functions.Functions.sqrt;
 import static org.test.functions.Functions.sub;
 import static org.test.functions.Functions.substring;
@@ -708,6 +709,27 @@ public class FunctionsTest {
     assertEquals(
         new HashMap<String, Object>() {{
           put("a", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void sizeTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(size(c.getDepartments())).greaterThan(5)
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where size(a.departments) > :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 5);
         }},
         select.getParameters()
     );
