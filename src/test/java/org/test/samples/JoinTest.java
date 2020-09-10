@@ -1,6 +1,7 @@
 package org.test.samples;
 
 import org.junit.Test;
+import org.test.Join;
 import org.test.JpqlBuilder;
 import org.test.model.Company;
 import org.test.model.Department;
@@ -10,6 +11,7 @@ import org.test.model.Status;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.test.operators.builders.OperatorBuilder.$;
 
 public class JoinTest {
@@ -266,5 +268,20 @@ public class JoinTest {
     JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
     Company c = select.getPathSpecifier();
     select.join(c.getStatus());
+  }
+
+  @Test
+  public void joinSameThingMultipleTimes() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    Join<Department> join1 = select.join(c.getDepartments());
+    Join<Department> join2 = select.join(c.getDepartments());
+
+    assertSame(join1, join2);
+
+    select.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
+
+    assertEquals("select a from test_Company a join a.departments b on b.status <> :a", select.getQueryString());
   }
 }

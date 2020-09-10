@@ -24,12 +24,14 @@ import org.test.utils.AliasGenerator;
 import org.test.utils.EntityHelper;
 
 import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 public class JpqlBuilder<T> implements JpqlQuery {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
   private final PathResolverList joinedPathResolvers = new PathResolverList();
+  private final Map<Object, Join<?>> joins = new IdentityHashMap<>();
   private final JpqlBuilderContext context;
   private final PathResolver<T> pathResolver;
   private final JpqlStringBuilder stringBuilder;
@@ -128,29 +130,25 @@ public class JpqlBuilder<T> implements JpqlQuery {
   // TODO: refactor into JoinFactory
   @SuppressWarnings("unchecked")
   private <P> Join<P> join(Object joinedThing, Class<?> targetClass, JoinType type) {
-    boolean isMap = isMap(targetClass);
+    if (joins.containsKey(joinedThing)) {
+      return (Join<P>) joins.get(joinedThing);
+    }
 
-    if (isMap) {
+    if (isMap(targetClass)) {
       requireNonEmptyMap(joinedThing);
     } else {
       requireEntityClass(targetClass);
     }
 
     String alias = getNextAlias(type);
-    PathResolver<P> pathResolver;
-
-    if (isMap) {
-      pathResolver = new PathResolver<>((Map<Object, Object>) joinedThing, alias, context);
-    } else {
-      pathResolver = new PathResolver<>((Class<P>) targetClass, alias, context);
-    }
+    JoinClause joinClause = createJoinClause(alias, joinedThing, type);
+    PathResolver<P> pathResolver = createPathResolver(joinedThing, targetClass, alias);
+    Join<P> join = new Join<>(joinClause, pathResolver);
 
     joinedPathResolvers.add(pathResolver);
+    joins.put(joinedThing, join);
 
-    JoinClause joinClause = new JoinClause(alias, joinedThing, type);
-    query.addJoin(joinClause);
-
-    return new Join<>(joinClause, pathResolver);
+    return join;
   }
 
   private static boolean isMap(Class<?> targetClass) {
@@ -166,6 +164,20 @@ public class JpqlBuilder<T> implements JpqlQuery {
 
   private String getNextAlias(JoinType type) {
     return type.hasAlias() ? aliasGenerator.next() : "";
+  }
+
+  private JoinClause createJoinClause(String alias, Object joinedThing, JoinType type) {
+    JoinClause joinClause = new JoinClause(alias, joinedThing, type);
+    query.addJoin(joinClause);
+    return joinClause;
+  }
+
+  @SuppressWarnings("unchecked")
+  private <P> PathResolver<P> createPathResolver(Object joinedThing, Class<?> targetClass, String alias) {
+    if (isMap(targetClass)) {
+      return new PathResolver<>((Map<Object, Object>) joinedThing, alias, context);
+    }
+    return new PathResolver<>((Class<P>) targetClass, alias, context);
   }
 
   public <P> OperatorBuilder<P, Where<T>> where(P operand) {
