@@ -4,9 +4,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
 import org.test.JpqlBuilderContext;
-import org.test.factory.DefaultCollectionInstanceFactory;
-import org.test.factory.DefaultInstanceFactory;
-import org.test.factory.DefaultProxyFactory;
 import org.test.model.Company;
 import org.test.model.Department;
 import org.test.model.Employee;
@@ -14,8 +11,10 @@ import org.test.model.Employee;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -88,6 +87,23 @@ public class GetterMethodInterceptorTest {
     assertTrue(item instanceof Department);
   }
 
+  @Test
+  public void mapGetter() throws Throwable {
+    Object value = invoke(Company.class, "getHeads");
+
+    assertNotNull(value);
+    assertTrue(value instanceof Map);
+    assertSame(value, pathResolver.getValue("heads"));
+    assertEquals("a.heads", pathResolver.getPropertyPath(value));
+
+    Map<?, ?> map = (Map<?, ?>) value;
+    assertFalse(map.isEmpty());
+
+    Object key = map.keySet().iterator().next();
+    assertTrue(key instanceof Long);
+    assertTrue(map.get(key) instanceof Employee);
+  }
+
   private JpqlBuilderContext context;
   private PathResolver<?> pathResolver;
   private GetterMethodInterceptor interceptor;
@@ -95,11 +111,7 @@ public class GetterMethodInterceptorTest {
 
   @Before
   public void setup() {
-    context = new JpqlBuilderContext(
-        new DefaultInstanceFactory(),
-        new DefaultCollectionInstanceFactory(),
-        new DefaultProxyFactory()
-    );
+    context = JpqlBuilderContext.defaultContext();
     interceptorSkipped = false;
   }
 

@@ -4,8 +4,10 @@ import org.springframework.aop.support.AopUtils;
 import org.test.factory.CollectionInstanceFactory;
 import org.test.factory.DefaultCollectionInstanceFactory;
 import org.test.factory.DefaultInstanceFactory;
+import org.test.factory.DefaultMapInstanceFactory;
 import org.test.factory.DefaultProxyFactory;
 import org.test.factory.InstanceFactory;
+import org.test.factory.MapInstanceFactory;
 import org.test.factory.ProxyFactory;
 import org.test.functions.JpqlFunction;
 import org.test.operators.Operator;
@@ -56,6 +58,10 @@ public class JpqlBuilder<T> implements JpqlQuery {
 
   public static Builder with(CollectionInstanceFactory collectionInstanceFactory) {
     return new Builder(collectionInstanceFactory);
+  }
+
+  public static Builder with(MapInstanceFactory mapInstanceFactory) {
+    return new Builder(mapInstanceFactory);
   }
 
   public static Builder with(ProxyFactory proxyFactory) {
@@ -122,14 +128,23 @@ public class JpqlBuilder<T> implements JpqlQuery {
   // TODO: refactor into JoinFactory
   @SuppressWarnings("unchecked")
   private <P> Join<P> join(Object joinedThing, Class<?> targetClass, JoinType type) {
-    if (!isMap(targetClass)) {
+    boolean isMap = isMap(targetClass);
+
+    if (isMap) {
+      requireNonEmptyMap(joinedThing);
+    } else {
       requireEntityClass(targetClass);
     }
 
-    Class<P> castedClass = (Class<P>) targetClass;
     String alias = getNextAlias(type);
+    PathResolver<P> pathResolver;
 
-    PathResolver<P> pathResolver = new PathResolver<>(castedClass, alias, context);
+    if (isMap) {
+      pathResolver = new PathResolver<>((Map<Object, Object>) joinedThing, alias, context);
+    } else {
+      pathResolver = new PathResolver<>((Class<P>) targetClass, alias, context);
+    }
+
     joinedPathResolvers.add(pathResolver);
 
     JoinClause joinClause = new JoinClause(alias, joinedThing, type);
@@ -140,6 +155,13 @@ public class JpqlBuilder<T> implements JpqlQuery {
 
   private static boolean isMap(Class<?> targetClass) {
     return Map.class.isAssignableFrom(targetClass);
+  }
+
+  @SuppressWarnings("rawtypes")
+  private static void requireNonEmptyMap(Object object) {
+    if (!(object instanceof Map) || ((Map) object).isEmpty()) {
+      throw new IllegalArgumentException("can not join an empty map");
+    }
   }
 
   private String getNextAlias(JoinType type) {
@@ -195,6 +217,7 @@ public class JpqlBuilder<T> implements JpqlQuery {
   public static class Builder {
     private InstanceFactory instanceFactory;
     private CollectionInstanceFactory collectionInstanceFactory;
+    private MapInstanceFactory mapInstanceFactory;
     private ProxyFactory proxyFactory;
 
     private Builder(InstanceFactory instanceFactory) {
@@ -203,6 +226,10 @@ public class JpqlBuilder<T> implements JpqlQuery {
 
     private Builder(CollectionInstanceFactory collectionInstanceFactory) {
       this.collectionInstanceFactory = collectionInstanceFactory;
+    }
+
+    private Builder(MapInstanceFactory mapInstanceFactory) {
+      this.mapInstanceFactory = mapInstanceFactory;
     }
 
     private Builder(ProxyFactory proxyFactory) {
@@ -216,6 +243,11 @@ public class JpqlBuilder<T> implements JpqlQuery {
 
     public Builder with(CollectionInstanceFactory collectionInstanceFactory) {
       this.collectionInstanceFactory = collectionInstanceFactory;
+      return this;
+    }
+
+    public Builder with(MapInstanceFactory mapInstanceFactory) {
+      this.mapInstanceFactory = mapInstanceFactory;
       return this;
     }
 
@@ -235,10 +267,13 @@ public class JpqlBuilder<T> implements JpqlQuery {
       if (collectionInstanceFactory == null) {
         collectionInstanceFactory = new DefaultCollectionInstanceFactory();
       }
+      if (mapInstanceFactory == null) {
+        mapInstanceFactory = new DefaultMapInstanceFactory();
+      }
       if (proxyFactory == null) {
         proxyFactory = new DefaultProxyFactory();
       }
-      return new JpqlBuilderContext(instanceFactory, collectionInstanceFactory, proxyFactory);
+      return new JpqlBuilderContext(instanceFactory, collectionInstanceFactory, mapInstanceFactory, proxyFactory);
     }
   }
 }

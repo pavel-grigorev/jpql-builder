@@ -3,9 +3,6 @@ package org.test.path;
 import org.junit.Before;
 import org.junit.Test;
 import org.test.JpqlBuilderContext;
-import org.test.factory.DefaultCollectionInstanceFactory;
-import org.test.factory.DefaultInstanceFactory;
-import org.test.factory.DefaultProxyFactory;
 import org.test.model.Company;
 
 import static org.junit.Assert.assertEquals;
@@ -29,12 +26,7 @@ public class PathResolverListTest {
 
   @Before
   public void setup() {
-    JpqlBuilderContext context = new JpqlBuilderContext(
-        new DefaultInstanceFactory(),
-        new DefaultCollectionInstanceFactory(),
-        new DefaultProxyFactory()
-    );
-    pathResolver = new PathResolver<>(Company.class, "a", context);
+    pathResolver = new PathResolver<>(Company.class, "a", JpqlBuilderContext.defaultContext());
 
     list = new PathResolverList();
     list.add(pathResolver);

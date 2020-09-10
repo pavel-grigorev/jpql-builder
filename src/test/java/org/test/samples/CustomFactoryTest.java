@@ -6,11 +6,15 @@ import org.springframework.aop.support.AopUtils;
 import org.test.JpqlBuilder;
 import org.test.factory.DefaultCollectionInstanceFactory;
 import org.test.factory.DefaultInstanceFactory;
+import org.test.factory.DefaultMapInstanceFactory;
 import org.test.factory.ProxyFactory;
+import org.test.model.Company;
 import org.test.model.Department;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import static org.junit.Assert.assertEquals;
@@ -56,6 +60,20 @@ public class CustomFactoryTest {
     assertEquals("", department.getName());
     assertTrue(department.getEmployees() instanceof Vector);
     assertTrue(AopUtils.isAopProxy(department.getCompany()));
+  }
+
+  @Test
+  public void customMapInstanceFactory() {
+    DefaultMapInstanceFactory mapInstanceFactory = new DefaultMapInstanceFactory();
+    mapInstanceFactory.add(Map.class, TreeMap::new);
+
+    JpqlBuilder<Company> builder = JpqlBuilder.with(mapInstanceFactory).select(Company.class);
+    Company company = builder.getPathSpecifier();
+
+    assertTrue(AopUtils.isAopProxy(company));
+    assertEquals("", company.getName());
+    assertTrue(company.getHeads() instanceof TreeMap);
+    assertTrue(company.getDepartments() instanceof ArrayList);
   }
 
   @Test

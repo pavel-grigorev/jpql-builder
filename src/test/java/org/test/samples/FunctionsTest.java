@@ -9,6 +9,7 @@ import org.test.functions.JpqlFunction;
 import org.test.model.Company;
 import org.test.model.Department;
 import org.test.model.Employee;
+import org.test.model.Status;
 
 import java.util.HashMap;
 
@@ -697,17 +698,16 @@ public class FunctionsTest {
   public void valueTest() {
     JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
     Company c = select.getPathSpecifier();
-    Employee e = new Employee();
 
-    select.join(c.getHeads()).on(h -> $(value(h)).is(e));
+    select.join(c.getHeads()).on(h -> $(value(h).getStatus()).isNot(Status.DELETED));
 
     String expected = "select a from test_Company a " +
-        "join a.heads b on value(b) = :a";
+        "join a.heads b on value(b).status <> :a";
 
     assertEquals(expected, select.getQueryString());
     assertEquals(
         new HashMap<String, Object>() {{
-          put("a", e);
+          put("a", Status.DELETED);
         }},
         select.getParameters()
     );

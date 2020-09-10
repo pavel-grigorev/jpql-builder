@@ -4,14 +4,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
 import org.test.JpqlBuilderContext;
-import org.test.factory.DefaultCollectionInstanceFactory;
-import org.test.factory.DefaultInstanceFactory;
-import org.test.factory.DefaultProxyFactory;
 import org.test.model.Company;
 import org.test.model.Department;
+import org.test.model.Employee;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -30,10 +33,20 @@ public class PathResolverTest {
   @Test
   public void childResolver() {
     PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a", context);
-    PathResolver<Company> childResolver = pathResolver.createChildResolver(new Company(), "company");
+    PathResolver<Company> childResolver = pathResolver.createChildResolver(Company.class, "company");
     Company company = childResolver.getPathSpecifier();
 
     assertEquals("a.company", childResolver.getPropertyPath(company));
+  }
+
+  @Test
+  @SuppressWarnings("rawtypes")
+  public void childResolverForMapValue() {
+    PathResolver<Map> pathResolver = new PathResolver<>(Map.class, "a.heads", context);
+    PathResolver<Employee> childResolver = pathResolver.createChildResolverForMapValue(Employee.class);
+    Employee employee = childResolver.getPathSpecifier();
+
+    assertEquals("value(a.heads)", childResolver.getPropertyPath(employee));
   }
 
   @Test
@@ -64,7 +77,7 @@ public class PathResolverTest {
   @Test
   public void childPropertyPath() {
     PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a", context);
-    PathResolver<Company> childResolver = pathResolver.createChildResolver(new Company(), "company");
+    PathResolver<Company> childResolver = pathResolver.createChildResolver(Company.class, "company");
     Company company = childResolver.getPathSpecifier();
 
     assertEquals("a.company.status", pathResolver.getPropertyPath(company.getStatus()));
@@ -77,14 +90,53 @@ public class PathResolverTest {
     assertNull(pathResolver.getPropertyPath(new Object()));
   }
 
+  @Test
+  public void pathResolverForMapWithEntityValue() {
+    Map<Object, Object> map = new HashMap<>();
+    map.put(1L, new Company());
+
+    PathResolver<Map<Object, Object>> pathResolver = new PathResolver<>(map, "a", context);
+    Map<Object, Object> pathSpecifier = pathResolver.getPathSpecifier();
+
+    assertNotSame(map, pathSpecifier);
+    assertEquals(1, pathSpecifier.size());
+
+    Object key = pathSpecifier.keySet().iterator().next();
+    assertEquals(1L, key);
+
+    Object value = pathSpecifier.get(key);
+    assertTrue(AopUtils.isAopProxy(value));
+    assertSame(Company.class, AopUtils.getTargetClass(value));
+  }
+
+  @Test
+  public void pathResolverForMapWithNonEntityValue() {
+    Map<Object, Object> map = new HashMap<>();
+    map.put(1L, "dummy");
+
+    PathResolver<Map<Object, Object>> pathResolver = new PathResolver<>(map, "a", context);
+    Map<Object, Object> pathSpecifier = pathResolver.getPathSpecifier();
+
+    assertNotSame(map, pathSpecifier);
+    assertEquals(1, pathSpecifier.size());
+
+    Object key = pathSpecifier.keySet().iterator().next();
+    assertEquals(1L, key);
+
+    Object value = pathSpecifier.get(key);
+    assertFalse(AopUtils.isAopProxy(value));
+    assertEquals("dummy", value);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void pathResolverForEmptyMap() {
+    new PathResolver<>(new HashMap<>(), "a", context);
+  }
+
   private JpqlBuilderContext context;
 
   @Before
   public void setup() {
-    context = new JpqlBuilderContext(
-        new DefaultInstanceFactory(),
-        new DefaultCollectionInstanceFactory(),
-        new DefaultProxyFactory()
-    );
+    context = JpqlBuilderContext.defaultContext();
   }
 }

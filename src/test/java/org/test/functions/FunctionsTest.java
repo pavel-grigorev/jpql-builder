@@ -446,11 +446,6 @@ public class FunctionsTest {
     assertEquals("key({})", asString(new Key<>(new HashMap<>())));
   }
 
-  @Test
-  public void value() {
-    assertEquals("value({})", asString(new Value<>(new HashMap<>())));
-  }
-
   public static class TestEntity {
   }
 }

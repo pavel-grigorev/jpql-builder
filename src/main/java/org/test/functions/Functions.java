@@ -1,5 +1,6 @@
 package org.test.functions;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -346,7 +347,11 @@ public class Functions {
     return new Key<>(argument);
   }
 
-  public static <T> Value<T> value(Map<?, T> argument) {
-    return new Value<>(argument);
+  public static <T> T value(Map<?, T> argument) {
+    Collection<T> values = argument.values();
+    if (values.isEmpty()) {
+      throw new IllegalArgumentException("argument is an empty map");
+    }
+    return values.iterator().next();
   }
 }

@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -108,11 +107,6 @@ public class DefaultInstanceFactoryTest {
   @Test
   public void newByteArray() throws ReflectiveOperationException {
     factoryCreatesUniqueInstance(byte[].class);
-  }
-
-  @Test
-  public void newMap() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(Map.class);
   }
 
   @Test

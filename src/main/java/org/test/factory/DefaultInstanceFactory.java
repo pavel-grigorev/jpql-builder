@@ -44,7 +44,6 @@ public class DefaultInstanceFactory implements InstanceFactory {
     instanceCreators.put(TimeZone.class, () -> new SimpleTimeZone(0, ""));
     instanceCreators.put(Currency.class, CurrencyFactory::newInstance);
     instanceCreators.put(byte[].class, () -> new byte[0]);
-    instanceCreators.put(Map.class, HashMap::new);
   }
 
   public <T> void add(Class<T> type, InstanceCreator<T> instanceCreator) {

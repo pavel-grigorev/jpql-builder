@@ -1,6 +1,8 @@
 package org.test.path;
 
 import org.test.JpqlBuilderContext;
+import org.test.utils.EntityHelper;
+import org.test.utils.ReflectionHelper;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -20,10 +22,28 @@ public class PathResolver<T> {
     this.context = context;
   }
 
-  private PathResolver(T target, String basePath, JpqlBuilderContext context) {
+  @SuppressWarnings("unchecked")
+  public PathResolver(Map<Object, Object> target, String basePath, JpqlBuilderContext context) {
+    if (target == null || target.isEmpty()) {
+      throw new IllegalArgumentException("can not create a path resolver for a null or empty map");
+    }
+
     this.basePath = basePath;
-    this.pathSpecifier = context.createProxy(target, new GetterMethodInterceptor(this));
     this.context = context;
+
+    Map.Entry<Object, Object> entry = target.entrySet().iterator().next();
+    Object key = entry.getKey();
+    Object value = entry.getValue();
+    Class<?> valueType = value.getClass();
+
+    if (EntityHelper.isEntity(valueType)) {
+      value = createChildResolverForMapValue(valueType).getPathSpecifier();
+    }
+
+    Map<Object, Object> clone = ReflectionHelper.newInstance(target.getClass());
+    clone.put(key, value);
+
+    this.pathSpecifier = (T) clone;
   }
 
   JpqlBuilderContext getContext() {
@@ -39,14 +59,24 @@ public class PathResolver<T> {
     valueToName.put(value, propertyName);
   }
 
-  <E> PathResolver<E> createChildResolver(E target, String propertyName) {
-    PathResolver<E> pathResolver = new PathResolver<>(target, buildPath(propertyName), context);
+  <E> PathResolver<E> createChildResolver(Class<E> entityClass, String propertyName) {
+    PathResolver<E> pathResolver = new PathResolver<>(entityClass, buildPath(propertyName), context);
     children.add(pathResolver);
     return pathResolver;
   }
 
   private String buildPath(String propertyName) {
     return basePath + '.' + propertyName;
+  }
+
+  <E> PathResolver<E> createChildResolverForMapValue(Class<E> entityClass) {
+    PathResolver<E> pathResolver = new PathResolver<>(entityClass, buildMapValueAlias(), context);
+    children.add(pathResolver);
+    return pathResolver;
+  }
+
+  private String buildMapValueAlias() {
+    return "value(" + basePath + ")";
   }
 
   public T getPathSpecifier() {

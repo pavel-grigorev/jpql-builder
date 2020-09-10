@@ -11,6 +11,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class GetterMethodInterceptor implements MethodInterceptor {
@@ -76,8 +77,9 @@ public class GetterMethodInterceptor implements MethodInterceptor {
     Class<?> returnType = method.getReturnType();
 
     if (EntityHelper.isEntity(returnType)) {
-      Object instance = returnType.newInstance();
-      return createPathSpecifier(instance, propertyName);
+      return pathResolver
+          .createChildResolver(returnType, propertyName)
+          .getPathSpecifier();
     }
 
     if (Collection.class.isAssignableFrom(returnType)) {
@@ -86,17 +88,20 @@ public class GetterMethodInterceptor implements MethodInterceptor {
 
       Collection<Object> collection = newCollectionInstance(returnType);
       collection.add(instance);
+      return collection;
+    }
 
-      return createPathSpecifier(collection, propertyName);
+    if (Map.class.isAssignableFrom(returnType)) {
+      Class<?>[] genericClasses = ReflectionHelper.getGenericReturnTypes(method);
+      Object key = newInstance(genericClasses[0]);
+      Object value = newInstance(genericClasses[1]);
+
+      Map<Object, Object> map = newMapInstance(returnType);
+      map.put(key, value);
+      return map;
     }
 
     return newInstance(returnType);
-  }
-
-  private Object createPathSpecifier(Object target, String propertyName) {
-    return pathResolver
-        .createChildResolver(target, propertyName)
-        .getPathSpecifier();
   }
 
   private Object newInstance(Class<?> type) throws ReflectiveOperationException {
@@ -109,5 +114,11 @@ public class GetterMethodInterceptor implements MethodInterceptor {
     return pathResolver
         .getContext()
         .newCollectionInstance(type);
+  }
+
+  private Map<Object, Object> newMapInstance(Class<?> type) throws ReflectiveOperationException {
+    return pathResolver
+        .getContext()
+        .newMapInstance(type);
   }
 }
