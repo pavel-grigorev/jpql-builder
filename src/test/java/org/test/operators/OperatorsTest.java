@@ -129,4 +129,14 @@ public class OperatorsTest {
   public void isNotEmpty() {
     assertEquals("[] is not empty", asString(new IsNotEmpty(new ArrayList<>())));
   }
+
+  @Test
+  public void memberOf() {
+    assertEquals("A member of []", asString(new MemberOf<>("A", new ArrayList<>())));
+  }
+
+  @Test
+  public void notMemberOf() {
+    assertEquals("A not member of []", asString(new NotMemberOf<>("A", new ArrayList<>())));
+  }
 }

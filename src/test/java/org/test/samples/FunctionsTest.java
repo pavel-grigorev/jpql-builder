@@ -772,4 +772,48 @@ public class FunctionsTest {
         select.getParameters()
     );
   }
+
+  @Test
+  public void memberOfTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+    Department d = new Department();
+
+    String query = select
+        .where(d).memberOf(c.getDepartments())
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where :a member of a.departments";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", d);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void notMemberOfTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+    Department d = new Department();
+
+    String query = select
+        .where(d).notMemberOf(c.getDepartments())
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where :a not member of a.departments";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", d);
+        }},
+        select.getParameters()
+    );
+  }
 }

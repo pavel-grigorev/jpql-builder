@@ -11,11 +11,13 @@ import org.test.operators.IsNull;
 import org.test.operators.LessThan;
 import org.test.operators.LessThanOrEqual;
 import org.test.operators.Like;
+import org.test.operators.MemberOf;
 import org.test.operators.Not;
 import org.test.operators.NotBetween;
 import org.test.operators.NotEqual;
 import org.test.operators.NotIn;
 import org.test.operators.NotLike;
+import org.test.operators.NotMemberOf;
 import org.test.operators.Parentheses;
 
 import java.util.Arrays;
@@ -191,5 +193,13 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
 
   public B notLike(JpqlFunction<T> operator, String escapeChar) {
     return chain.join(new NotLike(operand, operator, escapeChar));
+  }
+
+  public B memberOf(Collection<T> collection) {
+    return chain.join(new MemberOf<>(operand, collection));
+  }
+
+  public B notMemberOf(Collection<T> collection) {
+    return chain.join(new NotMemberOf<>(operand, collection));
   }
 }

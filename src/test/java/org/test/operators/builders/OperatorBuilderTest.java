@@ -11,14 +11,17 @@ import org.test.operators.IsNull;
 import org.test.operators.LessThan;
 import org.test.operators.LessThanOrEqual;
 import org.test.operators.Like;
+import org.test.operators.MemberOf;
 import org.test.operators.Not;
 import org.test.operators.NotBetween;
 import org.test.operators.NotEqual;
 import org.test.operators.NotIn;
 import org.test.operators.NotLike;
+import org.test.operators.NotMemberOf;
 import org.test.operators.Operator;
 import org.test.operators.Parentheses;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -512,5 +515,23 @@ public class OperatorBuilderTest {
 
     assertTrue(operator instanceof NotLike);
     assertEquals("A not like dummy(B) escape C", asString(operator));
+  }
+
+  @Test
+  public void memberOf() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").memberOf(new ArrayList<>()).getOperator();
+
+    assertTrue(operator instanceof MemberOf);
+    assertEquals("A member of []", asString(operator));
+  }
+
+  @Test
+  public void notMemberOf() {
+    ExpressionChain chain = new ExpressionChain();
+    Operator operator = new OperatorBuilder<>(chain, "A").notMemberOf(new ArrayList<>()).getOperator();
+
+    assertTrue(operator instanceof NotMemberOf);
+    assertEquals("A not member of []", asString(operator));
   }
 }
