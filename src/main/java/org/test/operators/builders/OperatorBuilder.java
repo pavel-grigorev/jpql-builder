@@ -43,6 +43,10 @@ public class OperatorBuilder<T, B extends BaseExpressionChain<B>> {
     return new OperatorBuilder<>(new ExpressionChain(), operator);
   }
 
+  public static CollectionOperatorBuilder<ExpressionChain> $(Collection<?> operand) {
+    return new CollectionOperatorBuilder<>(new ExpressionChain(), operand);
+  }
+
   public static ExpressionChain $(ExpressionChain chain) {
     return new ExpressionChain(new Parentheses(chain.getOperator()));
   }

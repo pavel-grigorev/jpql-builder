@@ -734,4 +734,42 @@ public class FunctionsTest {
         select.getParameters()
     );
   }
+
+  @Test
+  public void isEmptyTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(c.getDepartments()).isEmpty()
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where a.departments is empty";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>(),
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void isNotEmptyTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(c.getDepartments()).isNotEmpty()
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where a.departments is not empty";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>(),
+        select.getParameters()
+    );
+  }
 }

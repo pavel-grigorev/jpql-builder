@@ -3,11 +3,13 @@ package org.test.functions;
 import org.test.operators.Operator;
 import org.test.operators.Parentheses;
 import org.test.operators.builders.BaseExpressionChain;
+import org.test.operators.builders.CollectionOperatorBuilder;
 import org.test.operators.builders.ExpressionChain;
 import org.test.operators.builders.OperatorBuilder;
 import org.test.querystring.JpqlStringWriter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class CasePredicate {
@@ -17,6 +19,10 @@ public class CasePredicate {
 
   public <P> OperatorBuilder<P, ExpressionBuilder> when(JpqlFunction<P> operator) {
     return new OperatorBuilder<>(new ExpressionBuilder(), operator);
+  }
+
+  public CollectionOperatorBuilder<ExpressionBuilder> when(Collection<?> operand) {
+    return new CollectionOperatorBuilder<>(new ExpressionBuilder(), operand);
   }
 
   public ExpressionBuilder when(ExpressionChain chain) {
@@ -58,6 +64,10 @@ public class CasePredicate {
 
     public <P> OperatorBuilder<P, WhereExpression<T>> when(JpqlFunction<P> operator) {
       return new OperatorBuilder<>(new WhereExpression<>(this), operator);
+    }
+
+    public CollectionOperatorBuilder<WhereExpression<T>> when(Collection<?> operand) {
+      return new CollectionOperatorBuilder<>(new WhereExpression<>(this), operand);
     }
 
     public WhereExpression<T> when(ExpressionChain chain) {

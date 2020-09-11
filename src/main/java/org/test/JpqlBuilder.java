@@ -12,6 +12,7 @@ import org.test.factory.ProxyFactory;
 import org.test.functions.JpqlFunction;
 import org.test.operators.Operator;
 import org.test.operators.Parentheses;
+import org.test.operators.builders.CollectionOperatorBuilder;
 import org.test.operators.builders.ExpressionChain;
 import org.test.operators.builders.OperatorBuilder;
 import org.test.path.PathResolver;
@@ -186,6 +187,10 @@ public class JpqlBuilder<T> implements JpqlQuery {
 
   public <P> OperatorBuilder<P, Where<T>> where(JpqlFunction<P> operator) {
     return new OperatorBuilder<>(createWhere(), operator);
+  }
+
+  public CollectionOperatorBuilder<Where<T>> where(Collection<?> operand) {
+    return new CollectionOperatorBuilder<>(createWhere(), operand);
   }
 
   public Where<T> where(ExpressionChain chain) {

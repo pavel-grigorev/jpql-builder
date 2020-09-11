@@ -10,6 +10,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.DummyFunction.dummy;
@@ -316,6 +317,15 @@ public class FunctionsTest {
     assertEquals(
         "case when 1 + 2 = 3 then 4 + 5 when 6 + 7 = 8 then 9 + 10 else 11 + 12 end",
         asString(new CasePredicate().when(new Add<>(1, 2)).is(3).then(new Add<>(4, 5)).when(new Add<>(6, 7)).is(8).then(new Add<>(9, 10)).orElse(new Add<>(11, 12)))
+    );
+  }
+
+  @Test
+  public void casePredicateCollection() {
+    List<Object> list = new ArrayList<>();
+    assertEquals(
+        "case when [] is empty then 1 when [] is not empty then 2 else 0 end",
+        asString(new CasePredicate().when(list).isEmpty().then(1).when(list).isNotEmpty().then(2).orElse(0))
     );
   }
 

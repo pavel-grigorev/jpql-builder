@@ -2,6 +2,7 @@ package org.test.operators;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -117,5 +118,15 @@ public class OperatorsTest {
   @Test
   public void parentheses() {
     assertEquals("(dummy(A))", asString(new Parentheses(dummy("A"))));
+  }
+
+  @Test
+  public void isEmpty() {
+    assertEquals("[] is empty", asString(new IsEmpty(new ArrayList<>())));
+  }
+
+  @Test
+  public void isNotEmpty() {
+    assertEquals("[] is not empty", asString(new IsNotEmpty(new ArrayList<>())));
   }
 }

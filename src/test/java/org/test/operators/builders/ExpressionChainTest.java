@@ -3,6 +3,8 @@ package org.test.operators.builders;
 import org.junit.Test;
 import org.test.operators.Operator;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.test.DummyFunction.dummy;
@@ -35,6 +37,14 @@ public class ExpressionChainTest {
   }
 
   @Test
+  public void andCollection() {
+    ExpressionChain chain = new ExpressionChain(dummy("A"));
+    Operator operator = chain.and(new ArrayList<>()).isEmpty().getOperator();
+
+    assertEquals("dummy(A) and [] is empty", asString(operator));
+  }
+
+  @Test
   public void andChain() {
     ExpressionChain chain = new ExpressionChain(dummy("A"));
     Operator operator = chain.and($("B").is("C")).getOperator();
@@ -64,6 +74,14 @@ public class ExpressionChainTest {
     Operator operator = chain.or(dummy("B")).is("C").getOperator();
 
     assertEquals("dummy(A) or dummy(B) = C", asString(operator));
+  }
+
+  @Test
+  public void orCollection() {
+    ExpressionChain chain = new ExpressionChain(dummy("A"));
+    Operator operator = chain.or(new ArrayList<>()).isNotEmpty().getOperator();
+
+    assertEquals("dummy(A) or [] is not empty", asString(operator));
   }
 
   @Test
