@@ -41,6 +41,7 @@ import static org.test.functions.Functions.sqrt;
 import static org.test.functions.Functions.sub;
 import static org.test.functions.Functions.substring;
 import static org.test.functions.Functions.trim;
+import static org.test.functions.Functions.type;
 import static org.test.functions.Functions.upper;
 import static org.test.functions.Functions.value;
 import static org.test.operators.builders.OperatorBuilder.$;
@@ -813,6 +814,27 @@ public class FunctionsTest {
         new HashMap<String, Object>() {{
           put("a", d);
         }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void typeTest() {
+    JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
+    Department d = select.getPathSpecifier();
+
+    String query = select
+        .where(type(d)).is(Department.class)
+        .and(type(d.getCompany())).is(Company.class)
+        .getQueryString();
+
+    String expected = "select a from test_Department a " +
+        "where type(a) = test_Department " +
+        "and type(a.company) = test_Company";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>(),
         select.getParameters()
     );
   }

@@ -358,4 +358,8 @@ public class Functions {
   public static Size size(Collection<?> argument) {
     return new Size(argument);
   }
+
+  public static Type type(Object argument) {
+    return new Type(argument);
+  }
 }

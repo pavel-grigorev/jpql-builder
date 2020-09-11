@@ -462,6 +462,23 @@ public class FunctionsTest {
     assertEquals("size([])", asString(new Size(new ArrayList<>())));
   }
 
+  @Test
+  public void type() {
+    Company company = new DefaultProxyFactory().createProxy(Company.class, new DummyAdvice());
+    assertEquals("type(Company)", asString(new Type(company)));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void typeNonProxy() {
+    assertEquals("type(Company)", asString(new Type(new Company())));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void typeNonEntity() {
+    TestEntity testEntity = new DefaultProxyFactory().createProxy(TestEntity.class, new DummyAdvice());
+    assertEquals("type(TestEntity)", asString(new Type(testEntity)));
+  }
+
   public static class TestEntity {
   }
 }
