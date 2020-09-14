@@ -9,6 +9,7 @@ public class JoinClause implements Operator {
   private final Object joinedThing;
   private final JoinType type;
   private Operator onClause;
+  private Class<?> treatAsType;
 
   public JoinClause(String alias, Object joinedThing, JoinType type) {
     this.alias = alias;
@@ -20,12 +21,32 @@ public class JoinClause implements Operator {
     onClause = chain.getOperator();
   }
 
+  public void setTreatAsType(Class<?> treatAsType) {
+    this.treatAsType = treatAsType;
+  }
+
   @Override
   public void writeTo(JpqlStringWriter stringWriter) {
     stringWriter.appendString(type.getClause());
-    stringWriter.appendValue(joinedThing);
+    appendJoinedThing(stringWriter);
     appendAlias(stringWriter);
     appendOnClause(stringWriter);
+  }
+
+  private void appendJoinedThing(JpqlStringWriter stringWriter) {
+    if (treatAsType != null) {
+      appendTreatAsType(stringWriter);
+    } else {
+      writeOperand(joinedThing, stringWriter);
+    }
+  }
+
+  private void appendTreatAsType(JpqlStringWriter stringWriter) {
+    stringWriter.appendString("treat(");
+    writeOperand(joinedThing, stringWriter);
+    stringWriter.appendString(" as ");
+    writeOperand(treatAsType, stringWriter);
+    stringWriter.appendString(")");
   }
 
   private void appendAlias(JpqlStringWriter stringWriter) {

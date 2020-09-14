@@ -133,6 +133,18 @@ public class PathResolverTest {
     new PathResolver<>(new HashMap<>(), "a", context);
   }
 
+  @Test
+  public void resetPathSpecifier() {
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
+    Company a = pathResolver.getPathSpecifier();
+
+    pathResolver.resetPathSpecifier(Company.class);
+    Company b = pathResolver.getPathSpecifier();
+
+    assertNotSame(a, b);
+    assertTrue(AopUtils.isAopProxy(b));
+  }
+
   private JpqlBuilderContext context;
 
   @Before

@@ -13,13 +13,13 @@ public class PathResolver<T> {
   private final Map<Object, String> valueToName = new IdentityHashMap<>();
   private final PathResolverList children = new PathResolverList();
   private final String basePath;
-  private final T pathSpecifier;
+  private T pathSpecifier;
   private final JpqlBuilderContext context;
 
   public PathResolver(Class<T> entityClass, String basePath, JpqlBuilderContext context) {
     this.basePath = basePath;
-    this.pathSpecifier = context.createProxy(entityClass, new GetterMethodInterceptor(this));
     this.context = context;
+    resetPathSpecifier(entityClass);
   }
 
   @SuppressWarnings("unchecked")
@@ -44,6 +44,10 @@ public class PathResolver<T> {
     clone.put(key, value);
 
     this.pathSpecifier = (T) clone;
+  }
+
+  public void resetPathSpecifier(Class<T> entityClass) {
+    pathSpecifier = context.createProxy(entityClass, new GetterMethodInterceptor(this));
   }
 
   JpqlBuilderContext getContext() {

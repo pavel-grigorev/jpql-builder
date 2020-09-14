@@ -1,6 +1,7 @@
 package org.test.query;
 
 import org.junit.Test;
+import org.test.model.Company;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.DummyJpqlStringWriter.asString;
@@ -65,5 +66,22 @@ public class JoinClauseTest {
     join.setOnClause($(1).is(2));
 
     assertEquals(" join fetch thing a on 1 = 2", asString(join));
+  }
+
+  @Test
+  public void joinAs() {
+    JoinClause join = new JoinClause("a", "thing", JoinType.INNER);
+    join.setTreatAsType(Company.class);
+
+    assertEquals(" join treat(thing as Company) a", asString(join));
+  }
+
+  @Test
+  public void joinAsOn() {
+    JoinClause join = new JoinClause("a", "thing", JoinType.INNER);
+    join.setTreatAsType(Company.class);
+    join.setOnClause($(1).is(2));
+
+    assertEquals(" join treat(thing as Company) a on 1 = 2", asString(join));
   }
 }

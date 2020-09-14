@@ -6,6 +6,7 @@ import org.test.JpqlBuilder;
 import org.test.model.Company;
 import org.test.model.Department;
 import org.test.model.Employee;
+import org.test.model.HeadOfDepartment;
 import org.test.model.Status;
 
 import java.util.HashMap;
@@ -283,5 +284,34 @@ public class JoinTest {
     select.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
 
     assertEquals("select a from test_Company a join a.departments b on b.status <> :a", select.getQueryString());
+  }
+
+  @Test
+  public void joinAs() {
+    JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
+    Department d = select.getPathSpecifier();
+
+    HeadOfDepartment h = select
+        .join(d.getEmployees())
+        .as(HeadOfDepartment.class)
+        .on(x -> $(x.isHeadOfDepartment()).is(Boolean.TRUE))
+        .getPathSpecifier();
+
+    String query = select
+        .where(h.getStatus()).isNot(Status.DELETED)
+        .getQueryString();
+
+    String expected = "select a from test_Department a " +
+        "join treat(a.employees as test_HeadOfDepartment) b on b.headOfDepartment = :a " +
+        "where b.status <> :b";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Boolean.TRUE);
+          put("b", Status.DELETED);
+        }},
+        select.getParameters()
+    );
   }
 }
