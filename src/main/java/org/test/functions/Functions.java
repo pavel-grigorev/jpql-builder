@@ -371,4 +371,12 @@ public class Functions {
   public static <T> Function<T> function(String name, Object... arguments) {
     return new Function<>(name, Arrays.asList(arguments));
   }
+
+  public static <T> Func<T> func(String name, Collection<?> arguments) {
+    return new Func<>(name, arguments);
+  }
+
+  public static <T> Func<T> func(String name, Object... arguments) {
+    return new Func<>(name, Arrays.asList(arguments));
+  }
 }

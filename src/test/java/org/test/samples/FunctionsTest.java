@@ -27,6 +27,7 @@ import static org.test.functions.Functions.currentTime;
 import static org.test.functions.Functions.currentTimestamp;
 import static org.test.functions.Functions.div;
 import static org.test.functions.Functions.extract;
+import static org.test.functions.Functions.func;
 import static org.test.functions.Functions.function;
 import static org.test.functions.Functions.index;
 import static org.test.functions.Functions.key;
@@ -856,6 +857,33 @@ public class FunctionsTest {
     String expected = "select a from test_Company a " +
         "where function('coalesce', a.name, :a) = :b " +
         "and function('coalesce', cast(a.status string), :c) = :d";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", "dummy");
+          put("b", "dummy");
+          put("c", "active");
+          put("d", "active");
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void funcTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    List<String> arguments = Arrays.asList(c.getName(), "dummy");
+    String query = select
+        .where(func("coalesce", arguments)).is("dummy")
+        .and(func("coalesce", cast(c.getStatus(), Cast.Type.STRING), "active")).is("active")
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where func('coalesce', a.name, :a) = :b " +
+        "and func('coalesce', cast(a.status string), :c) = :d";
 
     assertEquals(expected, query);
     assertEquals(

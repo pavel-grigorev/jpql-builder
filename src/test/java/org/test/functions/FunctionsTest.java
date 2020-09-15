@@ -514,6 +514,39 @@ public class FunctionsTest {
     new Function<>("'dummy", Collections.emptyList());
   }
 
+  @Test
+  public void func() {
+    List<String> arguments = Arrays.asList("A", "B");
+    assertEquals("func('dummy', A, B)", asString(new Func<>("dummy", arguments)));
+  }
+
+  @Test
+  public void funcNested() {
+    List<Object> arguments = Arrays.asList(dummy("A"), dummy("B"));
+    assertEquals("func('dummy', dummy(A), dummy(B))", asString(new Func<>("dummy", arguments)));
+  }
+
+  @Test
+  public void funcNoArgs() {
+    List<String> arguments = Collections.emptyList();
+    assertEquals("func('dummy')", asString(new Func<>("dummy", arguments)));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void funcNullArgs() {
+    new Func<>("dummy", null);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void funcNullName() {
+    new Func<>(null, Collections.emptyList());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void funcBadName() {
+    new Func<>("'dummy", Collections.emptyList());
+  }
+
   public static class TestEntity {
   }
 }

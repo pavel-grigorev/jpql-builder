@@ -21,11 +21,16 @@ public class Function<T> extends JpqlFunction<T> {
 
   @Override
   public void writeTo(JpqlStringWriter stringWriter) {
-    stringWriter.appendString("function('");
+    stringWriter.appendString(getFunctionName());
+    stringWriter.appendString("('");
     stringWriter.appendString(name);
     stringWriter.appendString("'");
     appendArguments(stringWriter);
     stringWriter.appendString(")");
+  }
+
+  String getFunctionName() {
+    return "function";
   }
 
   private void appendArguments(JpqlStringWriter stringWriter) {
