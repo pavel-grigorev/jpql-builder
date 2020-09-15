@@ -41,6 +41,7 @@ import static org.test.functions.Functions.nullif;
 import static org.test.functions.Functions.regexp;
 import static org.test.functions.Functions.rightTrim;
 import static org.test.functions.Functions.size;
+import static org.test.functions.Functions.sql;
 import static org.test.functions.Functions.sqrt;
 import static org.test.functions.Functions.sub;
 import static org.test.functions.Functions.substring;
@@ -892,6 +893,27 @@ public class FunctionsTest {
           put("b", "dummy");
           put("c", "active");
           put("d", "active");
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void sqlTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(sql("cast(? as varchar)", c.getStatus())).is("active")
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where sql('cast(? as varchar)', a.status) = :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", "active");
         }},
         select.getParameters()
     );

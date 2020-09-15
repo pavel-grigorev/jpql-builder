@@ -379,4 +379,12 @@ public class Functions {
   public static <T> Func<T> func(String name, Object... arguments) {
     return new Func<>(name, Arrays.asList(arguments));
   }
+
+  public static <T> Sql<T> sql(String sql, Collection<?> arguments) {
+    return new Sql<>(sql, arguments);
+  }
+
+  public static <T> Sql<T> sql(String sql, Object... arguments) {
+    return new Sql<>(sql, Arrays.asList(arguments));
+  }
 }

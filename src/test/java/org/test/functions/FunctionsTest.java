@@ -547,6 +547,39 @@ public class FunctionsTest {
     new Func<>("'dummy", Collections.emptyList());
   }
 
+  @Test
+  public void sql() {
+    List<String> arguments = Arrays.asList("A", "B");
+    assertEquals("sql('dummy', A, B)", asString(new Sql<>("dummy", arguments)));
+  }
+
+  @Test
+  public void sqlNested() {
+    List<Object> arguments = Arrays.asList(dummy("A"), dummy("B"));
+    assertEquals("sql('dummy', dummy(A), dummy(B))", asString(new Sql<>("dummy", arguments)));
+  }
+
+  @Test
+  public void sqlNoArgs() {
+    List<String> arguments = Collections.emptyList();
+    assertEquals("sql('(select sysdate from dual)')", asString(new Sql<>("(select sysdate from dual)", arguments)));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void sqlNullArgs() {
+    new Sql<>("dummy", null);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void sqlNullName() {
+    new Sql<>(null, Collections.emptyList());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void sqlBadCode() {
+    new Sql<>("'dummy", Collections.emptyList());
+  }
+
   public static class TestEntity {
   }
 }

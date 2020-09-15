@@ -13,7 +13,7 @@ public class Function<T> extends JpqlFunction<T> {
       throw new NullPointerException();
     }
     if (name.indexOf('\'') != -1) {
-      throw new IllegalArgumentException("function name must not contain a single quote character");
+      throw new IllegalArgumentException("single quote character is not allowed");
     }
     this.name = name;
     this.arguments = arguments;
