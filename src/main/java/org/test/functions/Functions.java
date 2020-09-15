@@ -1,5 +1,6 @@
 package org.test.functions;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -361,5 +362,13 @@ public class Functions {
 
   public static Type type(Object argument) {
     return new Type(argument);
+  }
+
+  public static <T> Function<T> function(String name, Collection<?> arguments) {
+    return new Function<>(name, arguments);
+  }
+
+  public static <T> Function<T> function(String name, Object... arguments) {
+    return new Function<>(name, Arrays.asList(arguments));
   }
 }

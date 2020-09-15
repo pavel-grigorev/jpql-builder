@@ -8,6 +8,8 @@ import org.test.model.Company;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -477,6 +479,39 @@ public class FunctionsTest {
   public void typeNonEntity() {
     TestEntity testEntity = new DefaultProxyFactory().createProxy(TestEntity.class, new DummyAdvice());
     assertEquals("type(TestEntity)", asString(new Type(testEntity)));
+  }
+
+  @Test
+  public void function() {
+    List<String> arguments = Arrays.asList("A", "B");
+    assertEquals("function('dummy', A, B)", asString(new Function<>("dummy", arguments)));
+  }
+
+  @Test
+  public void functionNested() {
+    List<Object> arguments = Arrays.asList(dummy("A"), dummy("B"));
+    assertEquals("function('dummy', dummy(A), dummy(B))", asString(new Function<>("dummy", arguments)));
+  }
+
+  @Test
+  public void functionNoArgs() {
+    List<String> arguments = Collections.emptyList();
+    assertEquals("function('dummy')", asString(new Function<>("dummy", arguments)));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void functionNullArgs() {
+    new Function<>("dummy", null);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void functionNullName() {
+    new Function<>(null, Collections.emptyList());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void functionBadName() {
+    new Function<>("'dummy", Collections.emptyList());
   }
 
   public static class TestEntity {

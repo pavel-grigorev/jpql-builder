@@ -11,7 +11,9 @@ import org.test.model.Department;
 import org.test.model.Employee;
 import org.test.model.Status;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.test.functions.Functions._case;
@@ -25,6 +27,7 @@ import static org.test.functions.Functions.currentTime;
 import static org.test.functions.Functions.currentTimestamp;
 import static org.test.functions.Functions.div;
 import static org.test.functions.Functions.extract;
+import static org.test.functions.Functions.function;
 import static org.test.functions.Functions.index;
 import static org.test.functions.Functions.key;
 import static org.test.functions.Functions.leftTrim;
@@ -835,6 +838,33 @@ public class FunctionsTest {
     assertEquals(expected, query);
     assertEquals(
         new HashMap<String, Object>(),
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void functionTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    List<String> arguments = Arrays.asList(c.getName(), "dummy");
+    String query = select
+        .where(function("coalesce", arguments)).is("dummy")
+        .and(function("coalesce", cast(c.getStatus(), Cast.Type.STRING), "active")).is("active")
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where function('coalesce', a.name, :a) = :b " +
+        "and function('coalesce', cast(a.status string), :c) = :d";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", "dummy");
+          put("b", "dummy");
+          put("c", "active");
+          put("d", "active");
+        }},
         select.getParameters()
     );
   }
