@@ -387,4 +387,8 @@ public class Functions {
   public static <T> Sql<T> sql(String sql, Object... arguments) {
     return new Sql<>(sql, Arrays.asList(arguments));
   }
+
+  public static <T> Column<T> column(String name, Object entity) {
+    return new Column<>(name, entity);
+  }
 }

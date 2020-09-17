@@ -21,6 +21,7 @@ import static org.test.functions.Functions.abs;
 import static org.test.functions.Functions.add;
 import static org.test.functions.Functions.cast;
 import static org.test.functions.Functions.coalesce;
+import static org.test.functions.Functions.column;
 import static org.test.functions.Functions.concat;
 import static org.test.functions.Functions.currentDate;
 import static org.test.functions.Functions.currentTime;
@@ -914,6 +915,27 @@ public class FunctionsTest {
     assertEquals(
         new HashMap<String, Object>() {{
           put("a", "active");
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void columnTest() {
+    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
+    Company c = select.getPathSpecifier();
+
+    String query = select
+        .where(column("rowid", c)).lessThan(100)
+        .getQueryString();
+
+    String expected = "select a from test_Company a " +
+        "where column('rowid', a) < :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", 100);
         }},
         select.getParameters()
     );

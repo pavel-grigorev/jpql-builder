@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.test.DummyAdvice;
 import org.test.factory.DefaultProxyFactory;
 import org.test.model.Company;
+import org.test.model.Department;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -578,6 +579,39 @@ public class FunctionsTest {
   @Test(expected = IllegalArgumentException.class)
   public void sqlBadCode() {
     new Sql<>("'dummy", Collections.emptyList());
+  }
+
+  @Test
+  public void column() {
+    Company company = new DefaultProxyFactory().createProxy(Company.class, new DummyAdvice());
+    assertEquals("column('dummy', Company)", asString(new Column<>("dummy", company)));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void columnNullName() {
+    new Column<>(null, new Company());
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void columnNullEntity() {
+    new Column<>("dummy", null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void columnBadName() {
+    Company company = new DefaultProxyFactory().createProxy(Company.class, new DummyAdvice());
+    assertEquals("column('dummy', Company)", asString(new Column<>("'dummy", company)));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void columnNonEntity() {
+    TestEntity testEntity = new DefaultProxyFactory().createProxy(TestEntity.class, new DummyAdvice());
+    assertEquals("column('dummy', Company)", asString(new Column<>("'dummy", testEntity)));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void columnNonProxy() {
+    assertEquals("column('dummy', Company)", asString(new Column<>("'dummy", new Company())));
   }
 
   public static class TestEntity {
