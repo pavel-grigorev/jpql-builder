@@ -28,8 +28,7 @@ The object returned by the `getPathSpecifier()` method is a proxy object created
 A simple query like the one above can be a one-liner:
 
 ```java
-JpqlQuery query = JpqlBuilder
-.select(Company.class).where(c -> $(c.getName()).like("%TikTok%")).orderBy(Company::getName);
+JpqlQuery query = JpqlBuilder.select(Company.class).where(c -> $(c.getName()).like("%TikTok%")).orderBy(Company::getName);
 ```
 
 The `$` method starts an expression.
@@ -41,7 +40,7 @@ The `$` method starts an expression.
 - `union`
 - Aggregation functions (`max`, `avg`, etc.)
 - Ability to select values (e.g. `select c.name from test_Company c`)
-- Ability to select multiple values and/or root objects (e.g. `select c.id, c.name, c from test_Company c`)
+- Ability to select multiple values and/or multiple root objects (e.g. `select c.id, c.name, c from test_Company c`)
 - Subqueries
 
 # Learn by example
