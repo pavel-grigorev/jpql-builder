@@ -875,3 +875,10 @@ Output:
 Query: select a from test_Company a join a.departments b on b.status <> :a where (a.name = :b or a.name = :c) and a.status <> :d
 Params: {a=DELETED, b=Google, c=Apple, d=DELETED}
 ```
+
+# Compatibility
+
+Tested on Java 8 and 11. In order to run on Java 11 add the following argument to the JVM:
+```
+--add-opens java.base/jdk.internal.reflect=ALL-UNNAMED
+```
