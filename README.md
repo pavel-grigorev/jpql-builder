@@ -140,8 +140,8 @@ Params: {a=Google, b=Apple, c=DELETED}
 The not operator:
 
 ```java
-import static org.pavel.jpqlbuilder.operators.builders.OperatorBuilder.not;
-import static org.pavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
+import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.not;
+import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 ...
 
 JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
