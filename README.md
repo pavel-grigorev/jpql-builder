@@ -1,3 +1,5 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.thepavel/jpql-builder/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.thepavel/jpql-builder)
+
 # Intro
 
 JpqlBuilder is a tool to dynamically build JPQL strings. JpqlBuilder provides:
