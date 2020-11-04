@@ -19,22 +19,56 @@ package org.thepavel.jpqlbuilder.query;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
 import org.thepavel.jpqlbuilder.operators.Operator;
 
-public class SelectClause implements Operator {
-  private final String alias;
-  private final Class<?> entityClass;
+import java.util.ArrayList;
+import java.util.List;
 
-  public SelectClause(String alias, Class<?> entityClass) {
-    this.alias = alias;
-    this.entityClass = entityClass;
+public class SelectClause implements Operator {
+  private final List<Object> selected = new ArrayList<>();
+  private final List<Class<?>> from = new ArrayList<>();
+  private final List<String> aliases = new ArrayList<>();
+
+  public void addSelected(Object selected) {
+    this.selected.add(selected);
+  }
+
+  public void addFrom(Class<?> type, String alias) {
+    from.add(type);
+    aliases.add(alias);
   }
 
   @Override
   public void writeTo(JpqlStringWriter stringWriter) {
     stringWriter.appendString("select ");
-    stringWriter.appendString(alias);
+    appendSelected(stringWriter);
     stringWriter.appendString(" from ");
-    stringWriter.appendValue(entityClass);
-    stringWriter.appendString(" ");
-    stringWriter.appendString(alias);
+    appendFrom(stringWriter);
+  }
+
+  private void appendSelected(JpqlStringWriter stringWriter) {
+    for (int i = 0; i < selected.size(); i++) {
+      if (i > 0) {
+        stringWriter.appendString(", ");
+      }
+      writeThing(selected.get(i), stringWriter);
+    }
+  }
+
+  private static void writeThing(Object thing, JpqlStringWriter stringWriter) {
+    if (thing instanceof Operator) {
+      ((Operator) thing).writeTo(stringWriter);
+    } else {
+      stringWriter.appendValue(thing);
+    }
+  }
+
+  private void appendFrom(JpqlStringWriter stringWriter) {
+    for (int i = 0; i < from.size(); i++) {
+      if (i > 0) {
+        stringWriter.appendString(", ");
+      }
+      stringWriter.appendValue(from.get(i));
+      stringWriter.appendString(" ");
+      stringWriter.appendString(aliases.get(i));
+    }
   }
 }

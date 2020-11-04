@@ -17,7 +17,6 @@
 package org.thepavel.jpqlbuilder.querystring;
 
 import org.thepavel.jpqlbuilder.utils.AliasGenerator;
-import org.thepavel.jpqlbuilder.path.PathResolver;
 import org.thepavel.jpqlbuilder.path.PathResolverList;
 import org.thepavel.jpqlbuilder.query.SelectQuery;
 import org.thepavel.jpqlbuilder.utils.EntityHelper;
@@ -26,14 +25,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JpqlStringBuilder implements JpqlStringWriter {
-  private final PathResolver<?> pathResolver;
+  private final PathResolverList roots;
   private final PathResolverList joins;
   private final StringBuilder builder = new StringBuilder();
   private final Map<String, Object> parameters = new HashMap<>();
   private final AliasGenerator aliasGenerator = new AliasGenerator();
 
-  public JpqlStringBuilder(PathResolver<?> pathResolver, PathResolverList joins) {
-    this.pathResolver = pathResolver;
+  public JpqlStringBuilder(PathResolverList roots, PathResolverList joins) {
+    this.roots = roots;
     this.joins = joins;
   }
 
@@ -83,7 +82,7 @@ public class JpqlStringBuilder implements JpqlStringWriter {
   }
 
   private String getPropertyPath(Object value) {
-    String path = pathResolver.getPropertyPath(value);
+    String path = roots.getPropertyPath(value);
     return path != null ? path : joins.getPropertyPath(value);
   }
 

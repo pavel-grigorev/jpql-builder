@@ -18,6 +18,7 @@ package org.thepavel.jpqlbuilder.samples;
 
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.Join;
+import org.thepavel.jpqlbuilder.Select;
 import org.thepavel.jpqlbuilder.model.Department;
 import org.thepavel.jpqlbuilder.model.Employee;
 import org.thepavel.jpqlbuilder.model.HeadOfDepartment;
@@ -34,10 +35,11 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 public class JoinTest {
   @Test
   public void entityJoins() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
-    Department department = select.join(employee.getDepartment()).getPathSpecifier();
-    Company company = select.join(department.getCompany()).getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Department department = builder.join(employee.getDepartment()).getPathSpecifier();
+    Company company = builder.join(department.getCompany()).getPathSpecifier();
+    Select select = builder.select(employee);
 
     String query = select
         .where(employee.getStatus()).isNot(Status.DELETED)
@@ -69,9 +71,10 @@ public class JoinTest {
 
   @Test
   public void collectionJoins() {
-    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-    Company company = select.getPathSpecifier();
-    Department department = select.join(company.getDepartments()).getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Company company = builder.from(Company.class);
+    Department department = builder.join(company.getDepartments()).getPathSpecifier();
+    Select select = builder.select(company);
 
     String query = select
         .where(company.getStatus()).isNot(Status.DELETED)
@@ -98,10 +101,11 @@ public class JoinTest {
 
   @Test
   public void leftJoin() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
-    Department department = select.leftJoin(employee.getDepartment()).getPathSpecifier();
-    Company company = select.leftJoin(department.getCompany()).getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Department department = builder.leftJoin(employee.getDepartment()).getPathSpecifier();
+    Company company = builder.leftJoin(department.getCompany()).getPathSpecifier();
+    Select select = builder.select(employee);
 
     String query = select
         .where(employee.getStatus()).isNot(Status.DELETED)
@@ -133,10 +137,11 @@ public class JoinTest {
 
   @Test
   public void joinFetch() {
-    JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
-    Department department = select.getPathSpecifier();
-    select.joinFetch(department.getCompany());
-    select.joinFetch(department.getEmployees());
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Department department = builder.from(Department.class);
+    builder.joinFetch(department.getCompany());
+    builder.joinFetch(department.getEmployees());
+    Select select = builder.select(department);
 
     String query = select
         .where(department.getStatus()).isNot(Status.DELETED)
@@ -160,10 +165,11 @@ public class JoinTest {
 
   @Test
   public void joinFetchWithAlias() {
-    JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
-    Department department = select.getPathSpecifier();
-    Company company = select.joinFetchWithAlias(department.getCompany()).getPathSpecifier();
-    Employee employee = select.joinFetchWithAlias(department.getEmployees()).getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Department department = builder.from(Department.class);
+    Company company = builder.joinFetchWithAlias(department.getCompany()).getPathSpecifier();
+    Employee employee = builder.joinFetchWithAlias(department.getEmployees()).getPathSpecifier();
+    Select select = builder.select(department);
 
     String query = select
         .where(department.getStatus()).isNot(Status.DELETED)
@@ -190,9 +196,10 @@ public class JoinTest {
 
   @Test
   public void classJoin() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
-    Department department = select.join(Department.class).getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Department department = builder.join(Department.class).getPathSpecifier();
+    Select select = builder.select(employee);
 
     String query = select
         .where(employee.getStatus()).is(department.getStatus())
@@ -206,9 +213,10 @@ public class JoinTest {
 
   @Test
   public void classLeftJoin() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
-    Department department = select.leftJoin(Department.class).getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Department department = builder.leftJoin(Department.class).getPathSpecifier();
+    Select select = builder.select(employee);
 
     String query = select
         .where(employee.getStatus()).is(department.getStatus())
@@ -222,12 +230,13 @@ public class JoinTest {
 
   @Test
   public void collectionJoinOn() {
-    JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
-    Department department = select.getPathSpecifier();
-    Employee employee = select
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Department department = builder.from(Department.class);
+    Employee employee = builder
         .join(department.getEmployees())
         .on(e -> $(e.getStatus()).isNot(Status.DELETED))
         .getPathSpecifier();
+    Select select = builder.select(department);
 
     String query = select
         .where(department.getStatus()).isNot(Status.DELETED)
@@ -251,12 +260,13 @@ public class JoinTest {
 
   @Test
   public void classJoinOn() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
-    Department department = select
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Department department = builder
         .join(Department.class)
         .on(d -> $(d.getName()).is(employee.getName()))
         .getPathSpecifier();
+    Select select = builder.select(employee);
 
     String query = select
         .where(employee.getStatus()).isNot(Status.DELETED)
@@ -282,32 +292,33 @@ public class JoinTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void joinNonEntity() {
-    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-    Company c = select.getPathSpecifier();
-    select.join(c.getStatus());
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Company c = builder.from(Company.class);
+    builder.join(c.getStatus());
   }
 
   @Test
   public void joinSameThingMultipleTimes() {
-    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-    Company c = select.getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Company c = builder.from(Company.class);
 
-    Join<Department> join1 = select.join(c.getDepartments());
-    Join<Department> join2 = select.join(c.getDepartments());
+    Join<Department> join1 = builder.join(c.getDepartments());
+    Join<Department> join2 = builder.join(c.getDepartments());
 
     assertSame(join1, join2);
 
-    select.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
+    builder.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
 
-    assertEquals("select a from test_Company a join a.departments b on b.status <> :a", select.getQueryString());
+    assertEquals("select a from test_Company a join a.departments b on b.status <> :a", builder.select(c).getQueryString());
   }
 
   @Test
   public void joinAs() {
-    JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
-    Department d = select.getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Department d = builder.from(Department.class);
+    Select select = builder.select(d);
 
-    HeadOfDepartment h = select
+    HeadOfDepartment h = builder
         .join(d.getEmployees())
         .as(HeadOfDepartment.class)
         .on(x -> $(x.isHeadOfDepartment()).is(Boolean.TRUE))

@@ -17,6 +17,7 @@
 package org.thepavel.jpqlbuilder.samples;
 
 import org.junit.Test;
+import org.thepavel.jpqlbuilder.Select;
 import org.thepavel.jpqlbuilder.model.Employee;
 import org.thepavel.jpqlbuilder.model.Status;
 import org.thepavel.jpqlbuilder.JpqlBuilder;
@@ -32,8 +33,9 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 public class WhereTest {
   @Test
   public void whereSimple() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Select select = builder.select(employee);
 
     String query = select.where(employee.getName()).like("%test%").getQueryString();
 
@@ -50,8 +52,9 @@ public class WhereTest {
 
   @Test
   public void whereExpression() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Select select = builder.select(employee);
 
     String query = select
         .where(
@@ -76,8 +79,9 @@ public class WhereTest {
 
   @Test
   public void whereComplicated() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Select select = builder.select(employee);
 
     String query = select
         .where(employee.getId()).isNot(123456L)

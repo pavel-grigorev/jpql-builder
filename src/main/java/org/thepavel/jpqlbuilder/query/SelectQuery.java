@@ -23,13 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SelectQuery implements Operator {
-  private final SelectClause select;
+  private final SelectClause select = new SelectClause();
   private final List<JoinClause> joins = new ArrayList<>();
   private final WhereClause where = new WhereClause();
   private final OrderByClause orderBy = new OrderByClause();
 
-  public SelectQuery(String alias, Class<?> entityClass) {
-    select = new SelectClause(alias, entityClass);
+  public void addSelected(Object selected) {
+    select.addSelected(selected);
+  }
+
+  public void addFrom(Class<?> type, String alias) {
+    select.addFrom(type, alias);
   }
 
   public void addJoin(JoinClause join) {

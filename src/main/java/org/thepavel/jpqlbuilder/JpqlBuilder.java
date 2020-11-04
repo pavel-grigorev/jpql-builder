@@ -24,9 +24,6 @@ import org.thepavel.jpqlbuilder.factory.DefaultProxyFactory;
 import org.thepavel.jpqlbuilder.factory.InstanceFactory;
 import org.thepavel.jpqlbuilder.factory.MapInstanceFactory;
 import org.thepavel.jpqlbuilder.factory.ProxyFactory;
-import org.thepavel.jpqlbuilder.functions.JpqlFunction;
-import org.thepavel.jpqlbuilder.operators.Operator;
-import org.thepavel.jpqlbuilder.operators.builders.CollectionOperatorBuilder;
 import org.thepavel.jpqlbuilder.path.PathResolverList;
 import org.thepavel.jpqlbuilder.query.JoinClause;
 import org.thepavel.jpqlbuilder.query.JoinType;
@@ -34,41 +31,31 @@ import org.thepavel.jpqlbuilder.query.SelectQuery;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
 import org.thepavel.jpqlbuilder.utils.AliasGenerator;
 import org.springframework.aop.support.AopUtils;
-import org.thepavel.jpqlbuilder.operators.Parentheses;
-import org.thepavel.jpqlbuilder.operators.builders.ExpressionChain;
-import org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder;
 import org.thepavel.jpqlbuilder.path.PathResolver;
 import org.thepavel.jpqlbuilder.utils.EntityHelper;
 
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.function.Function;
 
-public class JpqlBuilder<T> implements JpqlQuery {
+public class JpqlBuilder {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
+  private final PathResolverList rootPathResolvers = new PathResolverList();
   private final PathResolverList joinedPathResolvers = new PathResolverList();
   private final Map<Object, Join<?>> joins = new IdentityHashMap<>();
+  private final SelectQuery query = new SelectQuery();
   private final JpqlBuilderContext context;
-  private final PathResolver<T> pathResolver;
   private final JpqlStringBuilder stringBuilder;
-  private final SelectQuery query;
+  private boolean isBuilt;
 
-  private JpqlBuilder(Class<T> entityClass, JpqlBuilderContext context) {
-    requireEntityClass(entityClass);
+  private JpqlBuilder(JpqlBuilderContext context) {
     this.context = context;
 
-    String rootAlias = aliasGenerator.next();
-
-    pathResolver = new PathResolver<>(entityClass, rootAlias, context);
-    stringBuilder = new JpqlStringBuilder(pathResolver, joinedPathResolvers);
-    query = new SelectQuery(rootAlias, entityClass);
+    stringBuilder = new JpqlStringBuilder(rootPathResolvers, joinedPathResolvers);
   }
 
-  private static void requireEntityClass(Class<?> entityClass) {
-    if (!EntityHelper.isEntity(entityClass)) {
-      throw new IllegalArgumentException("Class " + entityClass.getName() + " is not an entity class");
-    }
+  public static JpqlBuilder builder() {
+    return new JpqlBuilder(JpqlBuilderContext.defaultContext());
   }
 
   public static Builder with(InstanceFactory instanceFactory) {
@@ -87,8 +74,41 @@ public class JpqlBuilder<T> implements JpqlQuery {
     return new Builder(proxyFactory);
   }
 
-  public static <T> JpqlBuilder<T> select(Class<T> entityType) {
-    return new JpqlBuilder<>(entityType, JpqlBuilderContext.defaultContext());
+  public Select select(Object... things) {
+    checkNotBuilt();
+    return new Select(stringBuilder, query).select(things);
+  }
+
+  public <T> OneLinerSelect<T> select(Class<T> entityType) {
+    checkNotBuilt();
+    return new OneLinerSelect<>(stringBuilder, query, from(entityType));
+  }
+
+  private void checkNotBuilt() {
+    if (isBuilt) {
+      throw new IllegalStateException("Must not call the select method twice");
+    }
+    isBuilt = true;
+  }
+
+  public <T> T from(Class<T> entityType) {
+    requireEntityClass(entityType);
+
+    String alias = aliasGenerator.next();
+    query.addFrom(entityType, alias);
+    return addRoot(entityType, alias);
+  }
+
+  private static void requireEntityClass(Class<?> entityClass) {
+    if (!EntityHelper.isEntity(entityClass)) {
+      throw new IllegalArgumentException("Class " + entityClass.getName() + " is not an entity class");
+    }
+  }
+
+  private <T> T addRoot(Class<T> entityType, String alias) {
+    PathResolver<T> pathResolver = new PathResolver<>(entityType, alias, context);
+    rootPathResolvers.add(pathResolver);
+    return pathResolver.getPathSpecifier();
   }
 
   public <P> Join<P> join(P path) {
@@ -197,56 +217,6 @@ public class JpqlBuilder<T> implements JpqlQuery {
     return new PathResolver<>((Class<P>) targetClass, alias, context);
   }
 
-  public <P> OperatorBuilder<P, Where<T>> where(P operand) {
-    return new OperatorBuilder<>(createWhere(), operand);
-  }
-
-  public <P> OperatorBuilder<P, Where<T>> where(JpqlFunction<P> operator) {
-    return new OperatorBuilder<>(createWhere(), operator);
-  }
-
-  public CollectionOperatorBuilder<Where<T>> where(Collection<?> operand) {
-    return new CollectionOperatorBuilder<>(createWhere(), operand);
-  }
-
-  public Where<T> where(ExpressionChain chain) {
-    return createWhere(new Parentheses(chain.getOperator()));
-  }
-
-  public Where<T> where(Function<T, ExpressionChain> chainFunction) {
-    return createWhere(chainFunction.apply(getPathSpecifier()).getOperator());
-  }
-
-  private Where<T> createWhere() {
-    return new Where<>(pathResolver, stringBuilder, query);
-  }
-
-  private Where<T> createWhere(Operator operator) {
-    return new Where<>(operator, pathResolver, stringBuilder, query);
-  }
-
-  public OrderBy<T> orderBy(Object operand) {
-    return new OrderBy<>(operand, pathResolver, stringBuilder, query);
-  }
-
-  public OrderBy<T> orderBy(Function<T, Object> operandFunction) {
-    return orderBy(operandFunction.apply(getPathSpecifier()));
-  }
-
-  @Override
-  public String getQueryString() {
-    return stringBuilder.build(query);
-  }
-
-  @Override
-  public Map<String, Object> getParameters() {
-    return stringBuilder.getParameters();
-  }
-
-  public T getPathSpecifier() {
-    return pathResolver.getPathSpecifier();
-  }
-
   public static class Builder {
     private InstanceFactory instanceFactory;
     private CollectionInstanceFactory collectionInstanceFactory;
@@ -289,8 +259,8 @@ public class JpqlBuilder<T> implements JpqlQuery {
       return this;
     }
 
-    public <T> JpqlBuilder<T> select(Class<T> entityType) {
-      return new JpqlBuilder<>(entityType, createContext());
+    public JpqlBuilder builder() {
+      return new JpqlBuilder(createContext());
     }
 
     private JpqlBuilderContext createContext() {

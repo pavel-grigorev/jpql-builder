@@ -30,7 +30,7 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 public class OneLinerTest {
   @Test
   public void oneLinerOrderBy() {
-    JpqlQuery query = JpqlBuilder.select(Company.class).orderBy(Company::getName).desc().orderBy(Company::getId);
+    JpqlQuery query = JpqlBuilder.builder().select(Company.class).orderBy(Company::getName).desc().orderBy(Company::getId);
 
     String expected = "select a from test_Company a order by a.name desc, a.id";
 
@@ -40,7 +40,7 @@ public class OneLinerTest {
 
   @Test
   public void oneLinerWhere() {
-    JpqlQuery query = JpqlBuilder.select(Company.class).where(c -> $(c.getStatus()).isNot(Status.DELETED));
+    JpqlQuery query = JpqlBuilder.builder().select(Company.class).where(c -> $(c.getStatus()).isNot(Status.DELETED));
 
     String expected = "select a from test_Company a where a.status <> :a";
 
@@ -56,6 +56,7 @@ public class OneLinerTest {
   @Test
   public void oneLinerWhereAndOrderBy() {
     JpqlQuery query = JpqlBuilder
+        .builder()
         .select(Company.class)
         .where(c -> $(c.getStatus()).isNot(Status.DELETED).and(c.getName()).like("%test%"))
         .orderBy(Company::getName).desc();

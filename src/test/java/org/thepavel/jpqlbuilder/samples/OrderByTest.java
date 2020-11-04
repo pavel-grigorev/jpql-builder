@@ -17,7 +17,7 @@
 package org.thepavel.jpqlbuilder.samples;
 
 import org.junit.Test;
-import org.thepavel.jpqlbuilder.functions.Functions;
+import org.thepavel.jpqlbuilder.Select;
 import org.thepavel.jpqlbuilder.model.Employee;
 import org.thepavel.jpqlbuilder.model.Status;
 import org.thepavel.jpqlbuilder.JpqlBuilder;
@@ -31,11 +31,12 @@ import static org.thepavel.jpqlbuilder.functions.Functions.upper;
 public class OrderByTest {
   @Test
   public void orderBy() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Select select = builder.select(employee);
 
     String query = select
-        .orderBy(Functions.lower(employee.getName())).desc()
+        .orderBy(lower(employee.getName())).desc()
         .orderBy(employee.getId()).asc()
         .orderBy(employee.getStatus())
         .getQueryString();
@@ -48,11 +49,12 @@ public class OrderByTest {
 
   @Test
   public void orderByWithNullsOrdering() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Select select = builder.select(employee);
 
     String query = select
-        .orderBy(Functions.upper(employee.getName())).desc().nullsFirst()
+        .orderBy(upper(employee.getName())).desc().nullsFirst()
         .orderBy(employee.getId()).asc().nullsLast()
         .orderBy(employee.getDepartment())
         .getQueryString();
@@ -66,8 +68,9 @@ public class OrderByTest {
 
   @Test
   public void whereAndOrderBy() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
+    Select select = builder.select(employee);
 
     String query = select
         .where(employee.getStatus()).isNot(Status.DELETED)

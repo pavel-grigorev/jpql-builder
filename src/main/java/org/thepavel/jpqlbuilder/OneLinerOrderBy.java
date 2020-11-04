@@ -16,37 +16,46 @@
 
 package org.thepavel.jpqlbuilder;
 
-import org.thepavel.jpqlbuilder.operators.builders.BaseExpressionChain;
-import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
-import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.query.SelectQuery;
+import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
 
 import java.util.Map;
+import java.util.function.Function;
 
-public class Where extends BaseExpressionChain<Where> implements JpqlQuery {
+public class OneLinerOrderBy<T> implements JpqlQuery {
   private final JpqlStringBuilder stringBuilder;
   private final SelectQuery query;
+  private final T rootPathSpecifier;
 
-  Where(JpqlStringBuilder stringBuilder, SelectQuery query) {
+  OneLinerOrderBy(JpqlStringBuilder stringBuilder, SelectQuery query, T rootPathSpecifier) {
     this.stringBuilder = stringBuilder;
     this.query = query;
+    this.rootPathSpecifier = rootPathSpecifier;
   }
 
-  Where(Operator operator, JpqlStringBuilder stringBuilder, SelectQuery query) {
-    super(operator);
-    this.stringBuilder = stringBuilder;
-    this.query = query;
-
-    query.setWhere(operator);
+  public OneLinerOrderBy<T> orderBy(Function<T, Object> operandFunction) {
+    query.addOrderBy(operandFunction.apply(rootPathSpecifier));
+    return this;
   }
 
-  @Override
-  protected void onOperatorChange(Operator operator) {
-    query.setWhere(operator);
+  public OneLinerOrderBy<T> asc() {
+    query.setOrderAsc();
+    return this;
   }
 
-  public OrderBy orderBy(Object operand) {
-    return new OrderBy(operand, stringBuilder, query);
+  public OneLinerOrderBy<T> desc() {
+    query.setOrderDesc();
+    return this;
+  }
+
+  public OneLinerOrderBy<T> nullsFirst() {
+    query.setOrderNullsFirst();
+    return this;
+  }
+
+  public OneLinerOrderBy<T> nullsLast() {
+    query.setOrderNullsLast();
+    return this;
   }
 
   @Override

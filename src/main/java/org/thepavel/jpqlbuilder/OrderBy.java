@@ -18,53 +18,41 @@ package org.thepavel.jpqlbuilder;
 
 import org.thepavel.jpqlbuilder.query.SelectQuery;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
-import org.thepavel.jpqlbuilder.path.PathResolver;
 
 import java.util.Map;
-import java.util.function.Function;
 
-public class OrderBy<T> implements JpqlQuery {
-  private final PathResolver<T> pathResolver;
+public class OrderBy implements JpqlQuery {
   private final JpqlStringBuilder stringBuilder;
   private final SelectQuery query;
 
-  OrderBy(Object operand, PathResolver<T> pathResolver, JpqlStringBuilder stringBuilder, SelectQuery query) {
-    this.pathResolver = pathResolver;
+  OrderBy(Object operand, JpqlStringBuilder stringBuilder, SelectQuery query) {
     this.stringBuilder = stringBuilder;
     this.query = query;
 
     query.addOrderBy(operand);
   }
 
-  public OrderBy<T> orderBy(Object operand) {
+  public OrderBy orderBy(Object operand) {
     query.addOrderBy(operand);
     return this;
   }
 
-  public OrderBy<T> orderBy(Function<T, Object> operandFunction) {
-    return orderBy(operandFunction.apply(getPathSpecifier()));
-  }
-
-  private T getPathSpecifier() {
-    return pathResolver.getPathSpecifier();
-  }
-
-  public OrderBy<T> asc() {
+  public OrderBy asc() {
     query.setOrderAsc();
     return this;
   }
 
-  public OrderBy<T> desc() {
+  public OrderBy desc() {
     query.setOrderDesc();
     return this;
   }
 
-  public OrderBy<T> nullsFirst() {
+  public OrderBy nullsFirst() {
     query.setOrderNullsFirst();
     return this;
   }
 
-  public OrderBy<T> nullsLast() {
+  public OrderBy nullsLast() {
     query.setOrderNullsLast();
     return this;
   }

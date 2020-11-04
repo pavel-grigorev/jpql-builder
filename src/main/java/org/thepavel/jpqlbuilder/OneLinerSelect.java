@@ -16,37 +16,34 @@
 
 package org.thepavel.jpqlbuilder;
 
-import org.thepavel.jpqlbuilder.operators.builders.BaseExpressionChain;
-import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
 import org.thepavel.jpqlbuilder.operators.Operator;
+import org.thepavel.jpqlbuilder.operators.builders.ExpressionChain;
 import org.thepavel.jpqlbuilder.query.SelectQuery;
+import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
 
 import java.util.Map;
+import java.util.function.Function;
 
-public class Where extends BaseExpressionChain<Where> implements JpqlQuery {
+public class OneLinerSelect<T> implements JpqlQuery {
   private final JpqlStringBuilder stringBuilder;
   private final SelectQuery query;
+  private final T rootPathSpecifier;
 
-  Where(JpqlStringBuilder stringBuilder, SelectQuery query) {
+  OneLinerSelect(JpqlStringBuilder stringBuilder, SelectQuery query, T rootPathSpecifier) {
     this.stringBuilder = stringBuilder;
     this.query = query;
+    this.rootPathSpecifier = rootPathSpecifier;
+
+    query.addSelected(rootPathSpecifier);
   }
 
-  Where(Operator operator, JpqlStringBuilder stringBuilder, SelectQuery query) {
-    super(operator);
-    this.stringBuilder = stringBuilder;
-    this.query = query;
-
-    query.setWhere(operator);
+  public OneLinerWhere<T> where(Function<T, ExpressionChain> chainFunction) {
+    Operator operator = chainFunction.apply(rootPathSpecifier).getOperator();
+    return new OneLinerWhere<>(operator, stringBuilder, query, rootPathSpecifier);
   }
 
-  @Override
-  protected void onOperatorChange(Operator operator) {
-    query.setWhere(operator);
-  }
-
-  public OrderBy orderBy(Object operand) {
-    return new OrderBy(operand, stringBuilder, query);
+  public OneLinerOrderBy<T> orderBy(Function<T, Object> operandFunction) {
+    return new OneLinerOrderBy<>(stringBuilder, query, rootPathSpecifier).orderBy(operandFunction);
   }
 
   @Override

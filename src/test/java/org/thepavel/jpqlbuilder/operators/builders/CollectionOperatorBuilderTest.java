@@ -16,7 +16,6 @@
 
 package org.thepavel.jpqlbuilder.operators.builders;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.DummyJpqlStringWriter;
 import org.thepavel.jpqlbuilder.operators.IsEmpty;
@@ -35,7 +34,7 @@ public class CollectionOperatorBuilderTest {
     Operator operator = new CollectionOperatorBuilder<>(chain, new ArrayList<>()).isEmpty().getOperator();
 
     assertTrue(operator instanceof IsEmpty);
-    Assert.assertEquals("[] is empty", DummyJpqlStringWriter.asString(operator));
+    assertEquals("[] is empty", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test
@@ -44,6 +43,6 @@ public class CollectionOperatorBuilderTest {
     Operator operator = new CollectionOperatorBuilder<>(chain, new ArrayList<>()).isNotEmpty().getOperator();
 
     assertTrue(operator instanceof IsNotEmpty);
-    Assert.assertEquals("[] is not empty", DummyJpqlStringWriter.asString(operator));
+    assertEquals("[] is not empty", DummyJpqlStringWriter.asString(operator));
   }
 }

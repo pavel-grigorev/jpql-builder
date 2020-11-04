@@ -16,7 +16,6 @@
 
 package org.thepavel.jpqlbuilder.operators.builders;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.DummyFunction;
 import org.thepavel.jpqlbuilder.DummyJpqlStringWriter;
@@ -34,7 +33,7 @@ public class ExpressionChainTest {
     ExpressionChain chain = new ExpressionChain(DummyFunction.dummy("A"));
     Operator operator = chain.and(1).is(2).getOperator();
 
-    Assert.assertEquals("dummy(A) and 1 = 2", DummyJpqlStringWriter.asString(operator));
+    assertEquals("dummy(A) and 1 = 2", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test
@@ -42,7 +41,7 @@ public class ExpressionChainTest {
     ExpressionChain chain = new ExpressionChain(DummyFunction.dummy("A"));
     Operator operator = chain.and("B").is("C").getOperator();
 
-    Assert.assertEquals("dummy(A) and B = C", DummyJpqlStringWriter.asString(operator));
+    assertEquals("dummy(A) and B = C", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test
@@ -50,7 +49,7 @@ public class ExpressionChainTest {
     ExpressionChain chain = new ExpressionChain(DummyFunction.dummy("A"));
     Operator operator = chain.and(DummyFunction.dummy("B")).is("C").getOperator();
 
-    Assert.assertEquals("dummy(A) and dummy(B) = C", DummyJpqlStringWriter.asString(operator));
+    assertEquals("dummy(A) and dummy(B) = C", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test
@@ -58,7 +57,7 @@ public class ExpressionChainTest {
     ExpressionChain chain = new ExpressionChain(DummyFunction.dummy("A"));
     Operator operator = chain.and(new ArrayList<>()).isEmpty().getOperator();
 
-    Assert.assertEquals("dummy(A) and [] is empty", DummyJpqlStringWriter.asString(operator));
+    assertEquals("dummy(A) and [] is empty", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test
@@ -66,7 +65,7 @@ public class ExpressionChainTest {
     ExpressionChain chain = new ExpressionChain(DummyFunction.dummy("A"));
     Operator operator = chain.and($("B").is("C")).getOperator();
 
-    Assert.assertEquals("dummy(A) and (B = C)", DummyJpqlStringWriter.asString(operator));
+    assertEquals("dummy(A) and (B = C)", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test
@@ -74,7 +73,7 @@ public class ExpressionChainTest {
     ExpressionChain chain = new ExpressionChain(DummyFunction.dummy("A"));
     Operator operator = chain.or(1).is(2).getOperator();
 
-    Assert.assertEquals("dummy(A) or 1 = 2", DummyJpqlStringWriter.asString(operator));
+    assertEquals("dummy(A) or 1 = 2", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test
@@ -82,7 +81,7 @@ public class ExpressionChainTest {
     ExpressionChain chain = new ExpressionChain(DummyFunction.dummy("A"));
     Operator operator = chain.or("B").is("C").getOperator();
 
-    Assert.assertEquals("dummy(A) or B = C", DummyJpqlStringWriter.asString(operator));
+    assertEquals("dummy(A) or B = C", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test
@@ -90,7 +89,7 @@ public class ExpressionChainTest {
     ExpressionChain chain = new ExpressionChain(DummyFunction.dummy("A"));
     Operator operator = chain.or(DummyFunction.dummy("B")).is("C").getOperator();
 
-    Assert.assertEquals("dummy(A) or dummy(B) = C", DummyJpqlStringWriter.asString(operator));
+    assertEquals("dummy(A) or dummy(B) = C", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test
@@ -98,7 +97,7 @@ public class ExpressionChainTest {
     ExpressionChain chain = new ExpressionChain(DummyFunction.dummy("A"));
     Operator operator = chain.or(new ArrayList<>()).isNotEmpty().getOperator();
 
-    Assert.assertEquals("dummy(A) or [] is not empty", DummyJpqlStringWriter.asString(operator));
+    assertEquals("dummy(A) or [] is not empty", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test
@@ -106,7 +105,7 @@ public class ExpressionChainTest {
     ExpressionChain chain = new ExpressionChain(DummyFunction.dummy("A"));
     Operator operator = chain.or($("B").is("C")).getOperator();
 
-    Assert.assertEquals("dummy(A) or (B = C)", DummyJpqlStringWriter.asString(operator));
+    assertEquals("dummy(A) or (B = C)", DummyJpqlStringWriter.asString(operator));
   }
 
   @Test

@@ -68,7 +68,10 @@ public class JpqlStringBuilderTest {
     PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
     Company company = pathResolver.getPathSpecifier();
 
-    JpqlStringBuilder builder = new JpqlStringBuilder(pathResolver, null);
+    PathResolverList roots = new PathResolverList();
+    roots.add(pathResolver);
+
+    JpqlStringBuilder builder = new JpqlStringBuilder(roots, null);
     builder.appendValue(company.getName());
 
     assertEquals("a.name", builder.toString());
@@ -81,10 +84,13 @@ public class JpqlStringBuilderTest {
     PathResolver<Company> joined = new PathResolver<>(Company.class, "b", context);
     Company company = joined.getPathSpecifier();
 
+    PathResolverList roots = new PathResolverList();
+    roots.add(pathResolver);
+
     PathResolverList joins = new PathResolverList();
     joins.add(joined);
 
-    JpqlStringBuilder builder = new JpqlStringBuilder(pathResolver, joins);
+    JpqlStringBuilder builder = new JpqlStringBuilder(roots, joins);
     builder.appendValue(company.getName());
 
     assertEquals("b.name", builder.toString());
@@ -96,10 +102,13 @@ public class JpqlStringBuilderTest {
     PathResolver<Department> pathResolver = new PathResolver<>(Department.class, "a", context);
     PathResolver<Company> joined = new PathResolver<>(Company.class, "b", context);
 
+    PathResolverList roots = new PathResolverList();
+    roots.add(pathResolver);
+
     PathResolverList joins = new PathResolverList();
     joins.add(joined);
 
-    JpqlStringBuilder builder = new JpqlStringBuilder(pathResolver, joins);
+    JpqlStringBuilder builder = new JpqlStringBuilder(roots, joins);
     Object value = new Object();
     builder.appendValue(value);
 
@@ -120,17 +129,22 @@ public class JpqlStringBuilderTest {
     PathResolver<Department> joined = new PathResolver<>(Department.class, "b", context);
     Department department = joined.getPathSpecifier();
 
+    PathResolverList roots = new PathResolverList();
+    roots.add(pathResolver);
+
     PathResolverList joins = new PathResolverList();
     joins.add(joined);
 
-    SelectQuery query = new SelectQuery("a", Company.class);
+    SelectQuery query = new SelectQuery();
+    query.addSelected(company);
+    query.addFrom(Company.class, "a");
     query.addJoin(new JoinClause("b", company.getDepartments(), JoinType.INNER));
     query.setWhere(DummyOperator.dummy("A"));
     query.addOrderBy(company.getName());
     query.setOrderDesc();
     query.addOrderBy(department.getName());
 
-    JpqlStringBuilder builder = new JpqlStringBuilder(pathResolver, joins);
+    JpqlStringBuilder builder = new JpqlStringBuilder(roots, joins);
 
     assertEquals(
         "select a from test_Company a join a.departments b where dummy(:a) order by a.name desc, b.name",
@@ -146,19 +160,33 @@ public class JpqlStringBuilderTest {
 
   @Test
   public void buildMultipleTimes() {
-    SelectQuery query = new SelectQuery("a", Company.class);
-    JpqlStringBuilder builder = new JpqlStringBuilder(null, null);
+    PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
+    Company company = pathResolver.getPathSpecifier();
+
+    PathResolverList roots = new PathResolverList();
+    roots.add(pathResolver);
+
+    JpqlStringBuilder builder = new JpqlStringBuilder(roots, null);
+
+    SelectQuery query = new SelectQuery();
+    query.addSelected(company);
+    query.addFrom(Company.class, "a");
+
     assertEquals("select a from test_Company a", builder.build(query));
     assertEquals("select a from test_Company a", builder.build(query));
   }
 
   @Test
   public void returnsCopyOfParameters() {
-    SelectQuery query = new SelectQuery("a", Company.class);
-    query.setWhere(DummyOperator.dummy("A"));
-
     PathResolver<Company> pathResolver = new PathResolver<>(Company.class, "a", context);
-    JpqlStringBuilder builder = new JpqlStringBuilder(pathResolver, new PathResolverList());
+
+    PathResolverList roots = new PathResolverList();
+    roots.add(pathResolver);
+
+    JpqlStringBuilder builder = new JpqlStringBuilder(roots, new PathResolverList());
+
+    SelectQuery query = new SelectQuery();
+    query.setWhere(DummyOperator.dummy("A"));
     builder.build(query);
 
     Map<String, Object> params1 = builder.getParameters();

@@ -16,7 +16,6 @@
 
 package org.thepavel.jpqlbuilder.query;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.DummyJpqlStringWriter;
 
@@ -25,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 public class OrderByClauseTest {
   @Test
   public void empty() {
-    Assert.assertEquals("", DummyJpqlStringWriter.asString(new OrderByClause()));
+    assertEquals("", DummyJpqlStringWriter.asString(new OrderByClause()));
   }
 
   @Test
@@ -33,7 +32,7 @@ public class OrderByClauseTest {
     OrderByClause orderBy = new OrderByClause();
     orderBy.addItem("A");
 
-    Assert.assertEquals(" order by A", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -43,7 +42,7 @@ public class OrderByClauseTest {
     orderBy.addItem("B");
     orderBy.addItem("C");
 
-    Assert.assertEquals(" order by A, B, C", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A, B, C", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -52,7 +51,7 @@ public class OrderByClauseTest {
     orderBy.addItem("A");
     orderBy.setAsc();
 
-    Assert.assertEquals(" order by A asc", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A asc", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -61,7 +60,7 @@ public class OrderByClauseTest {
     orderBy.addItem("A");
     orderBy.setDesc();
 
-    Assert.assertEquals(" order by A desc", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A desc", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -71,7 +70,7 @@ public class OrderByClauseTest {
     orderBy.setAsc();
     orderBy.setDesc();
 
-    Assert.assertEquals(" order by A desc", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A desc", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -80,7 +79,7 @@ public class OrderByClauseTest {
     orderBy.addItem("A");
     orderBy.setNullsFirst();
 
-    Assert.assertEquals(" order by A nulls first", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A nulls first", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -89,7 +88,7 @@ public class OrderByClauseTest {
     orderBy.addItem("A");
     orderBy.setNullsLast();
 
-    Assert.assertEquals(" order by A nulls last", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A nulls last", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -99,7 +98,7 @@ public class OrderByClauseTest {
     orderBy.setNullsFirst();
     orderBy.setNullsLast();
 
-    Assert.assertEquals(" order by A nulls last", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A nulls last", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -109,7 +108,7 @@ public class OrderByClauseTest {
     orderBy.setAsc();
     orderBy.setNullsFirst();
 
-    Assert.assertEquals(" order by A asc nulls first", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A asc nulls first", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -119,7 +118,7 @@ public class OrderByClauseTest {
     orderBy.setAsc();
     orderBy.setNullsLast();
 
-    Assert.assertEquals(" order by A asc nulls last", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A asc nulls last", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -129,7 +128,7 @@ public class OrderByClauseTest {
     orderBy.setDesc();
     orderBy.setNullsFirst();
 
-    Assert.assertEquals(" order by A desc nulls first", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A desc nulls first", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -139,7 +138,7 @@ public class OrderByClauseTest {
     orderBy.setDesc();
     orderBy.setNullsLast();
 
-    Assert.assertEquals(" order by A desc nulls last", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A desc nulls last", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -151,7 +150,7 @@ public class OrderByClauseTest {
     orderBy.setAsc();
     orderBy.addItem("C");
 
-    Assert.assertEquals(" order by A desc, B asc, C", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A desc, B asc, C", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -163,7 +162,7 @@ public class OrderByClauseTest {
     orderBy.setNullsFirst();
     orderBy.addItem("C");
 
-    Assert.assertEquals(" order by A nulls last, B nulls first, C", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A nulls last, B nulls first, C", DummyJpqlStringWriter.asString(orderBy));
   }
 
   @Test
@@ -177,6 +176,6 @@ public class OrderByClauseTest {
     orderBy.setNullsLast();
     orderBy.addItem("C");
 
-    Assert.assertEquals(" order by A desc nulls first, B asc nulls last, C", DummyJpqlStringWriter.asString(orderBy));
+    assertEquals(" order by A desc nulls first, B asc nulls last, C", DummyJpqlStringWriter.asString(orderBy));
   }
 }

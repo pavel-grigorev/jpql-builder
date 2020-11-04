@@ -17,6 +17,7 @@
 package org.thepavel.jpqlbuilder.samples;
 
 import org.junit.Test;
+import org.thepavel.jpqlbuilder.Select;
 import org.thepavel.jpqlbuilder.Where;
 import org.thepavel.jpqlbuilder.model.Company;
 import org.thepavel.jpqlbuilder.model.Employee;
@@ -33,10 +34,10 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 public class DynamicQueryTest {
   @Test
   public void dynamicQuery() {
-    JpqlBuilder<Employee> select = JpqlBuilder.select(Employee.class);
-    Employee employee = select.getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee employee = builder.from(Employee.class);
 
-    Where<Employee> where = select.where(employee.getStatus()).isNot(Status.DELETED);
+    Where where = builder.select(employee).where(employee.getStatus()).isNot(Status.DELETED);
     where.and(employee.getName()).like("%test%");
 
     ExpressionChain idFilter = $(employee.getId()).is(1L);
@@ -45,8 +46,7 @@ public class DynamicQueryTest {
 
     where.and(idFilter);
 
-    where.orderBy(employee.getId()).asc();
-    select.orderBy(employee.getName()).desc();
+    where.orderBy(employee.getId()).asc().orderBy(employee.getName()).desc();
 
     String expected = "select a from test_Employee a " +
         "where a.status <> :a " +
@@ -54,7 +54,7 @@ public class DynamicQueryTest {
         "and (a.id = :c or a.id = :d or a.id = :e) " +
         "order by a.id asc, a.name desc";
 
-    assertEquals(expected, select.getQueryString());
+    assertEquals(expected, where.getQueryString());
     assertEquals(
         new HashMap<String, Object>() {{
           put("a", Status.DELETED);
@@ -63,15 +63,17 @@ public class DynamicQueryTest {
           put("d", 2L);
           put("e", 3L);
         }},
-        select.getParameters()
+        where.getParameters()
     );
   }
 
   @Test
   public void dynamicQuery1() {
-    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-    Company c = select.getPathSpecifier();
-    Where<Company> where = null;
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Company c = builder.from(Company.class);
+
+    Select select = builder.select(c);
+    Where where = null;
 
     for (String name : Arrays.asList("Google", "Apple")) {
       if (where == null) {
@@ -81,7 +83,7 @@ public class DynamicQueryTest {
       }
     }
 
-    select.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
+    builder.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
 
     String expected = "select a from test_Company a " +
         "join a.departments b on b.status <> :a " +
@@ -100,8 +102,10 @@ public class DynamicQueryTest {
 
   @Test
   public void dynamicQuery2() {
-    JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-    Company c = select.getPathSpecifier();
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Company c = builder.from(Company.class);
+
+    Select select = builder.select(c);
     ExpressionChain condition = null;
 
     for (String name : Arrays.asList("Google", "Apple")) {
@@ -112,7 +116,7 @@ public class DynamicQueryTest {
       }
     }
 
-    select.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
+    builder.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
     select.where(condition).and(c.getStatus()).isNot(Status.DELETED);
 
     String expected = "select a from test_Company a " +
