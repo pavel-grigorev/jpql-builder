@@ -17,6 +17,7 @@
 package org.thepavel.jpqlbuilder.samples;
 
 import org.junit.Test;
+import org.thepavel.jpqlbuilder.DummyObject;
 import org.thepavel.jpqlbuilder.Select;
 import org.thepavel.jpqlbuilder.functions.Cast;
 import org.thepavel.jpqlbuilder.functions.Concat;
@@ -34,6 +35,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.thepavel.jpqlbuilder.functions.Functions._case;
+import static org.thepavel.jpqlbuilder.functions.Functions._new;
 import static org.thepavel.jpqlbuilder.functions.Functions.abs;
 import static org.thepavel.jpqlbuilder.functions.Functions.add;
 import static org.thepavel.jpqlbuilder.functions.Functions.avg;
@@ -1120,6 +1122,28 @@ public class FunctionsTest {
         .getQueryString();
 
     String expected = "select sum(a.id) from test_Employee a where a.status <> :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void newTest() {
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Company c = builder.from(Company.class);
+    Select select = builder.select(_new(DummyObject.class, c.getName(), c.getId()));
+
+    String query = select
+        .where(c.getStatus()).isNot(Status.DELETED)
+        .getQueryString();
+
+    String expected = "select new org.thepavel.jpqlbuilder.DummyObject(a.name, a.id) from test_Company a " +
+        "where a.status <> :a";
 
     assertEquals(expected, query);
     assertEquals(

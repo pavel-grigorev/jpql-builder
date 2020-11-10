@@ -427,4 +427,8 @@ public class Functions {
   public static <T extends Number> Sum<T> sum(Object argument) {
     return new Sum<>(argument);
   }
+
+  public static New _new(Class<?> type, Object... arguments) {
+    return new New(type, arguments);
+  }
 }

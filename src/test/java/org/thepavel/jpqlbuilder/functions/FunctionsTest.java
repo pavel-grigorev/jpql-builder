@@ -18,8 +18,10 @@ package org.thepavel.jpqlbuilder.functions;
 
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.DummyAdvice;
+import org.thepavel.jpqlbuilder.DummyObject;
 import org.thepavel.jpqlbuilder.factory.DefaultProxyFactory;
 import org.thepavel.jpqlbuilder.model.Company;
+import org.thepavel.jpqlbuilder.model.Status;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -652,6 +654,26 @@ public class FunctionsTest {
   @Test
   public void sum() {
     assertEquals("sum(A)", asString(new Sum<>("A")));
+  }
+
+  @Test
+  public void newTest() {
+    assertEquals("new org.thepavel.jpqlbuilder.DummyObject(A, 1)", asString(new New(DummyObject.class, "A", 1)));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void newPrimitive() {
+    assertEquals("new int(1)", asString(new New(int.class, 1)));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void newArray() {
+    assertEquals("new org.thepavel.jpqlbuilder.DummyObject[1]", asString(new New(DummyObject[].class, 1)));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void newEnum() {
+    assertEquals("new org.thepavel.jpqlbuilder.model.Status()", asString(new New(Status.class)));
   }
 
   public static class TestEntity {
