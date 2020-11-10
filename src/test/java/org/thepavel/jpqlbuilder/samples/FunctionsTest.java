@@ -36,10 +36,12 @@ import static org.junit.Assert.assertEquals;
 import static org.thepavel.jpqlbuilder.functions.Functions._case;
 import static org.thepavel.jpqlbuilder.functions.Functions.abs;
 import static org.thepavel.jpqlbuilder.functions.Functions.add;
+import static org.thepavel.jpqlbuilder.functions.Functions.avg;
 import static org.thepavel.jpqlbuilder.functions.Functions.cast;
 import static org.thepavel.jpqlbuilder.functions.Functions.coalesce;
 import static org.thepavel.jpqlbuilder.functions.Functions.column;
 import static org.thepavel.jpqlbuilder.functions.Functions.concat;
+import static org.thepavel.jpqlbuilder.functions.Functions.count;
 import static org.thepavel.jpqlbuilder.functions.Functions.currentDate;
 import static org.thepavel.jpqlbuilder.functions.Functions.currentTime;
 import static org.thepavel.jpqlbuilder.functions.Functions.currentTimestamp;
@@ -53,6 +55,8 @@ import static org.thepavel.jpqlbuilder.functions.Functions.leftTrim;
 import static org.thepavel.jpqlbuilder.functions.Functions.length;
 import static org.thepavel.jpqlbuilder.functions.Functions.locate;
 import static org.thepavel.jpqlbuilder.functions.Functions.lower;
+import static org.thepavel.jpqlbuilder.functions.Functions.max;
+import static org.thepavel.jpqlbuilder.functions.Functions.min;
 import static org.thepavel.jpqlbuilder.functions.Functions.mod;
 import static org.thepavel.jpqlbuilder.functions.Functions.multi;
 import static org.thepavel.jpqlbuilder.functions.Functions.nullif;
@@ -63,6 +67,7 @@ import static org.thepavel.jpqlbuilder.functions.Functions.sql;
 import static org.thepavel.jpqlbuilder.functions.Functions.sqrt;
 import static org.thepavel.jpqlbuilder.functions.Functions.sub;
 import static org.thepavel.jpqlbuilder.functions.Functions.substring;
+import static org.thepavel.jpqlbuilder.functions.Functions.sum;
 import static org.thepavel.jpqlbuilder.functions.Functions.trim;
 import static org.thepavel.jpqlbuilder.functions.Functions.type;
 import static org.thepavel.jpqlbuilder.functions.Functions.upper;
@@ -994,6 +999,132 @@ public class FunctionsTest {
     assertEquals(
         new HashMap<String, Object>() {{
           put("a", 100);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void countEntityTest() {
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Company c = builder.from(Company.class);
+    Select select = builder.select(count(c));
+
+    String query = select
+        .where(c.getStatus()).isNot(Status.DELETED)
+        .getQueryString();
+
+    String expected = "select count(a) from test_Company a where a.status <> :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void countAttributeTest() {
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Company c = builder.from(Company.class);
+    Select select = builder.select(count(c.getId()));
+
+    String query = select
+        .where(c.getStatus()).isNot(Status.DELETED)
+        .getQueryString();
+
+    String expected = "select count(a.id) from test_Company a where a.status <> :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void minTest() {
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee e = builder.from(Employee.class);
+    Select select = builder.select(min(e.getEmploymentDate()));
+
+    String query = select
+        .where(e.getStatus()).isNot(Status.DELETED)
+        .getQueryString();
+
+    String expected = "select min(a.employmentDate) from test_Employee a where a.status <> :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void maxTest() {
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee e = builder.from(Employee.class);
+    Select select = builder.select(max(e.getEmploymentDate()));
+
+    String query = select
+        .where(e.getStatus()).isNot(Status.DELETED)
+        .getQueryString();
+
+    String expected = "select max(a.employmentDate) from test_Employee a where a.status <> :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void avgTest() {
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee e = builder.from(Employee.class);
+    Select select = builder.select(avg(e.getEmploymentDate()));
+
+    String query = select
+        .where(e.getStatus()).isNot(Status.DELETED)
+        .getQueryString();
+
+    String expected = "select avg(a.employmentDate) from test_Employee a where a.status <> :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+        }},
+        select.getParameters()
+    );
+  }
+
+  @Test
+  public void sumTest() {
+    JpqlBuilder builder = JpqlBuilder.builder();
+    Employee e = builder.from(Employee.class);
+    Select select = builder.select(sum(e.getId()));
+
+    String query = select
+        .where(e.getStatus()).isNot(Status.DELETED)
+        .getQueryString();
+
+    String expected = "select sum(a.id) from test_Employee a where a.status <> :a";
+
+    assertEquals(expected, query);
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
         }},
         select.getParameters()
     );

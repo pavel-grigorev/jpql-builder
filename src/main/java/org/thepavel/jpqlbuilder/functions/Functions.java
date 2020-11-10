@@ -407,4 +407,24 @@ public class Functions {
   public static <T> Column<T> column(String name, Object entity) {
     return new Column<>(name, entity);
   }
+
+  public static <T extends Number> Count<T> count(Object argument) {
+    return new Count<>(argument);
+  }
+
+  public static <T extends Number> Min<T> min(Object argument) {
+    return new Min<>(argument);
+  }
+
+  public static <T extends Number> Max<T> max(Object argument) {
+    return new Max<>(argument);
+  }
+
+  public static <T extends Number> Avg<T> avg(Object argument) {
+    return new Avg<>(argument);
+  }
+
+  public static <T extends Number> Sum<T> sum(Object argument) {
+    return new Sum<>(argument);
+  }
 }
