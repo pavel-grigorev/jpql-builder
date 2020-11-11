@@ -57,7 +57,10 @@ public class OrderByClause implements Operator {
       return;
     }
     stringWriter.appendString(" order by ");
+    writeItems(stringWriter);
+  }
 
+  private void writeItems(JpqlStringWriter stringWriter) {
     for (int i = 0; i < items.size(); i++) {
       if (i > 0) {
         stringWriter.appendString(", ");

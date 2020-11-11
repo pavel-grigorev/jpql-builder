@@ -16,37 +16,25 @@
 
 package org.thepavel.jpqlbuilder;
 
-import org.thepavel.jpqlbuilder.operators.builders.BaseExpressionChain;
-import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
-import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.query.SelectQuery;
+import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
 
 import java.util.Map;
 
-public class Where extends BaseExpressionChain<Where> implements JpqlQuery {
+public class GroupBy implements JpqlQuery {
   private final JpqlStringBuilder stringBuilder;
   private final SelectQuery query;
 
-  Where(JpqlStringBuilder stringBuilder, SelectQuery query) {
-    this.stringBuilder = stringBuilder;
-    this.query = query;
-  }
-
-  Where(Operator operator, JpqlStringBuilder stringBuilder, SelectQuery query) {
-    super(operator);
+  GroupBy(Object item, JpqlStringBuilder stringBuilder, SelectQuery query) {
     this.stringBuilder = stringBuilder;
     this.query = query;
 
-    query.setWhere(operator);
-  }
-
-  @Override
-  protected void onOperatorChange(Operator operator) {
-    query.setWhere(operator);
+    query.addGroupBy(item);
   }
 
   public GroupBy groupBy(Object item) {
-    return new GroupBy(item, stringBuilder, query);
+    query.addGroupBy(item);
+    return this;
   }
 
   public OrderBy orderBy(Object operand) {

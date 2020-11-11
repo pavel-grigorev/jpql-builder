@@ -68,6 +68,10 @@ public class Select implements JpqlQuery {
     return new Where(operator, stringBuilder, query);
   }
 
+  public GroupBy groupBy(Object item) {
+    return new GroupBy(item, stringBuilder, query);
+  }
+
   public OrderBy orderBy(Object operand) {
     return new OrderBy(operand, stringBuilder, query);
   }
