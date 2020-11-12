@@ -16,9 +16,16 @@
 
 package org.thepavel.jpqlbuilder;
 
+import org.thepavel.jpqlbuilder.functions.JpqlFunction;
+import org.thepavel.jpqlbuilder.operators.Operator;
+import org.thepavel.jpqlbuilder.operators.Parentheses;
+import org.thepavel.jpqlbuilder.operators.builders.CollectionOperatorBuilder;
+import org.thepavel.jpqlbuilder.operators.builders.ExpressionChain;
+import org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder;
 import org.thepavel.jpqlbuilder.query.SelectQuery;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class GroupBy implements JpqlQuery {
@@ -35,6 +42,30 @@ public class GroupBy implements JpqlQuery {
   public GroupBy groupBy(Object item) {
     query.addGroupBy(item);
     return this;
+  }
+
+  public <T> OperatorBuilder<T, Having> having(T operand) {
+    return new OperatorBuilder<>(createHaving(), operand);
+  }
+
+  public <T> OperatorBuilder<T, Having> having(JpqlFunction<T> operator) {
+    return new OperatorBuilder<>(createHaving(), operator);
+  }
+
+  public CollectionOperatorBuilder<Having> having(Collection<?> operand) {
+    return new CollectionOperatorBuilder<>(createHaving(), operand);
+  }
+
+  public Having having(ExpressionChain chain) {
+    return createHaving(new Parentheses(chain.getOperator()));
+  }
+
+  private Having createHaving() {
+    return new Having(stringBuilder, query);
+  }
+
+  private Having createHaving(Operator operator) {
+    return new Having(operator, stringBuilder, query);
   }
 
   public OrderBy orderBy(Object operand) {

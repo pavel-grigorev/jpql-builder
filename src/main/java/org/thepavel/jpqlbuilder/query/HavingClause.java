@@ -16,23 +16,22 @@
 
 package org.thepavel.jpqlbuilder.query;
 
-import org.junit.Test;
-import org.thepavel.jpqlbuilder.DummyOperator;
+import org.thepavel.jpqlbuilder.operators.Operator;
+import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
 
-import static org.junit.Assert.assertEquals;
-import static org.thepavel.jpqlbuilder.DummyJpqlStringWriter.asString;
+public class HavingClause implements Operator {
+  private Operator operator;
 
-public class WhereClauseTest {
-  @Test
-  public void empty() {
-    assertEquals("", asString(new WhereClause()));
+  public void setOperator(Operator operator) {
+    this.operator = operator;
   }
 
-  @Test
-  public void notEmpty() {
-    WhereClause where = new WhereClause();
-    where.setOperator(DummyOperator.dummy("A"));
-
-    assertEquals(" where dummy(A)", asString(where));
+  @Override
+  public void writeTo(JpqlStringWriter stringWriter) {
+    if (operator == null) {
+      return;
+    }
+    stringWriter.appendString(" having ");
+    writeOperand(operator, stringWriter);
   }
 }

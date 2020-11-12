@@ -27,6 +27,7 @@ public class SelectQuery implements Operator {
   private final List<JoinClause> joins = new ArrayList<>();
   private final WhereClause where = new WhereClause();
   private final GroupByClause groupBy = new GroupByClause();
+  private final HavingClause having = new HavingClause();
   private final OrderByClause orderBy = new OrderByClause();
 
   public void addSelected(Object selected) {
@@ -47,6 +48,10 @@ public class SelectQuery implements Operator {
 
   public void addGroupBy(Object item) {
     groupBy.addItem(item);
+  }
+
+  public void setHaving(Operator operator) {
+    having.setOperator(operator);
   }
 
   public void addOrderBy(Object operand) {
@@ -75,6 +80,7 @@ public class SelectQuery implements Operator {
     joins.forEach(join -> join.writeTo(stringWriter));
     where.writeTo(stringWriter);
     groupBy.writeTo(stringWriter);
+    having.writeTo(stringWriter);
     orderBy.writeTo(stringWriter);
   }
 }

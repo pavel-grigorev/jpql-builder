@@ -22,17 +22,17 @@ import org.thepavel.jpqlbuilder.DummyOperator;
 import static org.junit.Assert.assertEquals;
 import static org.thepavel.jpqlbuilder.DummyJpqlStringWriter.asString;
 
-public class WhereClauseTest {
+public class HavingClauseTest {
   @Test
   public void empty() {
-    assertEquals("", asString(new WhereClause()));
+    assertEquals("", asString(new HavingClause()));
   }
 
   @Test
   public void notEmpty() {
-    WhereClause where = new WhereClause();
-    where.setOperator(DummyOperator.dummy("A"));
+    HavingClause having = new HavingClause();
+    having.setOperator(DummyOperator.dummy("A"));
 
-    assertEquals(" where dummy(A)", asString(where));
+    assertEquals(" having dummy(A)", asString(having));
   }
 }

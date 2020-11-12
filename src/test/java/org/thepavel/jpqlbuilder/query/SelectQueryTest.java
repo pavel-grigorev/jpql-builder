@@ -91,6 +91,19 @@ public class SelectQueryTest {
   }
 
   @Test
+  public void having() {
+    SelectQuery select = new SelectQuery();
+    select.addSelected("a");
+    select.addSelected("count(b)");
+    select.addFrom(Company.class, "a");
+    select.addJoin(new JoinClause("b", "a.departments", JoinType.INNER));
+    select.addGroupBy("a");
+    select.setHaving(dummy("A"));
+
+    assertEquals("select a, count(b) from Company a join a.departments b group by a having dummy(A)", asString(select));
+  }
+
+  @Test
   public void oneOrderBy() {
     SelectQuery select = new SelectQuery();
     select.addSelected("a");
