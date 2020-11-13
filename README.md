@@ -9,9 +9,10 @@ JpqlBuilder is a tool to dynamically build JPQL strings. JpqlBuilder provides:
 Here's how it works:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class); // Company is an entity class
-Company c = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class); // Company is an entity class
 
+Select select = builder.select(c);
 select.where(c.getName()).like("%TikTok%").orderBy(c.getName());
 
 System.out.println("Query: " + select.getQueryString());
@@ -25,12 +26,12 @@ Query: select a from test_Company a where a.name like :a order by a.name
 Params: {a=%TikTok%}
 ```
 
-The object returned by the `getPathSpecifier()` method is a proxy object created specifically for the framework purposes and must not be merged or persisted.
+The object returned by the `from()` method is a proxy object created specifically for the framework purposes and must not be merged or persisted.
 
 A simple query like the one above can be a one-liner:
 
 ```java
-JpqlQuery query = JpqlBuilder.select(Company.class).where(c -> $(c.getName()).like("%TikTok%")).orderBy(Company::getName);
+JpqlQuery query = JpqlBuilder.builder().select(Company.class).where(c -> $(c.getName()).like("%TikTok%")).orderBy(Company::getName);
 ```
 
 The `$` method starts an expression.
@@ -38,17 +39,12 @@ The `$` method starts an expression.
 # Currently unsupported (coming soon)
 
 - `update` and `delete` queries
-- `group by` and `having`
 - `union`
-- Aggregation functions (`max`, `avg`, etc.)
-- Ability to select values (e.g. `select c.name from test_Company c`)
-- Ability to select multiple values and/or multiple root objects (e.g. `select c.id, c.name, c from test_Company c`)
 - Subqueries
 
 # Learn by example
 
-Below is the model that is going to be used in all examples (getters,
-setters and annotations are omitted):
+Below is the model that is going to be used in all examples (getters, setters and annotations are omitted):
 
 ```java
 @Entity(name = "test_Company")
@@ -87,23 +83,64 @@ public enum Status {
 }
 ```
 
+## Selecting multiple items
+
+```java
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
+
+Select select = builder.select(c.getId(), upper(c.getName()), c.getStatus());
+
+System.out.println("Query: " + select.getQueryString());
+System.out.println("Params: " + select.getParameters());
+```
+
+Output:
+
+```
+Query: select a.id, upper(a.name), a.status from test_Company a
+Params: {}
+```
+
+`upper` is one of the functions that can be used in queries. See below for a complete list of functions.
+
+## Using `new` in the select clause
+
+```java
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
+
+Select select = builder.select(_new(ReportRow.class, c.getId(), c.getName()));
+select.where(c.getStatus()).isNot(Status.DELETED);
+
+System.out.println("Query: " + select.getQueryString());
+System.out.println("Params: " + select.getParameters());
+```
+
+Output:
+
+```
+Query: select new org.thepavel.jpqlbuilder.demo.ReportRow(a.id, a.name) from test_Company a where a.status <> :a
+Params: {a=DELETED}
+```
+
 ## Where conditions
 
 Nested expressions:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
 
-String query = select
+Select select = builder.select(c);
+select
    .where(c.getStatus()).isNot(Status.DELETED)
    .and(
        $(c.getName()).is("Google")
        .or(c.getName()).is("Apple")
-   )
-   .getQueryString();
+   );
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -117,18 +154,18 @@ Params: {a=DELETED, b=Google, c=Apple}
 Or like this:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
 
-String query = select
+Select select = builder.select(c);
+select
    .where(
        $(c.getName()).is("Google")
        .or(c.getName()).is("Apple")
    )
-   .and(c.getStatus()).isNot(Status.DELETED)
-   .getQueryString();
+   .and(c.getStatus()).isNot(Status.DELETED);
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -146,18 +183,18 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.not;
 import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 ...
 
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
 
-String query = select
+Select select = builder.select(c);
+select
    .where(c.getStatus()).isNot(Status.DELETED)
    .and(not(
        $(c.getName()).is("Google")
        .or(c.getName()).is("Apple")
-   ))
-   .getQueryString();
+   ));
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -462,6 +499,45 @@ Params: {a=DELETED, b=Google, c=Apple}
   </tbody>
 </table>
 
+### Aggregation functions
+
+<table>
+  <thead>
+    <tr>
+      <th>Function</th>
+      <th>Example</th>
+      <th>JPQL string</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>count</td>
+      <td>builder.select(count(e))</td>
+      <td>select count(a)</td>
+    </tr>
+    <tr>
+      <td>min</td>
+      <td>builder.select(min(e.getRank()))</td>
+      <td>select min(a.rank)</td>
+    </tr>
+    <tr>
+      <td>max</td>
+      <td>builder.select(max(e.getRank()))</td>
+      <td>select max(a.rank)</td>
+    </tr>
+    <tr>
+      <td>avg</td>
+      <td>builder.select(avg(e.getRank()))</td>
+      <td>select avg(a.rank)</td>
+    </tr>
+    <tr>
+      <td>sum</td>
+      <td>builder.select(sum(e.getRank()))</td>
+      <td>select sum(a.rank)</td>
+    </tr>
+  </tbody>
+</table>
+
 ### Assorted functions
 
 <table>
@@ -541,17 +617,18 @@ Params: {a=DELETED, b=Google, c=Apple}
 There are two types of the expression. The first one is:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
 
 JpqlFunction<Integer> code = _case(lower(c.getName()))
    .when("google").then(1)
    .when("apple").then(2)
    .orElse(0);
 
-String query = select.where(code).is(0).getQueryString();
+Select select = builder.select(c);
+select.where(code).is(0);
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -565,17 +642,18 @@ Params: {a=google, b=1, c=apple, d=2, e=0, f=0}
 Another way to build the case expression is:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
 
 JpqlFunction<Integer> code = _case()
    .when(c.getName()).is("Google").then(1)
    .when(c.getName()).is("Apple").then(2)
    .orElse(0);
 
-String query = select.where(code).is(0).getQueryString();
+Select select = builder.select(c);
+select.where(code).is(0);
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -589,16 +667,16 @@ Params: {a=Google, b=1, c=Apple, d=2, e=0, f=0}
 ## Order by
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
 
-String query = select
+Select select = builder.select(c);
+select
    .orderBy(c.getStatus())
    .orderBy(c.getName()).desc()
-   .orderBy(c.getId()).asc()
-   .getQueryString();
+   .orderBy(c.getId()).asc();
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -612,15 +690,15 @@ Params: {}
 Nulls first / nulls last:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
 
-String query = select
+Select select = builder.select(c);
+select
    .orderBy(c.getStatus()).nullsLast()
-   .orderBy(c.getName()).desc().nullsFirst()
-   .getQueryString();
+   .orderBy(c.getName()).desc().nullsFirst();
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -636,16 +714,16 @@ Params: {}
 Joining a collection relationship:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
-Department d = select.join(c.getDepartments()).getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
+Department d = builder.join(c.getDepartments()).getPathSpecifier();
 
-String query = select
+Select select = builder.select(c);
+select
    .where(c.getStatus()).isNot(Status.DELETED)
-   .and(d.getStatus()).isNot(Status.DELETED)
-   .getQueryString();
+   .and(d.getStatus()).isNot(Status.DELETED);
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -659,17 +737,14 @@ Params: {a=DELETED, b=DELETED}
 Joining on a condition:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
-select
-   .join(c.getDepartments())
-   .on(d -> $(d.getStatus()).isNot(Status.DELETED));
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
+builder.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
 
-String query = select
-   .where(c.getStatus()).isNot(Status.DELETED)
-   .getQueryString();
+Select select = builder.select(c);
+select.where(c.getStatus()).isNot(Status.DELETED);
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -680,19 +755,19 @@ Query: select a from test_Company a join a.departments b on b.status <> :a where
 Params: {a=DELETED, b=DELETED}
 ```
 
-Joining a *-to-one relationship:
+Joining a many-to-one/one-to-one relationship:
 
 ```java
-JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
-Department d = select.getPathSpecifier();
-Company c = select.join(d.getCompany()).getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Department d = builder.from(Department.class);
+Company c = builder.join(d.getCompany()).getPathSpecifier();
 
-String query = select
+Select select = builder.select(d);
+select
    .where(c.getName()).is("TikTok")
-   .orderBy(d.getName()).desc()
-   .getQueryString();
+   .orderBy(d.getName()).desc();
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -706,16 +781,16 @@ Params: {a=TikTok}
 Joining an entity class:
 
 ```java
-JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
-Department d = select.getPathSpecifier();
-Company c = select.join(Company.class).on(e -> $(d.getCompany()).is(e)).getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Department d = builder.from(Department.class);
+Company c = builder.join(Company.class).on(e -> $(d.getCompany()).is(e)).getPathSpecifier();
 
-String query = select
+Select select = builder.select(d);
+select
    .where(c.getName()).is("TikTok")
-   .orderBy(d.getName()).desc()
-   .getQueryString();
+   .orderBy(d.getName()).desc();
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -729,19 +804,19 @@ Params: {a=TikTok}
 Left join:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
-Department d = select
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
+Department d = builder
    .leftJoin(c.getDepartments())
    .on(e -> $(e.getStatus()).isNot(Status.DELETED))
    .getPathSpecifier();
 
-String query = select
+Select select = builder.select(c);
+select
    .where(c.getStatus()).isNot(Status.DELETED)
-   .and(d.getName()).like("%IT%")
-   .getQueryString();
+   .and(d.getName()).like("%IT%");
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -755,13 +830,14 @@ Params: {a=DELETED, b=DELETED, c=%IT%}
 Join fetch:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
-select.joinFetch(c.getDepartments());
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
+builder.joinFetch(c.getDepartments());
 
-String query = select.where(c.getStatus()).isNot(Status.DELETED).getQueryString();
+Select select = builder.select(c);
+select.where(c.getStatus()).isNot(Status.DELETED);
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -775,13 +851,14 @@ Params: {a=DELETED}
 Join fetch with alias:
 
 ```java
-JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
-Department d = select.getPathSpecifier();
-Company c = select.joinFetchWithAlias(d.getCompany()).getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Department d = builder.from(Department.class);
+Company c = builder.joinFetchWithAlias(d.getCompany()).getPathSpecifier();
 
-String query = select.orderBy(c.getName()).orderBy(d.getName()).getQueryString();
+Select select = builder.select(d);
+select.orderBy(c.getName()).orderBy(d.getName());
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -795,20 +872,19 @@ Params: {}
 Casting a joined entity (using the `treat` function):
 
 ```java
-JpqlBuilder<Department> select = JpqlBuilder.select(Department.class);
-Department d = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Department d = builder.from(Department.class);
 
-HeadOfDepartment h = select
+HeadOfDepartment h = builder
    .join(d.getEmployees())
    .as(HeadOfDepartment.class)
    .on(x -> $(x.isHeadOfDepartment()).is(Boolean.TRUE))
    .getPathSpecifier();
 
-String query = select
-   .where(h.getStatus()).isNot(Status.DELETED)
-   .getQueryString();
+Select select = builder.select(d);
+select.where(h.getStatus()).isNot(Status.DELETED);
 
-System.out.println("Query: " + query);
+System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
 ```
 
@@ -819,13 +895,35 @@ Query: select a from test_Department a join treat(a.employees as test_HeadOfDepa
 Params: {a=true, b=DELETED}
 ```
 
+## Grouping
+
+```java
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
+Department d = builder.join(c.getDepartments()).getPathSpecifier();
+
+Select select = builder.select(c.getName(), count(d));
+select.groupBy(c.getName()).having(count(d)).greaterThan(1);
+
+System.out.println("Query: " + select.getQueryString());
+System.out.println("Params: " + select.getParameters());
+```
+
+Output:
+
+```
+Query: select a.name, count(b) from test_Company a join a.departments b group by a.name having count(b) > :a
+Params: {a=1}
+```
+
 ## Building a query dynamically
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
 
-Where<Company> where = null;
+Select select = builder.select(c);
+Where where = null;
 
 for (String name : Arrays.asList("Google", "Apple")) {
   if (where == null) {
@@ -835,7 +933,7 @@ for (String name : Arrays.asList("Google", "Apple")) {
   }
 }
 
-select.join(c.getDepartments());
+builder.join(c.getDepartments());
 
 System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
@@ -851,8 +949,8 @@ Params: {a=Google, b=Apple}
 One more example:
 
 ```java
-JpqlBuilder<Company> select = JpqlBuilder.select(Company.class);
-Company c = select.getPathSpecifier();
+JpqlBuilder builder = JpqlBuilder.builder();
+Company c = builder.from(Company.class);
 
 ExpressionChain condition = null;
 
@@ -864,8 +962,10 @@ for (String name : Arrays.asList("Google", "Apple")) {
   }
 }
 
-select.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
+Select select = builder.select(c);
 select.where(condition).and(c.getStatus()).isNot(Status.DELETED);
+
+builder.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
 
 System.out.println("Query: " + select.getQueryString());
 System.out.println("Params: " + select.getParameters());
