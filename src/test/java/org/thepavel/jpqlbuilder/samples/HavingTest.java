@@ -19,6 +19,7 @@ package org.thepavel.jpqlbuilder.samples;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.JpqlBuilder;
 import org.thepavel.jpqlbuilder.Select;
+import org.thepavel.jpqlbuilder.SelectBuilder;
 import org.thepavel.jpqlbuilder.model.Company;
 import org.thepavel.jpqlbuilder.model.Department;
 import org.thepavel.jpqlbuilder.model.Status;
@@ -33,7 +34,7 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 public class HavingTest {
   @Test
   public void havingFunction() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Department d = builder.join(c.getDepartments()).getPathSpecifier();
     Select select = builder.select(c, count(d));
@@ -53,7 +54,7 @@ public class HavingTest {
 
   @Test
   public void havingAttribute() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Department d = builder.join(c.getDepartments()).getPathSpecifier();
     Select select = builder.select(c, count(d));
@@ -76,7 +77,7 @@ public class HavingTest {
 
   @Test
   public void havingCollectionAttribute() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Department d = builder.join(c.getDepartments()).getPathSpecifier();
     Select select = builder.select(c, count(d));
@@ -95,7 +96,7 @@ public class HavingTest {
 
   @Test
   public void havingExpression() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Department d = builder.join(c.getDepartments()).getPathSpecifier();
     Select select = builder.select(c, count(d));

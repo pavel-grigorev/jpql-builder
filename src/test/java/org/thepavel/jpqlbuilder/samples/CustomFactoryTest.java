@@ -18,6 +18,7 @@ package org.thepavel.jpqlbuilder.samples;
 
 import org.aopalliance.aop.Advice;
 import org.junit.Test;
+import org.thepavel.jpqlbuilder.SelectBuilder;
 import org.thepavel.jpqlbuilder.factory.DefaultMapInstanceFactory;
 import org.thepavel.jpqlbuilder.factory.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
@@ -41,7 +42,7 @@ import static org.junit.Assert.assertTrue;
 public class CustomFactoryTest {
   @Test
   public void defaultFactories() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Department department = builder.from(Department.class);
 
     assertTrue(AopUtils.isAopProxy(department));
@@ -55,7 +56,7 @@ public class CustomFactoryTest {
     DefaultInstanceFactory instanceFactory = new DefaultInstanceFactory();
     instanceFactory.add(String.class, () -> "test");
 
-    JpqlBuilder builder = JpqlBuilder.with(instanceFactory).builder();
+    SelectBuilder builder = JpqlBuilder.with(instanceFactory).selectBuilder();
     Department department = builder.from(Department.class);
 
     assertTrue(AopUtils.isAopProxy(department));
@@ -69,7 +70,7 @@ public class CustomFactoryTest {
     DefaultCollectionInstanceFactory collectionInstanceFactory = new DefaultCollectionInstanceFactory();
     collectionInstanceFactory.add(List.class, Vector::new);
 
-    JpqlBuilder builder = JpqlBuilder.with(collectionInstanceFactory).builder();
+    SelectBuilder builder = JpqlBuilder.with(collectionInstanceFactory).selectBuilder();
     Department department = builder.from(Department.class);
 
     assertTrue(AopUtils.isAopProxy(department));
@@ -83,7 +84,7 @@ public class CustomFactoryTest {
     DefaultMapInstanceFactory mapInstanceFactory = new DefaultMapInstanceFactory();
     mapInstanceFactory.add(Map.class, TreeMap::new);
 
-    JpqlBuilder builder = JpqlBuilder.with(mapInstanceFactory).builder();
+    SelectBuilder builder = JpqlBuilder.with(mapInstanceFactory).selectBuilder();
     Company company = builder.from(Company.class);
 
     assertTrue(AopUtils.isAopProxy(company));
@@ -94,7 +95,7 @@ public class CustomFactoryTest {
 
   @Test
   public void customProxyFactory() {
-    JpqlBuilder builder = JpqlBuilder.with(new TestProxyFactory()).builder();
+    SelectBuilder builder = JpqlBuilder.with(new TestProxyFactory()).selectBuilder();
     Department department = builder.from(Department.class);
 
     assertFalse(AopUtils.isAopProxy(department));

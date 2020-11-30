@@ -19,6 +19,7 @@ package org.thepavel.jpqlbuilder.samples;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.Join;
 import org.thepavel.jpqlbuilder.Select;
+import org.thepavel.jpqlbuilder.SelectBuilder;
 import org.thepavel.jpqlbuilder.model.Department;
 import org.thepavel.jpqlbuilder.model.Employee;
 import org.thepavel.jpqlbuilder.model.HeadOfDepartment;
@@ -35,7 +36,7 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 public class JoinTest {
   @Test
   public void entityJoins() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Department department = builder.join(employee.getDepartment()).getPathSpecifier();
     Company company = builder.join(department.getCompany()).getPathSpecifier();
@@ -71,7 +72,7 @@ public class JoinTest {
 
   @Test
   public void collectionJoins() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company company = builder.from(Company.class);
     Department department = builder.join(company.getDepartments()).getPathSpecifier();
     Select select = builder.select(company);
@@ -101,7 +102,7 @@ public class JoinTest {
 
   @Test
   public void leftJoin() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Department department = builder.leftJoin(employee.getDepartment()).getPathSpecifier();
     Company company = builder.leftJoin(department.getCompany()).getPathSpecifier();
@@ -137,7 +138,7 @@ public class JoinTest {
 
   @Test
   public void joinFetch() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Department department = builder.from(Department.class);
     builder.joinFetch(department.getCompany());
     builder.joinFetch(department.getEmployees());
@@ -165,7 +166,7 @@ public class JoinTest {
 
   @Test
   public void joinFetchWithAlias() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Department department = builder.from(Department.class);
     Company company = builder.joinFetchWithAlias(department.getCompany()).getPathSpecifier();
     Employee employee = builder.joinFetchWithAlias(department.getEmployees()).getPathSpecifier();
@@ -196,7 +197,7 @@ public class JoinTest {
 
   @Test
   public void classJoin() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Department department = builder.join(Department.class).getPathSpecifier();
     Select select = builder.select(employee);
@@ -213,7 +214,7 @@ public class JoinTest {
 
   @Test
   public void classLeftJoin() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Department department = builder.leftJoin(Department.class).getPathSpecifier();
     Select select = builder.select(employee);
@@ -230,7 +231,7 @@ public class JoinTest {
 
   @Test
   public void collectionJoinOn() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Department department = builder.from(Department.class);
     Employee employee = builder
         .join(department.getEmployees())
@@ -260,7 +261,7 @@ public class JoinTest {
 
   @Test
   public void classJoinOn() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Department department = builder
         .join(Department.class)
@@ -292,14 +293,14 @@ public class JoinTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void joinNonEntity() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     builder.join(c.getStatus());
   }
 
   @Test
   public void joinSameThingMultipleTimes() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
 
     Join<Department> join1 = builder.join(c.getDepartments());
@@ -314,7 +315,7 @@ public class JoinTest {
 
   @Test
   public void joinAs() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Department d = builder.from(Department.class);
     Select select = builder.select(d);
 

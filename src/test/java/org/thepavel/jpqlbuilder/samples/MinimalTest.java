@@ -18,6 +18,7 @@ package org.thepavel.jpqlbuilder.samples;
 
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.Select;
+import org.thepavel.jpqlbuilder.SelectBuilder;
 import org.thepavel.jpqlbuilder.model.Employee;
 import org.thepavel.jpqlbuilder.JpqlBuilder;
 
@@ -28,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 public class MinimalTest {
   @Test
   public void minimal() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Select select = builder.select(builder.from(Employee.class));
 
     assertEquals("select a from test_Employee a", select.getQueryString());

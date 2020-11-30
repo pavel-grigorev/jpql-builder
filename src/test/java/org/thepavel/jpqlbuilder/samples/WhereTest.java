@@ -18,6 +18,7 @@ package org.thepavel.jpqlbuilder.samples;
 
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.Select;
+import org.thepavel.jpqlbuilder.SelectBuilder;
 import org.thepavel.jpqlbuilder.model.Employee;
 import org.thepavel.jpqlbuilder.model.Status;
 import org.thepavel.jpqlbuilder.JpqlBuilder;
@@ -33,7 +34,7 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 public class WhereTest {
   @Test
   public void whereSimple() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Select select = builder.select(employee);
 
@@ -52,7 +53,7 @@ public class WhereTest {
 
   @Test
   public void whereExpression() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Select select = builder.select(employee);
 
@@ -79,7 +80,7 @@ public class WhereTest {
 
   @Test
   public void whereComplicated() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Select select = builder.select(employee);
 

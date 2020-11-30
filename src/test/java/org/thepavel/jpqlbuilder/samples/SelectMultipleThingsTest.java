@@ -1,9 +1,26 @@
+/*
+ * Copyright (c) 2020 Pavel Grigorev.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.thepavel.jpqlbuilder.samples;
 
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.JpqlBuilder;
 import org.thepavel.jpqlbuilder.JpqlQuery;
 import org.thepavel.jpqlbuilder.Select;
+import org.thepavel.jpqlbuilder.SelectBuilder;
 import org.thepavel.jpqlbuilder.model.Company;
 import org.thepavel.jpqlbuilder.model.Department;
 import org.thepavel.jpqlbuilder.model.Status;
@@ -22,7 +39,7 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 public class SelectMultipleThingsTest {
   @Test
   public void selectMultipleEntities() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Department d = builder.from(Department.class);
     Select select = builder.select(c, d);
@@ -33,7 +50,7 @@ public class SelectMultipleThingsTest {
 
   @Test
   public void selectMultipleValues() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Department d = builder.from(Department.class);
     Select select = builder.select(c.getName(), d.getStatus());
@@ -44,7 +61,7 @@ public class SelectMultipleThingsTest {
 
   @Test
   public void selectMultipleFunctions() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Department d = builder.from(Department.class);
     Select select = builder.select(lower(c.getName()), upper(d.getName()));
@@ -55,7 +72,7 @@ public class SelectMultipleThingsTest {
 
   @Test
   public void selectMixed() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
 
     Company a = builder.from(Company.class);
     Company b = builder.from(Company.class);

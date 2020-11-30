@@ -18,6 +18,7 @@ package org.thepavel.jpqlbuilder.samples;
 
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.Select;
+import org.thepavel.jpqlbuilder.SelectBuilder;
 import org.thepavel.jpqlbuilder.Where;
 import org.thepavel.jpqlbuilder.model.Company;
 import org.thepavel.jpqlbuilder.model.Employee;
@@ -34,7 +35,7 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 public class DynamicQueryTest {
   @Test
   public void dynamicQuery() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
 
     Where where = builder.select(employee).where(employee.getStatus()).isNot(Status.DELETED);
@@ -69,7 +70,7 @@ public class DynamicQueryTest {
 
   @Test
   public void dynamicQuery1() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
 
     Select select = builder.select(c);
@@ -102,7 +103,7 @@ public class DynamicQueryTest {
 
   @Test
   public void dynamicQuery2() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
 
     Select select = builder.select(c);

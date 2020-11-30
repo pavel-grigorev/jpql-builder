@@ -19,6 +19,7 @@ package org.thepavel.jpqlbuilder.samples;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.DummyObject;
 import org.thepavel.jpqlbuilder.Select;
+import org.thepavel.jpqlbuilder.SelectBuilder;
 import org.thepavel.jpqlbuilder.functions.Cast;
 import org.thepavel.jpqlbuilder.functions.Concat;
 import org.thepavel.jpqlbuilder.functions.Extract;
@@ -79,7 +80,7 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 public class FunctionsTest {
   @Test
   public void lowerUpper() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
 
     Select select = builder.select(employee);
@@ -111,7 +112,7 @@ public class FunctionsTest {
 
   @Test
   public void trimTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -136,7 +137,7 @@ public class FunctionsTest {
 
   @Test
   public void ltrimTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -161,7 +162,7 @@ public class FunctionsTest {
 
   @Test
   public void rtrimTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -186,7 +187,7 @@ public class FunctionsTest {
 
   @Test
   public void concatTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Department d = builder.from(Department.class);
     Select select = builder.select(d);
 
@@ -218,7 +219,7 @@ public class FunctionsTest {
 
   @Test
   public void substringTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -246,7 +247,7 @@ public class FunctionsTest {
 
   @Test
   public void lengthTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -272,7 +273,7 @@ public class FunctionsTest {
 
   @Test
   public void locateTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -300,7 +301,7 @@ public class FunctionsTest {
 
   @Test
   public void addTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -323,7 +324,7 @@ public class FunctionsTest {
 
   @Test
   public void subTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -346,7 +347,7 @@ public class FunctionsTest {
 
   @Test
   public void multiTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -379,7 +380,7 @@ public class FunctionsTest {
 
   @Test
   public void divTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -412,7 +413,7 @@ public class FunctionsTest {
 
   @Test
   public void absTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -435,7 +436,7 @@ public class FunctionsTest {
 
   @Test
   public void modTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -458,7 +459,7 @@ public class FunctionsTest {
 
   @Test
   public void sqrtTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -481,7 +482,7 @@ public class FunctionsTest {
 
   @Test
   public void currentDateTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee e = builder.from(Employee.class);
     Select select = builder.select(e);
 
@@ -501,7 +502,7 @@ public class FunctionsTest {
 
   @Test
   public void currentTimeTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee e = builder.from(Employee.class);
     Select select = builder.select(e);
 
@@ -521,7 +522,7 @@ public class FunctionsTest {
 
   @Test
   public void currentTimestampTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee e = builder.from(Employee.class);
     Select select = builder.select(e);
 
@@ -541,7 +542,7 @@ public class FunctionsTest {
 
   @Test
   public void caseTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee e = builder.from(Employee.class);
     Select select = builder.select(e);
 
@@ -575,7 +576,7 @@ public class FunctionsTest {
 
   @Test
   public void casePredicateTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -607,7 +608,7 @@ public class FunctionsTest {
 
   @Test
   public void coalesceTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -630,7 +631,7 @@ public class FunctionsTest {
 
   @Test
   public void nullifTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -652,7 +653,7 @@ public class FunctionsTest {
 
   @Test
   public void castTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -674,7 +675,7 @@ public class FunctionsTest {
 
   @Test
   public void extractTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee e = builder.from(Employee.class);
     Select select = builder.select(e);
 
@@ -691,7 +692,7 @@ public class FunctionsTest {
 
   @Test
   public void regexpTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -714,7 +715,7 @@ public class FunctionsTest {
 
   @Test
   public void indexTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -735,7 +736,7 @@ public class FunctionsTest {
 
   @Test
   public void keyTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -756,7 +757,7 @@ public class FunctionsTest {
 
   @Test
   public void valueTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -776,7 +777,7 @@ public class FunctionsTest {
 
   @Test
   public void sizeTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -798,7 +799,7 @@ public class FunctionsTest {
 
   @Test
   public void isEmptyTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -818,7 +819,7 @@ public class FunctionsTest {
 
   @Test
   public void isNotEmptyTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -838,7 +839,7 @@ public class FunctionsTest {
 
   @Test
   public void memberOfTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -862,7 +863,7 @@ public class FunctionsTest {
 
   @Test
   public void notMemberOfTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -886,7 +887,7 @@ public class FunctionsTest {
 
   @Test
   public void typeTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Department d = builder.from(Department.class);
     Select select = builder.select(d);
 
@@ -908,7 +909,7 @@ public class FunctionsTest {
 
   @Test
   public void functionTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -936,7 +937,7 @@ public class FunctionsTest {
 
   @Test
   public void funcTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -964,7 +965,7 @@ public class FunctionsTest {
 
   @Test
   public void sqlTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -986,7 +987,7 @@ public class FunctionsTest {
 
   @Test
   public void columnTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(c);
 
@@ -1008,7 +1009,7 @@ public class FunctionsTest {
 
   @Test
   public void countEntityTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(count(c));
 
@@ -1029,7 +1030,7 @@ public class FunctionsTest {
 
   @Test
   public void countAttributeTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(count(c.getId()));
 
@@ -1050,7 +1051,7 @@ public class FunctionsTest {
 
   @Test
   public void minTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee e = builder.from(Employee.class);
     Select select = builder.select(min(e.getEmploymentDate()));
 
@@ -1071,7 +1072,7 @@ public class FunctionsTest {
 
   @Test
   public void maxTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee e = builder.from(Employee.class);
     Select select = builder.select(max(e.getEmploymentDate()));
 
@@ -1092,7 +1093,7 @@ public class FunctionsTest {
 
   @Test
   public void avgTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee e = builder.from(Employee.class);
     Select select = builder.select(avg(e.getEmploymentDate()));
 
@@ -1113,7 +1114,7 @@ public class FunctionsTest {
 
   @Test
   public void sumTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee e = builder.from(Employee.class);
     Select select = builder.select(sum(e.getId()));
 
@@ -1134,7 +1135,7 @@ public class FunctionsTest {
 
   @Test
   public void newTest() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Company c = builder.from(Company.class);
     Select select = builder.select(_new(DummyObject.class, c.getName(), c.getId()));
 

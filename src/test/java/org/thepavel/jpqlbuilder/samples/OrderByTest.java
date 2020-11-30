@@ -18,6 +18,7 @@ package org.thepavel.jpqlbuilder.samples;
 
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.Select;
+import org.thepavel.jpqlbuilder.SelectBuilder;
 import org.thepavel.jpqlbuilder.model.Employee;
 import org.thepavel.jpqlbuilder.model.Status;
 import org.thepavel.jpqlbuilder.JpqlBuilder;
@@ -31,7 +32,7 @@ import static org.thepavel.jpqlbuilder.functions.Functions.upper;
 public class OrderByTest {
   @Test
   public void orderBy() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Select select = builder.select(employee);
 
@@ -49,7 +50,7 @@ public class OrderByTest {
 
   @Test
   public void orderByWithNullsOrdering() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Select select = builder.select(employee);
 
@@ -68,7 +69,7 @@ public class OrderByTest {
 
   @Test
   public void whereAndOrderBy() {
-    JpqlBuilder builder = JpqlBuilder.builder();
+    SelectBuilder builder = JpqlBuilder.selectBuilder();
     Employee employee = builder.from(Employee.class);
     Select select = builder.select(employee);
 
