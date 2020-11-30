@@ -16,9 +16,9 @@
 
 package org.thepavel.jpqlbuilder.querystring;
 
+import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.utils.AliasGenerator;
 import org.thepavel.jpqlbuilder.path.PathResolverList;
-import org.thepavel.jpqlbuilder.query.SelectQuery;
 import org.thepavel.jpqlbuilder.utils.EntityHelper;
 
 import java.util.HashMap;
@@ -31,6 +31,10 @@ public class JpqlStringBuilder implements JpqlStringWriter {
   private final Map<String, Object> parameters = new HashMap<>();
   private final AliasGenerator aliasGenerator = new AliasGenerator();
 
+  public JpqlStringBuilder(PathResolverList roots) {
+    this(roots, new PathResolverList());
+  }
+
   public JpqlStringBuilder(PathResolverList roots, PathResolverList joins) {
     this.roots = roots;
     this.joins = joins;
@@ -41,7 +45,7 @@ public class JpqlStringBuilder implements JpqlStringWriter {
     return builder.toString();
   }
 
-  public String build(SelectQuery query) {
+  public String build(Operator query) {
     builder.delete(0, builder.length());
     parameters.clear();
     aliasGenerator.reset();
