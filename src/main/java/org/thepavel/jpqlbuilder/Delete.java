@@ -28,6 +28,7 @@ import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Function;
 
 public class Delete implements JpqlQuery {
   private final JpqlStringBuilder stringBuilder;
@@ -36,6 +37,10 @@ public class Delete implements JpqlQuery {
   Delete(JpqlStringBuilder stringBuilder, DeleteQuery query) {
     this.stringBuilder = stringBuilder;
     this.query = query;
+  }
+
+  <T> OneLiner<T> oneLiner(T rootPathSpecifier) {
+    return new OneLiner<>(rootPathSpecifier);
   }
 
   public <T> OperatorBuilder<T, Where> where(T operand) {
@@ -77,6 +82,44 @@ public class Delete implements JpqlQuery {
     @Override
     protected void onOperatorChange(Operator operator) {
       query.setWhere(operator);
+    }
+
+    @Override
+    public String getQueryString() {
+      return stringBuilder.build(query);
+    }
+
+    @Override
+    public Map<String, Object> getParameters() {
+      return stringBuilder.getParameters();
+    }
+  }
+
+  public class OneLiner<T> implements JpqlQuery {
+    private final T rootPathSpecifier;
+
+    private OneLiner(T rootPathSpecifier) {
+      this.rootPathSpecifier = rootPathSpecifier;
+    }
+
+    public JpqlQuery where(Function<T, ExpressionChain> chainFunction) {
+      query.setWhere(chainFunction.apply(rootPathSpecifier).getOperator());
+      return new Query();
+    }
+
+    @Override
+    public String getQueryString() {
+      return stringBuilder.build(query);
+    }
+
+    @Override
+    public Map<String, Object> getParameters() {
+      return stringBuilder.getParameters();
+    }
+  }
+
+  public class Query implements JpqlQuery {
+    private Query() {
     }
 
     @Override

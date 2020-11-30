@@ -182,4 +182,30 @@ public class DeleteQueryTest {
         query.getParameters()
     );
   }
+
+  @Test
+  public void oneLinerMinimal() {
+    JpqlQuery query = JpqlBuilder.deleteBuilder().delete(Company.class);
+
+    assertEquals("delete from test_Company a", query.getQueryString());
+    assertEquals(new HashMap<String, Object>(), query.getParameters());
+  }
+
+  @Test
+  public void oneLinerWhere() {
+    JpqlQuery query = JpqlBuilder
+        .deleteBuilder()
+        .delete(Company.class)
+        .where(c -> $(c.getStatus()).is(Status.DELETED));
+
+    String expected = "delete from test_Company a where a.status = :a";
+
+    assertEquals(expected, query.getQueryString());
+    assertEquals(
+        new HashMap<String, Object>() {{
+          put("a", Status.DELETED);
+        }},
+        query.getParameters()
+    );
+  }
 }

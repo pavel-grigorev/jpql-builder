@@ -38,6 +38,11 @@ public class DeleteBuilder {
     stringBuilder = new JpqlStringBuilder(rootPathResolvers);
   }
 
+  public <T> Delete.OneLiner<T> delete(Class<T> entityClass) {
+    checkDeleteNotBuilt();
+    return new Delete(stringBuilder, query).oneLiner(from(entityClass));
+  }
+
   public Delete delete(Object thing) {
     checkDeleteNotBuilt();
     checkDeletedThing(thing);

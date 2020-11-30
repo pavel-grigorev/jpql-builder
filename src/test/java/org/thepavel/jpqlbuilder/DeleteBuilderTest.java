@@ -41,6 +41,32 @@ public class DeleteBuilderTest {
     builder.delete(c);
   }
 
+  @Test(expected = IllegalStateException.class)
+  public void allowedToCallOneLinerOnce() {
+    DeleteBuilder builder = JpqlBuilder.deleteBuilder();
+
+    builder.delete(Company.class);
+    builder.delete(Company.class);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void mixedCallsNotAllowed() {
+    DeleteBuilder builder = JpqlBuilder.deleteBuilder();
+    Company c = builder.from(Company.class);
+
+    builder.delete(c);
+    builder.delete(Company.class);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void mixedCallsNotAllowed2() {
+    DeleteBuilder builder = JpqlBuilder.deleteBuilder();
+    Company c = builder.from(Company.class);
+
+    builder.delete(Company.class);
+    builder.delete(c);
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void deleteExpectsObjectReturnedByFrom() {
     DeleteBuilder builder = JpqlBuilder.deleteBuilder();
