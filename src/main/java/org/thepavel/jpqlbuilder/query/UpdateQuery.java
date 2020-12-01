@@ -19,20 +19,25 @@ package org.thepavel.jpqlbuilder.query;
 import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
 
-public class DeleteClause implements Operator {
-  private Class<?> from;
-  private String alias;
+public class UpdateQuery implements Operator {
+  private final UpdateClause update = new UpdateClause();
+  private final WhereClause where = new WhereClause();
 
-  public void setFrom(Class<?> from, String alias) {
-    this.from = from;
-    this.alias = alias;
+  public void setEntityClass(Class<?> entityClass, String alias) {
+    update.setEntityClass(entityClass, alias);
+  }
+
+  public void addUpdate(Object field, Object value) {
+    update.addUpdate(field, value);
+  }
+
+  public void setWhere(Operator operator) {
+    where.setOperator(operator);
   }
 
   @Override
   public void writeTo(JpqlStringWriter stringWriter) {
-    stringWriter.appendString("delete from ");
-    stringWriter.appendValue(from);
-    stringWriter.appendString(" ");
-    stringWriter.appendString(alias);
+    update.writeTo(stringWriter);
+    where.writeTo(stringWriter);
   }
 }
