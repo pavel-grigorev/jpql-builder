@@ -19,23 +19,20 @@ package org.thepavel.jpqlbuilder.query;
 import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class UpdateClause implements Operator {
-  private final List<Object> fields = new ArrayList<>();
-  private final List<Object> values = new ArrayList<>();
   private Class<?> entityClass;
   private String alias;
+  private Map<Object, Object> updates;
 
   public void setEntityClass(Class<?> entityClass, String alias) {
     this.entityClass = entityClass;
     this.alias = alias;
   }
 
-  public void addUpdate(Object field, Object value) {
-    fields.add(field);
-    values.add(value);
+  public void setUpdates(Map<Object, Object> updates) {
+    this.updates = updates;
   }
 
   @Override
@@ -48,18 +45,22 @@ public class UpdateClause implements Operator {
   }
 
   private void appendUpdates(JpqlStringWriter stringWriter) {
-    if (fields.isEmpty()) {
+    if (updates == null || updates.isEmpty()) {
       return;
     }
-    stringWriter.appendString(" set ");
 
-    for (int i = 0; i < fields.size(); i++) {
-      if (i > 0) {
+    stringWriter.appendString(" set ");
+    boolean first = true;
+
+    for (Map.Entry<Object, Object> entry : updates.entrySet()) {
+      if (first) {
+        first = false;
+      } else {
         stringWriter.appendString(", ");
       }
-      writeOperand(fields.get(i), stringWriter);
+      writeOperand(entry.getKey(), stringWriter);
       stringWriter.appendString(" = ");
-      writeOperand(values.get(i), stringWriter);
+      writeOperand(entry.getValue(), stringWriter);
     }
   }
 }

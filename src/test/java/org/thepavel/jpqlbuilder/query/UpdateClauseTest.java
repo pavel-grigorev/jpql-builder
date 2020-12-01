@@ -19,6 +19,9 @@ package org.thepavel.jpqlbuilder.query;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.model.Company;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.thepavel.jpqlbuilder.DummyJpqlStringWriter.asString;
 
@@ -35,7 +38,10 @@ public class UpdateClauseTest {
   public void oneUpdate() {
     UpdateClause update = new UpdateClause();
     update.setEntityClass(Company.class, "a");
-    update.addUpdate("a.name", "x");
+
+    Map<Object, Object> updates = new LinkedHashMap<>();
+    update.setUpdates(updates);
+    updates.put("a.name", "x");
 
     assertEquals("update Company a set a.name = x", asString(update));
   }
@@ -44,8 +50,11 @@ public class UpdateClauseTest {
   public void multipleUpdates() {
     UpdateClause update = new UpdateClause();
     update.setEntityClass(Company.class, "a");
-    update.addUpdate("a.name", "x");
-    update.addUpdate("a.status", "DELETED");
+
+    Map<Object, Object> updates = new LinkedHashMap<>();
+    update.setUpdates(updates);
+    updates.put("a.name", "x");
+    updates.put("a.status", "DELETED");
 
     assertEquals("update Company a set a.name = x, a.status = DELETED", asString(update));
   }

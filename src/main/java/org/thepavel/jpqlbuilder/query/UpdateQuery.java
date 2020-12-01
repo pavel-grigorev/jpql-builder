@@ -19,6 +19,8 @@ package org.thepavel.jpqlbuilder.query;
 import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
 
+import java.util.Map;
+
 public class UpdateQuery implements Operator {
   private final UpdateClause update = new UpdateClause();
   private final WhereClause where = new WhereClause();
@@ -27,8 +29,8 @@ public class UpdateQuery implements Operator {
     update.setEntityClass(entityClass, alias);
   }
 
-  public void addUpdate(Object field, Object value) {
-    update.addUpdate(field, value);
+  public void setUpdates(Map<Object, Object> updates) {
+    update.setUpdates(updates);
   }
 
   public void setWhere(Operator operator) {

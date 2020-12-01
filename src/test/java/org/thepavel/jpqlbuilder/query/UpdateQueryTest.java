@@ -19,6 +19,9 @@ package org.thepavel.jpqlbuilder.query;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.model.Company;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.thepavel.jpqlbuilder.DummyJpqlStringWriter.asString;
 import static org.thepavel.jpqlbuilder.DummyOperator.dummy;
@@ -45,7 +48,10 @@ public class UpdateQueryTest {
   public void oneUpdate() {
     UpdateQuery update = new UpdateQuery();
     update.setEntityClass(Company.class, "a");
-    update.addUpdate("a.name", "x");
+
+    Map<Object, Object> updates = new LinkedHashMap<>();
+    update.setUpdates(updates);
+    updates.put("a.name", "x");
 
     assertEquals("update Company a set a.name = x", asString(update));
   }
@@ -54,7 +60,11 @@ public class UpdateQueryTest {
   public void oneUpdateWhere() {
     UpdateQuery update = new UpdateQuery();
     update.setEntityClass(Company.class, "a");
-    update.addUpdate("a.name", "x");
+
+    Map<Object, Object> updates = new LinkedHashMap<>();
+    update.setUpdates(updates);
+    updates.put("a.name", "x");
+
     update.setWhere(dummy("A"));
 
     assertEquals("update Company a set a.name = x where dummy(A)", asString(update));
@@ -64,8 +74,11 @@ public class UpdateQueryTest {
   public void multipleUpdates() {
     UpdateQuery update = new UpdateQuery();
     update.setEntityClass(Company.class, "a");
-    update.addUpdate("a.name", "x");
-    update.addUpdate("a.status", "DELETED");
+
+    Map<Object, Object> updates = new LinkedHashMap<>();
+    update.setUpdates(updates);
+    updates.put("a.name", "x");
+    updates.put("a.status", "DELETED");
 
     assertEquals("update Company a set a.name = x, a.status = DELETED", asString(update));
   }
@@ -74,8 +87,12 @@ public class UpdateQueryTest {
   public void multipleUpdatesWhere() {
     UpdateQuery update = new UpdateQuery();
     update.setEntityClass(Company.class, "a");
-    update.addUpdate("a.name", "x");
-    update.addUpdate("a.status", "DELETED");
+
+    Map<Object, Object> updates = new LinkedHashMap<>();
+    update.setUpdates(updates);
+    updates.put("a.name", "x");
+    updates.put("a.status", "DELETED");
+
     update.setWhere(dummy("A"));
 
     assertEquals("update Company a set a.name = x, a.status = DELETED where dummy(A)", asString(update));
