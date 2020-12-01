@@ -21,7 +21,7 @@ import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
 
 import java.util.Map;
 
-public class UpdateQuery implements Operator {
+public class UpdateQuery implements Query {
   private final UpdateClause update = new UpdateClause();
   private final WhereClause where = new WhereClause();
 
@@ -33,6 +33,7 @@ public class UpdateQuery implements Operator {
     update.setUpdates(updates);
   }
 
+  @Override
   public void setWhere(Operator operator) {
     where.setOperator(operator);
   }

@@ -37,6 +37,10 @@ public class JpqlBuilder {
     return new DeleteBuilder(JpqlBuilderContext.defaultContext());
   }
 
+  public static UpdateBuilder updateBuilder() {
+    return new UpdateBuilder(JpqlBuilderContext.defaultContext());
+  }
+
   public static Builder with(InstanceFactory instanceFactory) {
     return new Builder(instanceFactory);
   }
@@ -101,6 +105,10 @@ public class JpqlBuilder {
 
     public DeleteBuilder deleteBuilder() {
       return new DeleteBuilder(createContext());
+    }
+
+    public UpdateBuilder updateBuilder() {
+      return new UpdateBuilder(createContext());
     }
 
     private JpqlBuilderContext createContext() {

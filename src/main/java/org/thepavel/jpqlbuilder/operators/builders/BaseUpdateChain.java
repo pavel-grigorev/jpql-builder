@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package org.thepavel.jpqlbuilder.query;
+package org.thepavel.jpqlbuilder.operators.builders;
 
-import org.thepavel.jpqlbuilder.operators.Operator;
-import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public class DeleteQuery implements Query {
-  private final DeleteClause delete = new DeleteClause();
-  private final WhereClause where = new WhereClause();
+public abstract class BaseUpdateChain<B extends BaseUpdateChain<B>> {
+  private final Map<Object, Object> updates = new LinkedHashMap<>();
 
-  public void setFrom(Class<?> from, String alias) {
-    delete.setFrom(from, alias);
+  public Map<Object, Object> getUpdates() {
+    return updates;
   }
 
-  @Override
-  public void setWhere(Operator operator) {
-    where.setOperator(operator);
+  public <T> UpdateBuilder<T, B> set(T field) {
+    return new UpdateBuilder<>(thisChain(), field);
   }
 
-  @Override
-  public void writeTo(JpqlStringWriter stringWriter) {
-    delete.writeTo(stringWriter);
-    where.writeTo(stringWriter);
+  @SuppressWarnings("unchecked")
+  private B thisChain() {
+    return (B) this;
+  }
+
+  <T> void addUpdate(T field, T value) {
+    updates.put(field, value);
   }
 }

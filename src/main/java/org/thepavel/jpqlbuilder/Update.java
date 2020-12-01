@@ -19,23 +19,26 @@ package org.thepavel.jpqlbuilder;
 import org.thepavel.jpqlbuilder.functions.JpqlFunction;
 import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.operators.Parentheses;
+import org.thepavel.jpqlbuilder.operators.builders.BaseUpdateChain;
 import org.thepavel.jpqlbuilder.operators.builders.CollectionOperatorBuilder;
 import org.thepavel.jpqlbuilder.operators.builders.ExpressionChain;
 import org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder;
 import org.thepavel.jpqlbuilder.operators.builders.WhereChain;
-import org.thepavel.jpqlbuilder.query.DeleteQuery;
+import org.thepavel.jpqlbuilder.query.UpdateQuery;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
 
 import java.util.Collection;
 import java.util.Map;
 
-public class Delete implements JpqlQuery {
+public class Update extends BaseUpdateChain<Update> implements JpqlQuery {
   private final JpqlStringBuilder stringBuilder;
-  private final DeleteQuery query;
+  private final UpdateQuery query;
 
-  Delete(JpqlStringBuilder stringBuilder, DeleteQuery query) {
+  Update(JpqlStringBuilder stringBuilder, UpdateQuery query) {
     this.stringBuilder = stringBuilder;
     this.query = query;
+
+    query.setUpdates(getUpdates());
   }
 
   public <T> OperatorBuilder<T, WhereChain> where(T operand) {

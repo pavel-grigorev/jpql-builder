@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
-package org.thepavel.jpqlbuilder.query;
+package org.thepavel.jpqlbuilder.operators.builders;
 
-import org.thepavel.jpqlbuilder.operators.Operator;
-import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
+import org.thepavel.jpqlbuilder.functions.JpqlFunction;
 
-public class DeleteQuery implements Query {
-  private final DeleteClause delete = new DeleteClause();
-  private final WhereClause where = new WhereClause();
+public class UpdateBuilder<T, B extends BaseUpdateChain<B>> {
+  final B chain;
+  final T field;
 
-  public void setFrom(Class<?> from, String alias) {
-    delete.setFrom(from, alias);
+  public UpdateBuilder(B chain, T field) {
+    this.chain = chain;
+    this.field = field;
   }
 
-  @Override
-  public void setWhere(Operator operator) {
-    where.setOperator(operator);
+  public static <T> UpdateBuilder<T, UpdateChain> set(T field) {
+    return new UpdateBuilder<>(new UpdateChain(), field);
   }
 
-  @Override
-  public void writeTo(JpqlStringWriter stringWriter) {
-    delete.writeTo(stringWriter);
-    where.writeTo(stringWriter);
+  public B to(T value) {
+    chain.addUpdate(field, value);
+    return chain;
+  }
+
+  public B to(JpqlFunction<T> value) {
+    chain.addUpdate(field, value);
+    return chain;
   }
 }

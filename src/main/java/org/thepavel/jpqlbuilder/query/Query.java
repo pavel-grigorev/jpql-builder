@@ -17,24 +17,7 @@
 package org.thepavel.jpqlbuilder.query;
 
 import org.thepavel.jpqlbuilder.operators.Operator;
-import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
 
-public class DeleteQuery implements Query {
-  private final DeleteClause delete = new DeleteClause();
-  private final WhereClause where = new WhereClause();
-
-  public void setFrom(Class<?> from, String alias) {
-    delete.setFrom(from, alias);
-  }
-
-  @Override
-  public void setWhere(Operator operator) {
-    where.setOperator(operator);
-  }
-
-  @Override
-  public void writeTo(JpqlStringWriter stringWriter) {
-    delete.writeTo(stringWriter);
-    where.writeTo(stringWriter);
-  }
+public interface Query extends Operator {
+  void setWhere(Operator operator);
 }

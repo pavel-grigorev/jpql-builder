@@ -18,64 +18,64 @@ package org.thepavel.jpqlbuilder;
 
 import org.thepavel.jpqlbuilder.path.PathResolver;
 import org.thepavel.jpqlbuilder.path.PathResolverList;
-import org.thepavel.jpqlbuilder.query.DeleteQuery;
+import org.thepavel.jpqlbuilder.query.UpdateQuery;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
 import org.thepavel.jpqlbuilder.utils.AliasGenerator;
 import org.thepavel.jpqlbuilder.utils.EntityHelper;
 
-public class DeleteBuilder {
+public class UpdateBuilder {
   private final AliasGenerator aliasGenerator = new AliasGenerator();
   private final PathResolverList rootPathResolvers = new PathResolverList();
-  private final DeleteQuery query = new DeleteQuery();
+  private final UpdateQuery query = new UpdateQuery();
   private final JpqlBuilderContext context;
   private final JpqlStringBuilder stringBuilder;
-  private boolean isDeleteBuilt;
-  private boolean isFromCalled;
+  private boolean isUpdateBuilt;
+  private boolean isEntityCalled;
 
-  DeleteBuilder(JpqlBuilderContext context) {
+  UpdateBuilder(JpqlBuilderContext context) {
     this.context = context;
 
     stringBuilder = new JpqlStringBuilder(rootPathResolvers);
   }
 
-  public <T> OneLinerDelete<T> delete(Class<T> entityClass) {
-    checkDeleteNotBuilt();
-    return new OneLinerDelete<>(stringBuilder, query, from(entityClass));
+  public <T> OneLinerUpdate<T> update(Class<T> entityClass) {
+    checkUpdateNotBuilt();
+    return new OneLinerUpdate<>(stringBuilder, query, entity(entityClass));
   }
 
-  public Delete delete(Object thing) {
-    checkDeleteNotBuilt();
-    checkDeletedThing(thing);
-    return new Delete(stringBuilder, query);
+  public Update update(Object thing) {
+    checkUpdateNotBuilt();
+    checkUpdatedThing(thing);
+    return new Update(stringBuilder, query);
   }
 
-  private void checkDeleteNotBuilt() {
-    if (isDeleteBuilt) {
-      throw new IllegalStateException("Must not call the delete method twice on the same builder instance");
+  private void checkUpdateNotBuilt() {
+    if (isUpdateBuilt) {
+      throw new IllegalStateException("Must not call the update method twice on the same builder instance");
     }
-    isDeleteBuilt = true;
+    isUpdateBuilt = true;
   }
 
-  private void checkDeletedThing(Object thing) {
+  private void checkUpdatedThing(Object thing) {
     if (rootPathResolvers.getPropertyPath(thing) == null) {
-      throw new IllegalArgumentException("An object returned by the from method is expected");
+      throw new IllegalArgumentException("An object returned by the entity method is expected");
     }
   }
 
-  public <T> T from(Class<T> entityType) {
-    checkFromNotCalled();
+  public <T> T entity(Class<T> entityType) {
+    checkEntityNotCalled();
     requireEntityClass(entityType);
 
     String alias = aliasGenerator.next();
-    query.setFrom(entityType, alias);
+    query.setEntityClass(entityType, alias);
     return addRoot(entityType, alias);
   }
 
-  private void checkFromNotCalled() {
-    if (isFromCalled) {
-      throw new IllegalStateException("Must not call the from method twice on the same builder instance");
+  private void checkEntityNotCalled() {
+    if (isEntityCalled) {
+      throw new IllegalStateException("Must not call the entity method twice on the same builder instance");
     }
-    isFromCalled = true;
+    isEntityCalled = true;
   }
 
   private static void requireEntityClass(Class<?> entityClass) {

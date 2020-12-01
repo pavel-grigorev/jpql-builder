@@ -22,7 +22,7 @@ import org.thepavel.jpqlbuilder.operators.Operator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectQuery implements Operator {
+public class SelectQuery implements Query {
   private final SelectClause select = new SelectClause();
   private final List<JoinClause> joins = new ArrayList<>();
   private final WhereClause where = new WhereClause();
@@ -42,6 +42,7 @@ public class SelectQuery implements Operator {
     joins.add(join);
   }
 
+  @Override
   public void setWhere(Operator operator) {
     where.setOperator(operator);
   }
