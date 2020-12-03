@@ -9,7 +9,7 @@ JpqlBuilder is a tool to dynamically build JPQL strings. JpqlBuilder provides:
 Here's how it works:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class); // Company is an entity class
 
 Select select = builder.select(c);
@@ -31,7 +31,7 @@ The object returned by the `from()` method is a proxy object created specificall
 A simple query like the one above can be a one-liner:
 
 ```java
-JpqlQuery query = JpqlBuilder.builder().select(Company.class).where(c -> $(c.getName()).like("%TikTok%")).orderBy(Company::getName);
+JpqlQuery query = JpqlBuilder.selectBuilder().select(Company.class).where(c -> $(c.getName()).like("%TikTok%")).orderBy(Company::getName);
 ```
 
 The `$` method starts an expression.
@@ -86,7 +86,7 @@ public enum Status {
 ## Selecting multiple items
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 Select select = builder.select(c.getId(), upper(c.getName()), c.getStatus());
@@ -107,7 +107,7 @@ Params: {}
 ## Using `new` in the select clause
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 Select select = builder.select(_new(ReportRow.class, c.getId(), c.getName()));
@@ -129,7 +129,7 @@ Params: {a=DELETED}
 Nested expressions:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 Select select = builder.select(c);
@@ -154,7 +154,7 @@ Params: {a=DELETED, b=Google, c=Apple}
 Or like this:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 Select select = builder.select(c);
@@ -183,7 +183,7 @@ import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.not;
 import static org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder.$;
 ...
 
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 Select select = builder.select(c);
@@ -617,7 +617,7 @@ Params: {a=DELETED, b=Google, c=Apple}
 There are two types of the expression. The first one is:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 JpqlFunction<Integer> code = _case(lower(c.getName()))
@@ -642,7 +642,7 @@ Params: {a=google, b=1, c=apple, d=2, e=0, f=0}
 Another way to build the case expression is:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 JpqlFunction<Integer> code = _case()
@@ -667,7 +667,7 @@ Params: {a=Google, b=1, c=Apple, d=2, e=0, f=0}
 ## Order by
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 Select select = builder.select(c);
@@ -690,7 +690,7 @@ Params: {}
 Nulls first / nulls last:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 Select select = builder.select(c);
@@ -714,7 +714,7 @@ Params: {}
 Joining a collection relationship:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 Department d = builder.join(c.getDepartments()).getPathSpecifier();
 
@@ -737,7 +737,7 @@ Params: {a=DELETED, b=DELETED}
 Joining on a condition:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 builder.join(c.getDepartments()).on(d -> $(d.getStatus()).isNot(Status.DELETED));
 
@@ -758,7 +758,7 @@ Params: {a=DELETED, b=DELETED}
 Joining a many-to-one/one-to-one relationship:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Department d = builder.from(Department.class);
 Company c = builder.join(d.getCompany()).getPathSpecifier();
 
@@ -781,7 +781,7 @@ Params: {a=TikTok}
 Joining an entity class:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Department d = builder.from(Department.class);
 Company c = builder.join(Company.class).on(e -> $(d.getCompany()).is(e)).getPathSpecifier();
 
@@ -804,7 +804,7 @@ Params: {a=TikTok}
 Left join:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 Department d = builder
    .leftJoin(c.getDepartments())
@@ -830,7 +830,7 @@ Params: {a=DELETED, b=DELETED, c=%IT%}
 Join fetch:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 builder.joinFetch(c.getDepartments());
 
@@ -851,7 +851,7 @@ Params: {a=DELETED}
 Join fetch with alias:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Department d = builder.from(Department.class);
 Company c = builder.joinFetchWithAlias(d.getCompany()).getPathSpecifier();
 
@@ -872,7 +872,7 @@ Params: {}
 Casting a joined entity (using the `treat` function):
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Department d = builder.from(Department.class);
 
 HeadOfDepartment h = builder
@@ -898,7 +898,7 @@ Params: {a=true, b=DELETED}
 ## Grouping
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 Department d = builder.join(c.getDepartments()).getPathSpecifier();
 
@@ -919,7 +919,7 @@ Params: {a=1}
 ## Building a query dynamically
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 Select select = builder.select(c);
@@ -949,7 +949,7 @@ Params: {a=Google, b=Apple}
 One more example:
 
 ```java
-JpqlBuilder builder = JpqlBuilder.builder();
+SelectBuilder builder = JpqlBuilder.selectBuilder();
 Company c = builder.from(Company.class);
 
 ExpressionChain condition = null;
