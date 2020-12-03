@@ -19,11 +19,11 @@ package org.thepavel.jpqlbuilder;
 import org.thepavel.jpqlbuilder.functions.JpqlFunction;
 import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.operators.Parentheses;
+import org.thepavel.jpqlbuilder.operators.builders.BaseExpressionChain;
 import org.thepavel.jpqlbuilder.operators.builders.BaseUpdateChain;
 import org.thepavel.jpqlbuilder.operators.builders.CollectionOperatorBuilder;
 import org.thepavel.jpqlbuilder.operators.builders.ExpressionChain;
 import org.thepavel.jpqlbuilder.operators.builders.OperatorBuilder;
-import org.thepavel.jpqlbuilder.operators.builders.WhereChain;
 import org.thepavel.jpqlbuilder.query.UpdateQuery;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringBuilder;
 
@@ -41,28 +41,20 @@ public class Update extends BaseUpdateChain<Update> implements JpqlQuery {
     query.setUpdates(getUpdates());
   }
 
-  public <T> OperatorBuilder<T, WhereChain> where(T operand) {
-    return new OperatorBuilder<>(createWhere(), operand);
+  public <T> OperatorBuilder<T, Where> where(T operand) {
+    return new OperatorBuilder<>(new Where(), operand);
   }
 
-  public <T> OperatorBuilder<T, WhereChain> where(JpqlFunction<T> operator) {
-    return new OperatorBuilder<>(createWhere(), operator);
+  public <T> OperatorBuilder<T, Where> where(JpqlFunction<T> operator) {
+    return new OperatorBuilder<>(new Where(), operator);
   }
 
-  public CollectionOperatorBuilder<WhereChain> where(Collection<?> operand) {
-    return new CollectionOperatorBuilder<>(createWhere(), operand);
+  public CollectionOperatorBuilder<Where> where(Collection<?> operand) {
+    return new CollectionOperatorBuilder<>(new Where(), operand);
   }
 
-  public WhereChain where(ExpressionChain chain) {
-    return createWhere(new Parentheses(chain.getOperator()));
-  }
-
-  private WhereChain createWhere() {
-    return new WhereChain(stringBuilder, query);
-  }
-
-  private WhereChain createWhere(Operator operator) {
-    return new WhereChain(operator, stringBuilder, query);
+  public Where where(ExpressionChain chain) {
+    return new Where(new Parentheses(chain.getOperator()));
   }
 
   @Override
@@ -73,5 +65,30 @@ public class Update extends BaseUpdateChain<Update> implements JpqlQuery {
   @Override
   public Map<String, Object> getParameters() {
     return stringBuilder.getParameters();
+  }
+
+  public class Where extends BaseExpressionChain<Where> implements JpqlQuery {
+    private Where() {
+    }
+
+    private Where(Operator operator) {
+      super(operator);
+      query.setWhere(operator);
+    }
+
+    @Override
+    protected void onOperatorChange(Operator operator) {
+      query.setWhere(operator);
+    }
+
+    @Override
+    public String getQueryString() {
+      return stringBuilder.build(query);
+    }
+
+    @Override
+    public Map<String, Object> getParameters() {
+      return stringBuilder.getParameters();
+    }
   }
 }

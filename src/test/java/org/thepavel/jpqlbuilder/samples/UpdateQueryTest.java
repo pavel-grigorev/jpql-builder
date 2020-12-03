@@ -23,7 +23,6 @@ import org.thepavel.jpqlbuilder.Update;
 import org.thepavel.jpqlbuilder.UpdateBuilder;
 import org.thepavel.jpqlbuilder.model.Company;
 import org.thepavel.jpqlbuilder.model.Status;
-import org.thepavel.jpqlbuilder.operators.builders.WhereChain;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -113,7 +112,7 @@ public class UpdateQueryTest {
     Company c = builder.entity(Company.class);
 
     Update query = builder.update(c).set(c.getStatus()).to(Status.DELETED);
-    WhereChain where = null;
+    Update.Where where = null;
 
     for (Status status : Arrays.asList(Status.DISABLED, Status.SUSPENDED)) {
       if (where == null) {

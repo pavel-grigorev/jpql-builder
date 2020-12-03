@@ -24,7 +24,6 @@ import org.thepavel.jpqlbuilder.JpqlQuery;
 import org.thepavel.jpqlbuilder.model.Company;
 import org.thepavel.jpqlbuilder.model.Status;
 import org.thepavel.jpqlbuilder.operators.builders.ExpressionChain;
-import org.thepavel.jpqlbuilder.operators.builders.WhereChain;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -134,7 +133,7 @@ public class DeleteQueryTest {
     DeleteBuilder builder = JpqlBuilder.deleteBuilder();
     Company c = builder.from(Company.class);
     Delete query = builder.delete(c);
-    WhereChain where = null;
+    Delete.Where where = null;
 
     for (Status status : Arrays.asList(Status.DELETED, Status.DISABLED)) {
       if (where == null) {
