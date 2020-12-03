@@ -35,9 +35,9 @@ public class OneLinerUpdate<T> implements JpqlQuery {
     this.rootPathSpecifier = rootPathSpecifier;
   }
 
-  public Where set(Function<T, UpdateChain> chainFunction) {
+  public Set set(Function<T, UpdateChain> chainFunction) {
     query.setUpdates(chainFunction.apply(rootPathSpecifier).getUpdates());
-    return new Where();
+    return new Set();
   }
 
   @Override
@@ -50,8 +50,8 @@ public class OneLinerUpdate<T> implements JpqlQuery {
     return stringBuilder.getParameters();
   }
 
-  public class Where implements JpqlQuery {
-    private Where() {
+  public class Set implements JpqlQuery {
+    private Set() {
     }
 
     public JpqlQuery where(Function<T, ExpressionChain> chainFunction) {
