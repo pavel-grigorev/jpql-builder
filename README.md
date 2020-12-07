@@ -38,7 +38,6 @@ The `$` method starts an expression.
 
 # Currently unsupported (coming soon)
 
-- `update` and `delete` queries
 - `union`
 - Subqueries
 
@@ -976,6 +975,84 @@ Output:
 ```
 Query: select a from test_Company a join a.departments b on b.status <> :a where (a.name = :b or a.name = :c) and a.status <> :d
 Params: {a=DELETED, b=Google, c=Apple, d=DELETED}
+```
+
+## Delete Queries
+
+```java
+DeleteBuilder builder = JpqlBuilder.deleteBuilder();
+Company c = builder.from(Company.class);
+
+JpqlQuery query = builder.delete(c).where(lower(c.getName())).like("%abc%");
+
+System.out.println("Query: " + query.getQueryString());
+System.out.println("Params: " + query.getParameters());
+```
+
+Output:
+
+```
+Query: delete from test_Company a where lower(a.name) like :a
+Params: {a=%abc%}
+```
+
+One-liner example:
+
+```java
+JpqlQuery query = JpqlBuilder.deleteBuilder().delete(Company.class).where(c -> $(c.getDepartments()).isEmpty());
+
+System.out.println("Query: " + query.getQueryString());
+System.out.println("Params: " + query.getParameters());
+```
+
+Output:
+
+```
+Query: delete from test_Company a where a.departments is empty
+Params: {}
+```
+
+## Update Queries
+
+```java
+UpdateBuilder builder = JpqlBuilder.updateBuilder();
+Company c = builder.entity(Company.class);
+
+JpqlQuery query = builder
+    .update(c)
+    .set(c.getStatus()).to(Status.DELETED)
+    .set(c.getName()).to(concat("DELETED-", c.getName()))
+    .where(c.getStatus()).is(Status.DISABLED);
+
+System.out.println("Query: " + query.getQueryString());
+System.out.println("Params: " + query.getParameters());
+```
+
+Output:
+
+```
+Query: update test_Company a set a.status = :a, a.name = concat(:b, a.name) where a.status = :c
+Params: {a=DELETED, b=DELETED-, c=DISABLED}
+```
+
+One-liner example:
+
+```java
+JpqlQuery query = JpqlBuilder
+    .updateBuilder()
+    .update(Company.class)
+    .set(c -> set(c.getStatus()).to(Status.DELETED).set(c.getName()).to("DELETED"))
+    .where(c -> $(c.getStatus()).is(Status.DISABLED));
+
+System.out.println("Query: " + query.getQueryString());
+System.out.println("Params: " + query.getParameters());
+```
+
+Output:
+
+```
+Query: update test_Company a set a.status = :a, a.name = :b where a.status = :c
+Params: {a=DELETED, b=DELETED, c=DISABLED}
 ```
 
 # Compatibility
