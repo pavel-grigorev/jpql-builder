@@ -34,7 +34,7 @@ A simple query like the one above can be a one-liner:
 JpqlQuery query = JpqlBuilder.selectBuilder().select(Company.class).where(c -> $(c.getName()).like("%TikTok%")).orderBy(Company::getName);
 ```
 
-The `$` method starts an expression.
+The `$` method starts an expression. One-liner pattern can be used to build queries that have one entity in the select clause and have no joins.
 
 # Currently unsupported (coming soon)
 
