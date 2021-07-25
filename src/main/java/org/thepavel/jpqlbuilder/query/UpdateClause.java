@@ -16,22 +16,23 @@
 
 package org.thepavel.jpqlbuilder.query;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
 
-import java.util.Map;
+import java.util.List;
 
 public class UpdateClause implements Operator {
   private Class<?> entityClass;
   private String alias;
-  private Map<Object, Object> updates;
+  private List<Pair<Object, Object>> updates;
 
   public void setEntityClass(Class<?> entityClass, String alias) {
     this.entityClass = entityClass;
     this.alias = alias;
   }
 
-  public void setUpdates(Map<Object, Object> updates) {
+  public void setUpdates(List<Pair<Object, Object>> updates) {
     this.updates = updates;
   }
 
@@ -52,7 +53,7 @@ public class UpdateClause implements Operator {
     stringWriter.appendString(" set ");
     boolean first = true;
 
-    for (Map.Entry<Object, Object> entry : updates.entrySet()) {
+    for (Pair<Object, Object> entry : updates) {
       if (first) {
         first = false;
       } else {

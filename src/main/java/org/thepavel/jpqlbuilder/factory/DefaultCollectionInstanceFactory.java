@@ -23,16 +23,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class DefaultCollectionInstanceFactory implements CollectionInstanceFactory {
-  private final Map<Class<?>, InstanceCreator<?>> instanceCreators = new HashMap<>();
+  private final Map<Class<?>, Supplier<?>> instanceCreators = new HashMap<>();
 
   public DefaultCollectionInstanceFactory() {
     instanceCreators.put(List.class, ArrayList::new);
     instanceCreators.put(Set.class, HashSet::new);
   }
 
-  public void add(Class<?> type, InstanceCreator<?> instanceCreator) {
+  public void add(Class<?> type, Supplier<?> instanceCreator) {
     checkType(type);
     instanceCreators.put(type, instanceCreator);
   }
@@ -41,16 +42,16 @@ public class DefaultCollectionInstanceFactory implements CollectionInstanceFacto
   @SuppressWarnings("unchecked")
   public <T extends Collection<E>, E> T newInstance(Class<?> type) throws ReflectiveOperationException {
     checkType(type);
-    InstanceCreator<?> creator = instanceCreators.get(type);
+    Supplier<?> creator = instanceCreators.get(type);
     if (creator == null) {
       throw new IllegalArgumentException("Collection type " + type + " is unsupported");
     }
-    return (T) creator.newInstance();
+    return (T) creator.get();
   }
 
   private static void checkType(Class<?> type) {
     if (!Collection.class.isAssignableFrom(type)) {
-      throw new IllegalArgumentException("Class " + type + " is not a collection class");
+      throw new IllegalArgumentException("Class " + type + " is not a collection");
     }
   }
 }

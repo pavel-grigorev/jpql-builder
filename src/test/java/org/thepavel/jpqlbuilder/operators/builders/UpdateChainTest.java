@@ -16,10 +16,10 @@
 
 package org.thepavel.jpqlbuilder.operators.builders;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
-import java.util.HashMap;
-
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 public class UpdateChainTest {
@@ -29,9 +29,7 @@ public class UpdateChainTest {
     chain.set("A").to("B");
 
     assertEquals(
-        new HashMap<Object, Object>() {{
-          put("A", "B");
-        }},
+        singletonList(Pair.of("A", "B")),
         chain.getUpdates()
     );
   }
@@ -42,9 +40,7 @@ public class UpdateChainTest {
     chain.addUpdate("X", "Y");
 
     assertEquals(
-        new HashMap<Object, Object>() {{
-          put("X", "Y");
-        }},
+        singletonList(Pair.of("X", "Y")),
         chain.getUpdates()
     );
   }

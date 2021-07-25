@@ -16,12 +16,13 @@
 
 package org.thepavel.jpqlbuilder.operators.builders;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.functions.JpqlFunction;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.thepavel.jpqlbuilder.DummyFunction.dummy;
 import static org.thepavel.jpqlbuilder.operators.builders.UpdateBuilder.set;
@@ -31,12 +32,10 @@ public class UpdateBuilderTest {
   public void toValue() {
     UpdateChain chain = new UpdateChain();
     UpdateBuilder<String, UpdateChain> builder = new UpdateBuilder<>(chain, "A");
-    Map<Object, Object> updates = builder.to("B").getUpdates();
+    List<Pair<Object, Object>> updates = builder.to("B").getUpdates();
 
     assertEquals(
-        new HashMap<Object, Object>() {{
-          put("A", "B");
-        }},
+        singletonList(Pair.of("A", "B")),
         updates
     );
   }
@@ -47,12 +46,10 @@ public class UpdateBuilderTest {
     UpdateBuilder<String, UpdateChain> builder = new UpdateBuilder<>(chain, "A");
 
     JpqlFunction<String> function = dummy("B");
-    Map<Object, Object> updates = builder.to(function).getUpdates();
+    List<Pair<Object, Object>> updates = builder.to(function).getUpdates();
 
     assertEquals(
-        new HashMap<Object, Object>() {{
-          put("A", function);
-        }},
+        singletonList(Pair.of("A", function)),
         updates
     );
   }
@@ -60,9 +57,7 @@ public class UpdateBuilderTest {
   @Test
   public void staticConstructor() {
     assertEquals(
-        new HashMap<Object, Object>() {{
-          put("A", "B");
-        }},
+        singletonList(Pair.of("A", "B")),
         set("A").to("B").getUpdates()
     );
   }

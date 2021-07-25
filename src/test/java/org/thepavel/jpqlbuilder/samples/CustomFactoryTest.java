@@ -36,6 +36,7 @@ import java.util.Vector;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -46,7 +47,7 @@ public class CustomFactoryTest {
     Department department = builder.from(Department.class);
 
     assertTrue(AopUtils.isAopProxy(department));
-    assertEquals("", department.getName());
+    assertNotNull(department.getName());
     assertTrue(department.getEmployees() instanceof ArrayList);
     assertTrue(AopUtils.isAopProxy(department.getCompany()));
   }
@@ -74,7 +75,7 @@ public class CustomFactoryTest {
     Department department = builder.from(Department.class);
 
     assertTrue(AopUtils.isAopProxy(department));
-    assertEquals("", department.getName());
+    assertNotNull(department.getName());
     assertTrue(department.getEmployees() instanceof Vector);
     assertTrue(AopUtils.isAopProxy(department.getCompany()));
   }
@@ -88,7 +89,7 @@ public class CustomFactoryTest {
     Company company = builder.from(Company.class);
 
     assertTrue(AopUtils.isAopProxy(company));
-    assertEquals("", company.getName());
+    assertNotNull(company.getName());
     assertTrue(company.getHeads() instanceof TreeMap);
     assertTrue(company.getDepartments() instanceof ArrayList);
   }

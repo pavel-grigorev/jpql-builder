@@ -16,11 +16,12 @@
 
 package org.thepavel.jpqlbuilder.query;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.model.Company;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.thepavel.jpqlbuilder.DummyJpqlStringWriter.asString;
@@ -39,9 +40,9 @@ public class UpdateClauseTest {
     UpdateClause update = new UpdateClause();
     update.setEntityClass(Company.class, "a");
 
-    Map<Object, Object> updates = new LinkedHashMap<>();
+    List<Pair<Object, Object>> updates = new ArrayList<>();
     update.setUpdates(updates);
-    updates.put("a.name", "x");
+    updates.add(Pair.of("a.name", "x"));
 
     assertEquals("update Company a set a.name = x", asString(update));
   }
@@ -51,10 +52,10 @@ public class UpdateClauseTest {
     UpdateClause update = new UpdateClause();
     update.setEntityClass(Company.class, "a");
 
-    Map<Object, Object> updates = new LinkedHashMap<>();
+    List<Pair<Object, Object>> updates = new ArrayList<>();
     update.setUpdates(updates);
-    updates.put("a.name", "x");
-    updates.put("a.status", "DELETED");
+    updates.add(Pair.of("a.name", "x"));
+    updates.add(Pair.of("a.status", "DELETED"));
 
     assertEquals("update Company a set a.name = x, a.status = DELETED", asString(update));
   }

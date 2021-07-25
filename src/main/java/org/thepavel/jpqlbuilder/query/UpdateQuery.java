@@ -16,10 +16,11 @@
 
 package org.thepavel.jpqlbuilder.query;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
 
-import java.util.Map;
+import java.util.List;
 
 public class UpdateQuery implements Query {
   private final UpdateClause update = new UpdateClause();
@@ -29,7 +30,7 @@ public class UpdateQuery implements Query {
     update.setEntityClass(entityClass, alias);
   }
 
-  public void setUpdates(Map<Object, Object> updates) {
+  public void setUpdates(List<Pair<Object, Object>> updates) {
     update.setUpdates(updates);
   }
 

@@ -16,13 +16,15 @@
 
 package org.thepavel.jpqlbuilder.operators.builders;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BaseUpdateChain<B extends BaseUpdateChain<B>> {
-  private final Map<Object, Object> updates = new LinkedHashMap<>();
+  private final List<Pair<Object, Object>> updates = new ArrayList<>();
 
-  public Map<Object, Object> getUpdates() {
+  public List<Pair<Object, Object>> getUpdates() {
     return updates;
   }
 
@@ -36,6 +38,6 @@ public abstract class BaseUpdateChain<B extends BaseUpdateChain<B>> {
   }
 
   <T> void addUpdate(T field, T value) {
-    updates.put(field, value);
+    updates.add(Pair.of(field, value));
   }
 }

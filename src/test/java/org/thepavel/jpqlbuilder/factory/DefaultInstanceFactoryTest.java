@@ -130,7 +130,7 @@ public class DefaultInstanceFactoryTest {
     factoryCreatesUniqueInstance(String.class);
   }
 
-  @Test(expected = InstantiationException.class)
+  @Test
   public void noDefaultConstructor() throws ReflectiveOperationException {
     factoryCreatesUniqueInstance(TestClass.class);
   }
