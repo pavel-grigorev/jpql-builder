@@ -14,10 +14,23 @@
  * limitations under the License.
  */
 
-package org.thepavel.jpqlbuilder.factory;
+package org.thepavel.jpqlbuilder.utils;
 
-import java.lang.reflect.Constructor;
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
 
-public interface ConstructorParametersFactory {
-  Object[] getParameters(Constructor<?> constructor);
+/**
+ * Singleton wrapper for Objenesis.
+ */
+public class ObjectHelper {
+  // Caches instances of ObjectInstantiator by default
+  private static final Objenesis OBJENESIS = new ObjenesisStd();
+
+  private ObjectHelper() {
+  }
+
+  public static  <T> T newInstance(Class<T> type) {
+    // Shortcut for OBJENESIS.getInstantiatorOf(type).newInstance()
+    return OBJENESIS.newInstance(type);
+  }
 }

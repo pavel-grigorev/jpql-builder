@@ -16,6 +16,8 @@
 
 package org.thepavel.jpqlbuilder.factory;
 
+import org.thepavel.jpqlbuilder.utils.ObjectHelper;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -30,14 +32,8 @@ import java.util.UUID;
 
 public class DefaultInstanceFactory implements InstanceFactory {
   private final Map<Class<?>, InstanceCreator<?>> instanceCreators = new HashMap<>();
-  private final EnumFactory enumFactory;
 
   public DefaultInstanceFactory() {
-    this(new EnumFactory());
-  }
-
-  public DefaultInstanceFactory(EnumFactory enumFactory) {
-    this.enumFactory = enumFactory;
     initInstanceCreators();
   }
 
@@ -70,7 +66,7 @@ public class DefaultInstanceFactory implements InstanceFactory {
   @SuppressWarnings("unchecked")
   public <T> T newInstance(Class<T> type) throws ReflectiveOperationException {
     if (type.isEnum()) {
-      return (T) enumFactory.newInstance(type);
+      return ObjectHelper.newInstance(type);
     }
 
     return (T) instanceCreators

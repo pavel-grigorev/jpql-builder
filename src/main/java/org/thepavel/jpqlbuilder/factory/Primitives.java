@@ -59,18 +59,4 @@ public class Primitives {
   static Character newCharacter() {
     return new Character(CHAR_VALUE);
   }
-
-  static Object get(Class<?> type) {
-    switch (type.getName()) {
-      case "byte": return newByte();
-      case "short": return newShort();
-      case "int": return newInteger();
-      case "long": return newLong();
-      case "float": return newFloat();
-      case "double": return newDouble();
-      case "boolean": return newBoolean();
-      case "char": return newCharacter();
-      default: return null;
-    }
-  }
 }

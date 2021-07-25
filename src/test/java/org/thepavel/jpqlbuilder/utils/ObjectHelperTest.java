@@ -14,28 +14,32 @@
  * limitations under the License.
  */
 
-package org.thepavel.jpqlbuilder.factory;
+package org.thepavel.jpqlbuilder.utils;
 
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.model.Status;
 
-import java.util.Arrays;
+import static org.junit.Assert.assertNotSame;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-public class EnumFactoryTest {
+public class ObjectHelperTest {
   @Test
-  public void returnsUniqueInstance() {
-    Object instance = new EnumFactory().newInstance(Status.class);
-
-    assertNotNull(instance);
-    assertTrue(instance instanceof Status);
-    assertTrue(Arrays.stream(Status.values()).noneMatch(v -> v == instance));
+  public void createsUniqueInstanceOfEnum() {
+    assertNotSame(ObjectHelper.newInstance(Status.class), ObjectHelper.newInstance(Status.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void nonEnumClass() {
-    new EnumFactory().newInstance(String.class);
+  @Test
+  public void enumWithCustomArgument() {
+    assertNotSame(ObjectHelper.newInstance(Currency.class), ObjectHelper.newInstance(Currency.class));
+  }
+
+  private enum Currency {
+    USD("USD"),
+    EUR("EUR");
+
+    final String code;
+
+    Currency(String code) {
+      this.code = code;
+    }
   }
 }
