@@ -89,7 +89,7 @@ public class GetterMethodInterceptor implements MethodInterceptor {
     return StringUtils.uncapitalize(propertyName);
   }
 
-  private Object getReturnValue(Method method, String propertyName) throws ReflectiveOperationException {
+  private Object getReturnValue(Method method, String propertyName) {
     Class<?> returnType = method.getReturnType();
 
     if (EntityHelper.isEntity(returnType)) {
@@ -120,19 +120,19 @@ public class GetterMethodInterceptor implements MethodInterceptor {
     return newInstance(returnType);
   }
 
-  private Object newInstance(Class<?> type) throws ReflectiveOperationException {
+  private Object newInstance(Class<?> type) {
     return pathResolver
         .getContext()
         .newInstance(type);
   }
 
-  private Collection<Object> newCollectionInstance(Class<?> type) throws ReflectiveOperationException {
+  private Collection<Object> newCollectionInstance(Class<?> type) {
     return pathResolver
         .getContext()
         .newCollectionInstance(type);
   }
 
-  private Map<Object, Object> newMapInstance(Class<?> type) throws ReflectiveOperationException {
+  private Map<Object, Object> newMapInstance(Class<?> type) {
     return pathResolver
         .getContext()
         .newMapInstance(type);

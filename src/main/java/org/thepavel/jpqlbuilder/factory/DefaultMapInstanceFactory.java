@@ -34,7 +34,7 @@ public class DefaultMapInstanceFactory implements MapInstanceFactory {
 
   @Override
   @SuppressWarnings("unchecked")
-  public <T extends Map<K, V>, K, V> T newInstance(Class<?> type) throws ReflectiveOperationException {
+  public <T extends Map<K, V>, K, V> T newInstance(Class<?> type) {
     checkType(type);
     Supplier<?> creator = instanceCreators.get(type);
     if (creator == null) {

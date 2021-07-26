@@ -45,7 +45,7 @@ public class DefaultInstanceFactory implements InstanceFactory {
 
   @Override
   @SuppressWarnings("unchecked")
-  public <T> T newInstance(Class<T> type) throws ReflectiveOperationException {
+  public <T> T newInstance(Class<T> type) {
     if (type.isEnum()) {
       return ObjectHelper.newInstance(type);
     }

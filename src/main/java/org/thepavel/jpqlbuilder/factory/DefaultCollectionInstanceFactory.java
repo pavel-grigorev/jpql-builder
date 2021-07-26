@@ -40,7 +40,7 @@ public class DefaultCollectionInstanceFactory implements CollectionInstanceFacto
 
   @Override
   @SuppressWarnings("unchecked")
-  public <T extends Collection<E>, E> T newInstance(Class<?> type) throws ReflectiveOperationException {
+  public <T extends Collection<E>, E> T newInstance(Class<?> type) {
     checkType(type);
     Supplier<?> creator = instanceCreators.get(type);
     if (creator == null) {

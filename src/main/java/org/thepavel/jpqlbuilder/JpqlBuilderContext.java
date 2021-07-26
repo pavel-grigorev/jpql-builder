@@ -56,15 +56,15 @@ public class JpqlBuilderContext {
     );
   }
 
-  public <T> T newInstance(Class<T> type) throws ReflectiveOperationException {
+  public <T> T newInstance(Class<T> type) {
     return instanceFactory.newInstance(type);
   }
 
-  public Collection<Object> newCollectionInstance(Class<?> type) throws ReflectiveOperationException {
+  public Collection<Object> newCollectionInstance(Class<?> type) {
     return collectionInstanceFactory.newInstance(type);
   }
 
-  public Map<Object, Object> newMapInstance(Class<?> type) throws ReflectiveOperationException {
+  public Map<Object, Object> newMapInstance(Class<?> type) {
     return mapInstanceFactory.newInstance(type);
   }
 
