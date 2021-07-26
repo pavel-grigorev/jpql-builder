@@ -23,7 +23,6 @@ import org.thepavel.jpqlbuilder.DummyAdvice;
 import org.thepavel.jpqlbuilder.model.Company;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 public class DefaultProxyFactoryTest {
@@ -32,16 +31,6 @@ public class DefaultProxyFactoryTest {
     Company proxy = factory.createProxy(Company.class, new DummyAdvice());
 
     assertNotNull(proxy);
-    assertTrue(AopUtils.isAopProxy(proxy));
-  }
-
-  @Test
-  public void instanceProxy() {
-    Company company = new Company();
-    Company proxy = factory.createProxy(company, new DummyAdvice());
-
-    assertNotNull(proxy);
-    assertNotSame(company, proxy);
     assertTrue(AopUtils.isAopProxy(proxy));
   }
 

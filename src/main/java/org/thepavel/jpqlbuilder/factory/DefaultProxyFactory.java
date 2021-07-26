@@ -28,14 +28,4 @@ public class DefaultProxyFactory implements ProxyFactory {
     proxyFactoryBean.addAdvice(advice);
     return type.cast(proxyFactoryBean.getObject());
   }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public <T> T createProxy(T target, Advice advice) {
-    ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
-    proxyFactoryBean.setAutodetectInterfaces(false);
-    proxyFactoryBean.setTarget(target);
-    proxyFactoryBean.addAdvice(advice);
-    return (T) proxyFactoryBean.getObject();
-  }
 }

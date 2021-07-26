@@ -114,10 +114,5 @@ public class CustomFactoryTest {
         throw new RuntimeException(e.getMessage(), e);
       }
     }
-
-    @Override
-    public <T> T createProxy(T target, Advice advice) {
-      return target;
-    }
   }
 }

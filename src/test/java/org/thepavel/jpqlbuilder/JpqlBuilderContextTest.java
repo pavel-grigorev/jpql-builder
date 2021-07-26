@@ -52,16 +52,6 @@ public class JpqlBuilderContextTest {
     assertTrue(AopUtils.isAopProxy(proxy));
   }
 
-  @Test
-  public void createProxyForObject() {
-    Company company = new Company();
-    Company proxy = context.createProxy(company, new DummyAdvice());
-
-    assertNotNull(proxy);
-    assertTrue(AopUtils.isAopProxy(proxy));
-    assertNotSame(company, proxy);
-  }
-
   private JpqlBuilderContext context;
 
   @Before

@@ -71,8 +71,4 @@ public class JpqlBuilderContext {
   public <T> T createProxy(Class<T> type, Advice advice) {
     return proxyFactory.createProxy(type, advice);
   }
-
-  public <T> T createProxy(T target, Advice advice) {
-    return proxyFactory.createProxy(target, advice);
-  }
 }
