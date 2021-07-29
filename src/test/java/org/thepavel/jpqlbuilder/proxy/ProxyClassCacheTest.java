@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.thepavel.jpqlbuilder.factory;
+package org.thepavel.jpqlbuilder.proxy;
 
-import org.aopalliance.aop.Advice;
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.junit.Test;
 
-public class DefaultProxyFactory implements ProxyFactory {
-  @Override
-  public <T> T createProxy(Class<T> type, Advice advice) {
-    ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
-    proxyFactoryBean.setAutodetectInterfaces(false);
-    proxyFactoryBean.setTargetClass(type);
-    proxyFactoryBean.addAdvice(advice);
-    return type.cast(proxyFactoryBean.getObject());
+import static org.junit.Assert.assertSame;
+
+public class ProxyClassCacheTest {
+  @Test
+  public void cachesClasses() {
+    Class<?> class1 = ProxyClassCache.getProxyClassFor(ProxyClassCacheTest.class);
+    Class<?> class2 = ProxyClassCache.getProxyClassFor(ProxyClassCacheTest.class);
+
+    assertSame(class1, class2);
   }
 }

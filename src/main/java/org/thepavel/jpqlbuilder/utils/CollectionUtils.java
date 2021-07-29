@@ -16,12 +16,17 @@
 
 package org.thepavel.jpqlbuilder.utils;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CollectionUtils {
   public static List<Object> toList(Object[] array) {
-    return Arrays.stream(array).collect(Collectors.toList());
+    // Extra 2 is empirical
+    // This list will be used in the "concat" and "coalesce" functions
+    // So we add room for some extra items to be added
+    List<Object> list = new ArrayList<>(array.length + 2);
+    Collections.addAll(list, array);
+    return list;
   }
 }

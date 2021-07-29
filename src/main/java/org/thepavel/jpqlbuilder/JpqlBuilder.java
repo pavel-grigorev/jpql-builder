@@ -20,10 +20,8 @@ import org.thepavel.jpqlbuilder.factory.CollectionInstanceFactory;
 import org.thepavel.jpqlbuilder.factory.DefaultCollectionInstanceFactory;
 import org.thepavel.jpqlbuilder.factory.DefaultInstanceFactory;
 import org.thepavel.jpqlbuilder.factory.DefaultMapInstanceFactory;
-import org.thepavel.jpqlbuilder.factory.DefaultProxyFactory;
 import org.thepavel.jpqlbuilder.factory.InstanceFactory;
 import org.thepavel.jpqlbuilder.factory.MapInstanceFactory;
-import org.thepavel.jpqlbuilder.factory.ProxyFactory;
 
 public class JpqlBuilder {
   private JpqlBuilder() {
@@ -53,15 +51,10 @@ public class JpqlBuilder {
     return new Builder(mapInstanceFactory);
   }
 
-  public static Builder with(ProxyFactory proxyFactory) {
-    return new Builder(proxyFactory);
-  }
-
   public static class Builder {
     private InstanceFactory instanceFactory;
     private CollectionInstanceFactory collectionInstanceFactory;
     private MapInstanceFactory mapInstanceFactory;
-    private ProxyFactory proxyFactory;
 
     private Builder(InstanceFactory instanceFactory) {
       this.instanceFactory = instanceFactory;
@@ -73,10 +66,6 @@ public class JpqlBuilder {
 
     private Builder(MapInstanceFactory mapInstanceFactory) {
       this.mapInstanceFactory = mapInstanceFactory;
-    }
-
-    private Builder(ProxyFactory proxyFactory) {
-      this.proxyFactory = proxyFactory;
     }
 
     public Builder with(InstanceFactory instanceFactory) {
@@ -91,11 +80,6 @@ public class JpqlBuilder {
 
     public Builder with(MapInstanceFactory mapInstanceFactory) {
       this.mapInstanceFactory = mapInstanceFactory;
-      return this;
-    }
-
-    public Builder with(ProxyFactory proxyFactory) {
-      this.proxyFactory = proxyFactory;
       return this;
     }
 
@@ -121,10 +105,7 @@ public class JpqlBuilder {
       if (mapInstanceFactory == null) {
         mapInstanceFactory = new DefaultMapInstanceFactory();
       }
-      if (proxyFactory == null) {
-        proxyFactory = new DefaultProxyFactory();
-      }
-      return new JpqlBuilderContext(instanceFactory, collectionInstanceFactory, mapInstanceFactory, proxyFactory);
+      return new JpqlBuilderContext(instanceFactory, collectionInstanceFactory, mapInstanceFactory);
     }
   }
 }

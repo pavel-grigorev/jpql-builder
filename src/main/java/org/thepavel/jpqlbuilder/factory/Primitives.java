@@ -14,23 +14,43 @@
  * limitations under the License.
  */
 
-package org.thepavel.jpqlbuilder.utils;
+package org.thepavel.jpqlbuilder.factory;
 
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-
-/**
- * Singleton wrapper for Objenesis.
- */
-public class ObjectHelper {
-  // Caches instances of ObjectInstantiator by default
-  private static final Objenesis OBJENESIS = new ObjenesisStd();
-
-  private ObjectHelper() {
+class Primitives {
+  private Primitives() {
   }
 
-  public static <T> T newInstanceWithoutConstructor(Class<T> type) {
-    // Shortcut for OBJENESIS.getInstantiatorOf(type).newInstance()
-    return OBJENESIS.newInstance(type);
+  static Byte newByte() {
+    final byte x = 0;
+    return new Byte(x);
+  }
+
+  static Short newShort() {
+    final short x = 0;
+    return new Short(x);
+  }
+
+  static Integer newInteger() {
+    return new Integer(0);
+  }
+
+  static Long newLong() {
+    return new Long(0);
+  }
+
+  static Float newFloat() {
+    return new Float(0);
+  }
+
+  static Double newDouble() {
+    return new Double(0);
+  }
+
+  static Boolean newBoolean() {
+    return new Boolean(false);
+  }
+
+  static Character newCharacter() {
+    return new Character('0');
   }
 }

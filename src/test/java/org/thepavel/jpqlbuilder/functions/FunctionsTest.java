@@ -17,9 +17,8 @@
 package org.thepavel.jpqlbuilder.functions;
 
 import org.junit.Test;
-import org.thepavel.jpqlbuilder.DummyAdvice;
 import org.thepavel.jpqlbuilder.DummyObject;
-import org.thepavel.jpqlbuilder.factory.DefaultProxyFactory;
+import org.thepavel.jpqlbuilder.proxy.EntityProxyFactory;
 import org.thepavel.jpqlbuilder.model.Company;
 import org.thepavel.jpqlbuilder.model.Status;
 
@@ -457,7 +456,7 @@ public class FunctionsTest {
 
   @Test
   public void index() {
-    Company company = new DefaultProxyFactory().createProxy(Company.class, new DummyAdvice());
+    Company company = EntityProxyFactory.createProxy(Company.class, null);
     assertEquals("index(Company)", asString(new Index(company)));
   }
 
@@ -468,7 +467,7 @@ public class FunctionsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void indexNonEntity() {
-    TestEntity testEntity = new DefaultProxyFactory().createProxy(TestEntity.class, new DummyAdvice());
+    TestEntity testEntity = EntityProxyFactory.createProxy(TestEntity.class, null);
     assertEquals("index(TestEntity)", asString(new Index(testEntity)));
   }
 
@@ -484,7 +483,7 @@ public class FunctionsTest {
 
   @Test
   public void type() {
-    Company company = new DefaultProxyFactory().createProxy(Company.class, new DummyAdvice());
+    Company company = EntityProxyFactory.createProxy(Company.class, null);
     assertEquals("type(Company)", asString(new Type(company)));
   }
 
@@ -495,7 +494,7 @@ public class FunctionsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void typeNonEntity() {
-    TestEntity testEntity = new DefaultProxyFactory().createProxy(TestEntity.class, new DummyAdvice());
+    TestEntity testEntity = EntityProxyFactory.createProxy(TestEntity.class, null);
     assertEquals("type(TestEntity)", asString(new Type(testEntity)));
   }
 
@@ -600,7 +599,7 @@ public class FunctionsTest {
 
   @Test
   public void column() {
-    Company company = new DefaultProxyFactory().createProxy(Company.class, new DummyAdvice());
+    Company company = EntityProxyFactory.createProxy(Company.class, null);
     assertEquals("column('dummy', Company)", asString(new Column<>("dummy", company)));
   }
 
@@ -616,13 +615,13 @@ public class FunctionsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void columnBadName() {
-    Company company = new DefaultProxyFactory().createProxy(Company.class, new DummyAdvice());
+    Company company = EntityProxyFactory.createProxy(Company.class, null);
     assertEquals("column('dummy', Company)", asString(new Column<>("'dummy", company)));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void columnNonEntity() {
-    TestEntity testEntity = new DefaultProxyFactory().createProxy(TestEntity.class, new DummyAdvice());
+    TestEntity testEntity = EntityProxyFactory.createProxy(TestEntity.class, null);
     assertEquals("column('dummy', Company)", asString(new Column<>("'dummy", testEntity)));
   }
 

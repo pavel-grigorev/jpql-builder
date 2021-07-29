@@ -24,12 +24,18 @@ import static org.junit.Assert.assertNotSame;
 public class ObjectHelperTest {
   @Test
   public void createsUniqueInstanceOfEnum() {
-    assertNotSame(ObjectHelper.newInstance(Status.class), ObjectHelper.newInstance(Status.class));
+    assertNotSame(
+        ObjectHelper.newInstanceWithoutConstructor(Status.class),
+        ObjectHelper.newInstanceWithoutConstructor(Status.class)
+    );
   }
 
   @Test
   public void enumWithCustomArgument() {
-    assertNotSame(ObjectHelper.newInstance(Currency.class), ObjectHelper.newInstance(Currency.class));
+    assertNotSame(
+        ObjectHelper.newInstanceWithoutConstructor(Currency.class),
+        ObjectHelper.newInstanceWithoutConstructor(Currency.class)
+    );
   }
 
   private enum Currency {

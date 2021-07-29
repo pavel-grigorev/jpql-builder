@@ -17,10 +17,8 @@
 package org.thepavel.jpqlbuilder.utils;
 
 import org.junit.Test;
-import org.thepavel.jpqlbuilder.DummyAdvice;
-import org.thepavel.jpqlbuilder.factory.DefaultProxyFactory;
-import org.thepavel.jpqlbuilder.factory.ProxyFactory;
 import org.thepavel.jpqlbuilder.model.Company;
+import org.thepavel.jpqlbuilder.proxy.EntityProxyFactory;
 
 import javax.persistence.Entity;
 
@@ -49,10 +47,8 @@ public class EntityHelperTest {
 
   @Test
   public void isProxiedEntity() {
-    ProxyFactory factory = new DefaultProxyFactory();
-
-    Company company = factory.createProxy(Company.class, new DummyAdvice());
-    NonEntity nonEntity = factory.createProxy(NonEntity.class, new DummyAdvice());
+    Company company = EntityProxyFactory.createProxy(Company.class, null);
+    NonEntity nonEntity = EntityProxyFactory.createProxy(NonEntity.class, null);
 
     assertTrue(EntityHelper.isProxiedEntity(company));
     assertFalse(EntityHelper.isProxiedEntity(nonEntity));

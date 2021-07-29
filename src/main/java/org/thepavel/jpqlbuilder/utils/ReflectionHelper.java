@@ -16,9 +16,15 @@
 
 package org.thepavel.jpqlbuilder.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ReflectionHelper {
   @SuppressWarnings("unchecked")
@@ -26,23 +32,16 @@ public class ReflectionHelper {
     try {
       return (T) type.newInstance();
     } catch (ReflectiveOperationException e) {
-      throw new RuntimeException(e.getMessage(), e);
+      throw new RuntimeException("Can not create instance of class " + type.getName(), e);
     }
   }
 
-  public static Class<?> getGenericReturnType(Method method) {
-    return getGenericReturnTypes(method)[0];
+  public static Class<?> getGenericReturnType(ParameterizedType type) {
+    return getGenericReturnTypes(type)[0];
   }
 
-  public static Class<?>[] getGenericReturnTypes(Method method) {
-    Type returnType = method.getGenericReturnType();
-
-    if (!(returnType instanceof ParameterizedType)) {
-      throw new IllegalArgumentException("No generics in return type of method " + method.getName());
-    }
-
-    ParameterizedType parameterizedType = (ParameterizedType) returnType;
-    return toClass(parameterizedType.getActualTypeArguments());
+  public static Class<?>[] getGenericReturnTypes(ParameterizedType type) {
+    return toClass(type.getActualTypeArguments());
   }
 
   private static Class<?>[] toClass(Type[] types) {
@@ -51,5 +50,48 @@ public class ReflectionHelper {
       classes[i] = (Class<?>) types[i];
     }
     return classes;
+  }
+
+  public static Constructor<?> getDefaultConstructor(Class<?> type) {
+    try {
+      return type.getDeclaredConstructor();
+    } catch (NoSuchMethodException e) {
+      throw new IllegalArgumentException("Class " + type.getName() + " does not have a default constructor", e);
+    }
+  }
+
+  public static List<Method> getGetterMethods(Class<?> type) {
+    return Arrays
+        .stream(type.getMethods())
+        .filter(ReflectionHelper::isGetter)
+        .collect(Collectors.toList());
+  }
+
+  private static boolean isGetter(Method method) {
+    Class<?> returnType = method.getReturnType();
+    if (isVoid(returnType) || method.getParameterCount() > 0) {
+      return false;
+    }
+
+    String methodName = method.getName();
+    if (methodName.equals("getClass")) {
+      return false;
+    }
+
+    return methodName.startsWith("get") || methodName.startsWith("is") && isBoolean(returnType);
+  }
+
+  private static boolean isVoid(Class<?> type) {
+    return type == void.class || type == Void.class;
+  }
+
+  private static boolean isBoolean(Class<?> type) {
+    return type == boolean.class || type == Boolean.class;
+  }
+
+  public static String getPropertyName(Method getter) {
+    String name = getter.getName();
+    int offset = name.startsWith("get") ? 3 : 2;
+    return StringUtils.uncapitalize(name.substring(offset));
   }
 }

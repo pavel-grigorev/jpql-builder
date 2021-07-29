@@ -16,12 +16,9 @@
 
 package org.thepavel.jpqlbuilder.samples;
 
-import org.aopalliance.aop.Advice;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.SelectBuilder;
 import org.thepavel.jpqlbuilder.factory.DefaultMapInstanceFactory;
-import org.thepavel.jpqlbuilder.factory.ProxyFactory;
-import org.springframework.aop.support.AopUtils;
 import org.thepavel.jpqlbuilder.JpqlBuilder;
 import org.thepavel.jpqlbuilder.factory.DefaultCollectionInstanceFactory;
 import org.thepavel.jpqlbuilder.factory.DefaultInstanceFactory;
@@ -35,9 +32,8 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 public class CustomFactoryTest {
@@ -46,10 +42,12 @@ public class CustomFactoryTest {
     SelectBuilder builder = JpqlBuilder.selectBuilder();
     Department department = builder.from(Department.class);
 
-    assertTrue(AopUtils.isAopProxy(department));
+    assertNotSame(Department.class, department.getClass());
     assertNotNull(department.getName());
     assertTrue(department.getEmployees() instanceof ArrayList);
-    assertTrue(AopUtils.isAopProxy(department.getCompany()));
+    assertEquals(1, department.getEmployees().size());
+    assertNotNull(department.getCompany());
+    assertNotSame(Company.class, department.getCompany().getClass());
   }
 
   @Test
@@ -60,10 +58,12 @@ public class CustomFactoryTest {
     SelectBuilder builder = JpqlBuilder.with(instanceFactory).selectBuilder();
     Department department = builder.from(Department.class);
 
-    assertTrue(AopUtils.isAopProxy(department));
+    assertNotSame(Department.class, department.getClass());
     assertEquals("test", department.getName());
     assertTrue(department.getEmployees() instanceof ArrayList);
-    assertTrue(AopUtils.isAopProxy(department.getCompany()));
+    assertEquals(1, department.getEmployees().size());
+    assertNotNull(department.getCompany());
+    assertNotSame(Company.class, department.getCompany().getClass());
   }
 
   @Test
@@ -74,10 +74,12 @@ public class CustomFactoryTest {
     SelectBuilder builder = JpqlBuilder.with(collectionInstanceFactory).selectBuilder();
     Department department = builder.from(Department.class);
 
-    assertTrue(AopUtils.isAopProxy(department));
+    assertNotSame(Department.class, department.getClass());
     assertNotNull(department.getName());
     assertTrue(department.getEmployees() instanceof Vector);
-    assertTrue(AopUtils.isAopProxy(department.getCompany()));
+    assertEquals(1, department.getEmployees().size());
+    assertNotNull(department.getCompany());
+    assertNotSame(Company.class, department.getCompany().getClass());
   }
 
   @Test
@@ -88,31 +90,11 @@ public class CustomFactoryTest {
     SelectBuilder builder = JpqlBuilder.with(mapInstanceFactory).selectBuilder();
     Company company = builder.from(Company.class);
 
-    assertTrue(AopUtils.isAopProxy(company));
+    assertNotSame(Company.class, company.getClass());
     assertNotNull(company.getName());
     assertTrue(company.getHeads() instanceof TreeMap);
+    assertEquals(1, company.getHeads().size());
     assertTrue(company.getDepartments() instanceof ArrayList);
-  }
-
-  @Test
-  public void customProxyFactory() {
-    SelectBuilder builder = JpqlBuilder.with(new TestProxyFactory()).selectBuilder();
-    Department department = builder.from(Department.class);
-
-    assertFalse(AopUtils.isAopProxy(department));
-    assertNull(department.getName());
-    assertNull(department.getEmployees());
-    assertNull(department.getCompany());
-  }
-
-  private static class TestProxyFactory implements ProxyFactory {
-    @Override
-    public <T> T createProxy(Class<T> type, Advice advice) {
-      try {
-        return type.newInstance();
-      } catch (ReflectiveOperationException e) {
-        throw new RuntimeException(e.getMessage(), e);
-      }
-    }
+    assertEquals(1, company.getDepartments().size());
   }
 }

@@ -16,8 +16,8 @@
 
 package org.thepavel.jpqlbuilder;
 
+import org.thepavel.jpqlbuilder.proxy.ProxyClassHelper;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
-import org.springframework.aop.support.AopUtils;
 import org.thepavel.jpqlbuilder.operators.Operator;
 
 import java.text.SimpleDateFormat;
@@ -42,8 +42,10 @@ public class DummyJpqlStringWriter implements JpqlStringWriter {
       builder.append(dateFormat.format((Date) value));
       return;
     }
-    if (AopUtils.isAopProxy(value)) {
-      builder.append(AopUtils.getTargetClass(value).getSimpleName());
+    if (ProxyClassHelper.isProxyClass(value.getClass())) {
+      String className = ProxyClassHelper.getTargetClassName(value.getClass());
+      int index = className.lastIndexOf('.');
+      builder.append(index != -1 ? className.substring(index + 1) : className);
       return;
     }
     builder.append(value);

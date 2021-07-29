@@ -17,6 +17,7 @@
 package org.thepavel.jpqlbuilder.path;
 
 import org.thepavel.jpqlbuilder.JpqlBuilderContext;
+import org.thepavel.jpqlbuilder.proxy.EntityProxyFactory;
 import org.thepavel.jpqlbuilder.utils.ReflectionHelper;
 import org.thepavel.jpqlbuilder.utils.EntityHelper;
 
@@ -63,23 +64,23 @@ public class PathResolver<T> {
   }
 
   public void resetPathSpecifier(Class<T> entityClass) {
-    pathSpecifier = context.createProxy(entityClass, new GetterMethodInterceptor(this));
+    pathSpecifier = EntityProxyFactory.createProxy(entityClass, this);
   }
 
-  JpqlBuilderContext getContext() {
+  public JpqlBuilderContext getContext() {
     return context;
   }
 
-  Object getValue(String propertyName) {
+  public Object getValue(String propertyName) {
     return nameToValue.get(propertyName);
   }
 
-  void put(String propertyName, Object value) {
+  public void put(String propertyName, Object value) {
     nameToValue.put(propertyName, value);
     valueToName.put(value, propertyName);
   }
 
-  <E> PathResolver<E> createChildResolver(Class<E> entityClass, String propertyName) {
+  public <E> PathResolver<E> createChildResolver(Class<E> entityClass, String propertyName) {
     PathResolver<E> pathResolver = new PathResolver<>(entityClass, buildPath(propertyName), context);
     children.add(pathResolver);
     return pathResolver;

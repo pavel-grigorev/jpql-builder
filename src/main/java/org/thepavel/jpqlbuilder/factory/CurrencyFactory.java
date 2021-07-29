@@ -16,28 +16,24 @@
 
 package org.thepavel.jpqlbuilder.factory;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.aop.support.AopUtils;
-import org.thepavel.jpqlbuilder.DummyAdvice;
-import org.thepavel.jpqlbuilder.model.Company;
+import java.lang.reflect.Constructor;
+import java.util.Currency;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-public class DefaultProxyFactoryTest {
-  @Test
-  public void classProxy() {
-    Company proxy = factory.createProxy(Company.class, new DummyAdvice());
-
-    assertNotNull(proxy);
-    assertTrue(AopUtils.isAopProxy(proxy));
+public class CurrencyFactory {
+  private CurrencyFactory() {
   }
 
-  private ProxyFactory factory;
+  public static Currency newCurrency() {
+    try {
+      return getConstructor().newInstance("", 0, 0);
+    } catch (ReflectiveOperationException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
+  }
 
-  @Before
-  public void setup() {
-    factory = new DefaultProxyFactory();
+  private static Constructor<Currency> getConstructor() throws NoSuchMethodException {
+    Constructor<Currency> c = Currency.class.getDeclaredConstructor(String.class, int.class, int.class);
+    c.setAccessible(true);
+    return c;
   }
 }

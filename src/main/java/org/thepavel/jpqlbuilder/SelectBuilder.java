@@ -16,9 +16,9 @@
 
 package org.thepavel.jpqlbuilder;
 
-import org.springframework.aop.support.AopUtils;
 import org.thepavel.jpqlbuilder.path.PathResolver;
 import org.thepavel.jpqlbuilder.path.PathResolverList;
+import org.thepavel.jpqlbuilder.proxy.ProxyClassHelper;
 import org.thepavel.jpqlbuilder.query.JoinClause;
 import org.thepavel.jpqlbuilder.query.JoinType;
 import org.thepavel.jpqlbuilder.query.SelectQuery;
@@ -124,7 +124,13 @@ public class SelectBuilder {
   }
 
   private <P> Join<P> joinAssociation(P path, JoinType type) {
-    return join(path, AopUtils.getTargetClass(path), type);
+    Class<?> clazz = path.getClass();
+
+    if (ProxyClassHelper.isProxyClass(clazz)) {
+      return join(path, ProxyClassHelper.getTargetClass(clazz), type);
+    }
+
+    return join(path, clazz, type);
   }
 
   private <P> Join<P> joinCollection(Collection<P> path, JoinType type) {

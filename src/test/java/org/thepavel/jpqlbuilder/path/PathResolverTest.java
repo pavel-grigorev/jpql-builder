@@ -19,7 +19,6 @@ package org.thepavel.jpqlbuilder.path;
 import org.junit.Before;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.JpqlBuilderContext;
-import org.springframework.aop.support.AopUtils;
 import org.thepavel.jpqlbuilder.model.Company;
 import org.thepavel.jpqlbuilder.model.Department;
 import org.thepavel.jpqlbuilder.model.Employee;
@@ -28,7 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -56,9 +54,8 @@ public class PathResolverTest {
   }
 
   @Test
-  @SuppressWarnings("rawtypes")
   public void childResolverForMapValue() {
-    PathResolver<Map> pathResolver = new PathResolver<>(Map.class, "a.heads", context);
+    PathResolver<Employee> pathResolver = new PathResolver<>(Employee.class, "a.heads", context);
     PathResolver<Employee> childResolver = pathResolver.createChildResolverForMapValue(Employee.class);
     Employee employee = childResolver.getPathSpecifier();
 
@@ -71,7 +68,7 @@ public class PathResolverTest {
     Company company = pathResolver.getPathSpecifier();
 
     assertNotNull(company);
-    assertTrue(AopUtils.isAopProxy(company));
+    assertNotSame(Company.class, company.getClass());
   }
 
   @Test
@@ -121,14 +118,14 @@ public class PathResolverTest {
     assertEquals(1L, key);
 
     Object value = pathSpecifier.get(key);
-    assertTrue(AopUtils.isAopProxy(value));
-    assertSame(Company.class, AopUtils.getTargetClass(value));
+    assertTrue(value instanceof Company);
+    assertNotSame(Company.class, value.getClass());
   }
 
   @Test
   public void pathResolverForMapWithNonEntityValue() {
     Map<Object, Object> map = new HashMap<>();
-    map.put(1L, "dummy");
+    map.put(1L, new NonEntity());
 
     PathResolver<Map<Object, Object>> pathResolver = new PathResolver<>(map, "a", context);
     Map<Object, Object> pathSpecifier = pathResolver.getPathSpecifier();
@@ -140,8 +137,8 @@ public class PathResolverTest {
     assertEquals(1L, key);
 
     Object value = pathSpecifier.get(key);
-    assertFalse(AopUtils.isAopProxy(value));
-    assertEquals("dummy", value);
+    assertTrue(value instanceof NonEntity);
+    assertSame(NonEntity.class, value.getClass());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -155,10 +152,8 @@ public class PathResolverTest {
     Company a = pathResolver.getPathSpecifier();
 
     pathResolver.resetPathSpecifier(Company.class);
-    Company b = pathResolver.getPathSpecifier();
 
-    assertNotSame(a, b);
-    assertTrue(AopUtils.isAopProxy(b));
+    assertNotSame(a, pathResolver.getPathSpecifier());
   }
 
   private JpqlBuilderContext context;
@@ -166,5 +161,8 @@ public class PathResolverTest {
   @Before
   public void setup() {
     context = JpqlBuilderContext.defaultContext();
+  }
+
+  private static class NonEntity {
   }
 }

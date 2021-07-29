@@ -16,11 +16,17 @@
 
 package org.thepavel.jpqlbuilder.factory;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.model.Status;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Locale;
@@ -30,118 +36,162 @@ import java.util.UUID;
 import static org.junit.Assert.assertNotSame;
 
 public class DefaultInstanceFactoryTest {
+  private static InstanceFactory factory;
+
+  @BeforeClass
+  public static void setup() {
+    factory = new DefaultInstanceFactory();
+  }
+
+  @AfterClass
+  public static void tearDown() {
+    factory = null;
+  }
+
   @Test
-  public void newEnum() throws ReflectiveOperationException {
+  public void newEnum() {
     factoryCreatesUniqueInstance(Status.class);
   }
 
   @Test
-  public void newByte() throws ReflectiveOperationException {
+  public void newByte() {
     factoryCreatesUniqueInstance(Byte.class);
   }
 
   @Test
-  public void newShort() throws ReflectiveOperationException {
+  public void newShort() {
     factoryCreatesUniqueInstance(Short.class);
   }
 
   @Test
-  public void newInteger() throws ReflectiveOperationException {
+  public void newInteger() {
     factoryCreatesUniqueInstance(Integer.class);
   }
 
   @Test
-  public void newLong() throws ReflectiveOperationException {
+  public void newLong() {
     factoryCreatesUniqueInstance(Long.class);
   }
 
   @Test
-  public void newFloat() throws ReflectiveOperationException {
+  public void newFloat() {
     factoryCreatesUniqueInstance(Float.class);
   }
 
   @Test
-  public void newDouble() throws ReflectiveOperationException {
+  public void newDouble() {
     factoryCreatesUniqueInstance(Double.class);
   }
 
   @Test
-  public void newBoolean() throws ReflectiveOperationException {
+  public void newBoolean() {
     factoryCreatesUniqueInstance(Boolean.class);
   }
 
   @Test
-  public void newCharacter() throws ReflectiveOperationException {
+  public void newCharacter() {
     factoryCreatesUniqueInstance(Character.class);
   }
 
   @Test
-  public void newBigDecimal() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(BigDecimal.class);
-  }
-
-  @Test
-  public void newBigInteger() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(BigInteger.class);
-  }
-
-  @Test
-  public void newUuid() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(UUID.class);
-  }
-
-  @Test
-  public void newJavaSqlDate() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(java.sql.Date.class);
-  }
-
-  @Test
-  public void newJavaUtilDate() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(java.util.Date.class);
-  }
-
-  @Test
-  public void newCalendar() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(Calendar.class);
-  }
-
-  @Test
-  public void newLocale() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(Locale.class);
-  }
-
-  @Test
-  public void newTimeZone() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(TimeZone.class);
-  }
-
-  @Test
-  public void newCurrency() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(Currency.class);
-  }
-
-  @Test
-  public void newByteArray() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(byte[].class);
-  }
-
-  @Test
-  public void newString() throws ReflectiveOperationException {
+  public void newString() {
     factoryCreatesUniqueInstance(String.class);
   }
 
   @Test
-  public void noDefaultConstructor() throws ReflectiveOperationException {
-    factoryCreatesUniqueInstance(TestClass.class);
+  public void newBigDecimal() {
+    factoryCreatesUniqueInstance(BigDecimal.class);
   }
 
-  private void factoryCreatesUniqueInstance(Class<?> type) throws ReflectiveOperationException {
-    InstanceFactory factory = new DefaultInstanceFactory();
+  @Test
+  public void newBigInteger() {
+    factoryCreatesUniqueInstance(BigInteger.class);
+  }
+
+  @Test
+  public void newUuid() {
+    factoryCreatesUniqueInstance(UUID.class);
+  }
+
+  @Test
+  public void newJavaUtilDate() {
+    factoryCreatesUniqueInstance(java.util.Date.class);
+  }
+
+  @Test
+  public void newJavaSqlDate() {
+    factoryCreatesUniqueInstance(java.sql.Date.class);
+  }
+
+  @Test
+  public void newLocalDate() {
+    factoryCreatesUniqueInstance(LocalDate.class);
+  }
+
+  @Test
+  public void newLocalDateTime() {
+    factoryCreatesUniqueInstance(LocalDateTime.class);
+  }
+
+  @Test
+  public void newLocalTime() {
+    factoryCreatesUniqueInstance(LocalTime.class);
+  }
+
+  @Test
+  public void newInstant() {
+    factoryCreatesUniqueInstance(Instant.class);
+  }
+
+  @Test
+  public void newCalendar() {
+    factoryCreatesUniqueInstance(Calendar.class);
+  }
+
+  @Test
+  public void newLocale() {
+    factoryCreatesUniqueInstance(Locale.class);
+  }
+
+  @Test
+  public void newTimeZone() {
+    factoryCreatesUniqueInstance(TimeZone.class);
+  }
+
+  @Test
+  public void newCurrency() {
+    factoryCreatesUniqueInstance(Currency.class);
+  }
+
+  @Test
+  public void newByteArray() {
+    factoryCreatesUniqueInstance(byte[].class);
+  }
+
+  @Test
+  public void newCharArray() {
+    factoryCreatesUniqueInstance(char[].class);
+  }
+
+  @Test
+  public void defaultConstructor() {
+    factoryCreatesUniqueInstance(DefConstructorClass.class);
+  }
+
+  @Test
+  public void noDefaultConstructor() {
+    factoryCreatesUniqueInstance(NoDefConstructorClass.class);
+  }
+
+  private void factoryCreatesUniqueInstance(Class<?> type) {
     assertNotSame(factory.newInstance(type), factory.newInstance(type));
   }
 
-  public static class TestClass {
-    public TestClass(@SuppressWarnings("unused") String s) {
+  public static class DefConstructorClass {
+  }
+
+  public static class NoDefConstructorClass {
+    public NoDefConstructorClass(@SuppressWarnings("unused") String s) {
     }
   }
 }

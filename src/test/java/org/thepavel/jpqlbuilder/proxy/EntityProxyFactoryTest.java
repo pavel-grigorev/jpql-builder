@@ -14,36 +14,27 @@
  * limitations under the License.
  */
 
-package org.thepavel.jpqlbuilder;
+package org.thepavel.jpqlbuilder.proxy;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.Map;
-
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
-public class JpqlBuilderContextTest {
+public class EntityProxyFactoryTest {
   @Test
-  public void newInstance() {
-    assertNotSame(context.newInstance(String.class), context.newInstance(String.class));
+  public void createsProxyInstance() {
+    EntityProxyFactoryTest proxy = EntityProxyFactory.createProxy(EntityProxyFactoryTest.class, null);
+
+    assertNotSame(EntityProxyFactoryTest.class, proxy.getClass());
   }
 
   @Test
-  public void newCollectionInstance() {
-    assertNotSame(context.newCollectionInstance(List.class), context.newCollectionInstance(List.class));
-  }
+  public void proxyClassIsCached() {
+    EntityProxyFactoryTest proxy1 = EntityProxyFactory.createProxy(EntityProxyFactoryTest.class, null);
+    EntityProxyFactoryTest proxy2 = EntityProxyFactory.createProxy(EntityProxyFactoryTest.class, null);
 
-  @Test
-  public void newMapInstance() {
-    assertNotSame(context.newMapInstance(Map.class), context.newMapInstance(Map.class));
-  }
-
-  private JpqlBuilderContext context;
-
-  @Before
-  public void setup() {
-    context = JpqlBuilderContext.defaultContext();
+    assertNotSame(proxy1, proxy2);
+    assertSame(proxy1.getClass(), proxy2.getClass());
   }
 }

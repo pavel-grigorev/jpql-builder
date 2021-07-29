@@ -16,8 +16,13 @@
 
 package org.thepavel.jpqlbuilder.factory;
 
-import org.aopalliance.aop.Advice;
+import org.junit.Test;
 
-public interface ProxyFactory {
-  <T> T createProxy(Class<T> type, Advice advice);
+import static org.junit.Assert.assertNotSame;
+
+public class CurrencyFactoryTest {
+  @Test
+  public void createsUniqueInstance() {
+    assertNotSame(CurrencyFactory.newCurrency(), CurrencyFactory.newCurrency());
+  }
 }

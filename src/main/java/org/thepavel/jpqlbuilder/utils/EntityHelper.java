@@ -17,7 +17,7 @@
 package org.thepavel.jpqlbuilder.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.support.AopUtils;
+import org.thepavel.jpqlbuilder.proxy.ProxyClassHelper;
 
 import javax.persistence.Entity;
 
@@ -32,6 +32,8 @@ public class EntityHelper {
   }
 
   public static boolean isProxiedEntity(Object object) {
-    return AopUtils.isAopProxy(object) && isEntity(AopUtils.getTargetClass(object));
+    Class<?> type = object.getClass();
+    return ProxyClassHelper.isProxyClass(type) &&
+        isEntity(ProxyClassHelper.getTargetClass(type));
   }
 }
