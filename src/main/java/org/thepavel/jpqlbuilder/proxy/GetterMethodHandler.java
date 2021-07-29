@@ -28,15 +28,8 @@ import java.util.Collection;
 import java.util.Map;
 
 public class GetterMethodHandler {
-  public static final Method HANDLER_METHOD;
-
-  static {
-    try {
-      HANDLER_METHOD = GetterMethodHandler.class.getMethod("invoke", String.class, Type.class, PathResolver.class);
-    } catch (ReflectiveOperationException e) {
-      throw new RuntimeException(e.getMessage(), e);
-    }
-  }
+  public static final Method HANDLER_METHOD = ReflectionHelper
+      .getMethod(GetterMethodHandler.class, "invoke", String.class, Type.class, PathResolver.class);
 
   public static Object invoke(String propertyName, Type returnType, PathResolver<?> pathResolver) {
     Object value = pathResolver.getValue(propertyName);

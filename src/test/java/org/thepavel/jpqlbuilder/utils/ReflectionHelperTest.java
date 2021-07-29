@@ -63,6 +63,16 @@ public class ReflectionHelperTest {
   }
 
   @Test
+  public void testGetClass() {
+    assertSame(String.class, ReflectionHelper.getClass("java.lang.String"));
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void testClassNotFound() {
+    ReflectionHelper.getClass("java.lang.Dummy");
+  }
+
+  @Test
   public void defaultConstructor() {
     Constructor<?> constructor = ReflectionHelper.getDefaultConstructor(TestClass.class);
 
@@ -73,6 +83,18 @@ public class ReflectionHelperTest {
   @Test(expected = IllegalArgumentException.class)
   public void noDefaultConstructor() {
     ReflectionHelper.getDefaultConstructor(NoDefaultConstructor.class);
+  }
+
+  @Test
+  public void testGetMethod() {
+    Method method = ReflectionHelper.getMethod(ReflectionHelperTest.class, "testGetMethod");
+
+    assertNotNull(method);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testMethodNotFound() {
+    ReflectionHelper.getMethod(ReflectionHelperTest.class, "dummy");
   }
 
   @Test

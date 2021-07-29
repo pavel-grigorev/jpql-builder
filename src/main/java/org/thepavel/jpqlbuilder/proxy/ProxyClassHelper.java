@@ -16,6 +16,8 @@
 
 package org.thepavel.jpqlbuilder.proxy;
 
+import org.thepavel.jpqlbuilder.utils.ReflectionHelper;
+
 public class ProxyClassHelper {
   private static final String SUFFIX = "$JpqlBuilder";
 
@@ -30,17 +32,12 @@ public class ProxyClassHelper {
     return type.getName().endsWith(SUFFIX);
   }
 
-  public static String getTargetClassName(Class<?> type) {
-    String className = type.getName();
-    return className.substring(0, className.indexOf(SUFFIX));
+  public static Class<?> getTargetClass(Class<?> type) {
+    return ReflectionHelper.getClass(getTargetClassName(type));
   }
 
-  public static Class<?> getTargetClass(Class<?> type) {
-    String className = getTargetClassName(type);
-    try {
-      return Class.forName(className);
-    } catch (ClassNotFoundException e) {
-      throw new IllegalStateException("Can not find class " + className, e);
-    }
+  private static String getTargetClassName(Class<?> type) {
+    String className = type.getName();
+    return className.substring(0, className.indexOf(SUFFIX));
   }
 }

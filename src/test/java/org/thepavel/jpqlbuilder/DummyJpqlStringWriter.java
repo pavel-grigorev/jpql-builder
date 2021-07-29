@@ -43,7 +43,7 @@ public class DummyJpqlStringWriter implements JpqlStringWriter {
       return;
     }
     if (ProxyClassHelper.isProxyClass(value.getClass())) {
-      String className = ProxyClassHelper.getTargetClassName(value.getClass());
+      String className = ProxyClassHelper.getTargetClass(value.getClass()).getName();
       int index = className.lastIndexOf('.');
       builder.append(index != -1 ? className.substring(index + 1) : className);
       return;

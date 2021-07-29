@@ -51,11 +51,27 @@ public class ReflectionHelper {
     return classes;
   }
 
+  public static Class<?> getClass(String className) {
+    try {
+      return Class.forName(className);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("Class not found: " + className, e);
+    }
+  }
+
   public static Constructor<?> getDefaultConstructor(Class<?> type) {
     try {
       return type.getDeclaredConstructor();
     } catch (NoSuchMethodException e) {
       throw new IllegalArgumentException("Class " + type.getName() + " does not have a default constructor", e);
+    }
+  }
+
+  public static Method getMethod(Class<?> type, String name, Class<?>... parameterTypes) {
+    try {
+      return type.getMethod(name, parameterTypes);
+    } catch (NoSuchMethodException e) {
+      throw new IllegalArgumentException("Class " + type.getName() + " does not have method '" + name + "' with parameters " + Arrays.asList(parameterTypes), e);
     }
   }
 

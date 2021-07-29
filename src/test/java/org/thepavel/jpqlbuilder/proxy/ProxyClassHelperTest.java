@@ -52,12 +52,6 @@ public class ProxyClassHelperTest {
   }
 
   @Test
-  public void getTargetClassName() {
-    assertEquals("org.thepavel.jpqlbuilder.proxy.ProxyClassHelperTest$JpqlBuilder", proxyClass.getName());
-    assertEquals("org.thepavel.jpqlbuilder.proxy.ProxyClassHelperTest", ProxyClassHelper.getTargetClassName(proxyClass));
-  }
-
-  @Test
   public void getTargetClass() {
     Class<?> targetClass = ProxyClassHelper.getTargetClass(proxyClass);
 
