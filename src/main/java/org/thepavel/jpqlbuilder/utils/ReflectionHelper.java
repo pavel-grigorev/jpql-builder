@@ -16,8 +16,7 @@
 
 package org.thepavel.jpqlbuilder.utils;
 
-import org.apache.commons.lang3.StringUtils;
-
+import java.beans.Introspector;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -92,6 +91,6 @@ public class ReflectionHelper {
   public static String getPropertyName(Method getter) {
     String name = getter.getName();
     int offset = name.startsWith("get") ? 3 : 2;
-    return StringUtils.uncapitalize(name.substring(offset));
+    return Introspector.decapitalize(name.substring(offset));
   }
 }

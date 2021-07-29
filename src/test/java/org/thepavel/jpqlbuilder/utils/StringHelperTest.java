@@ -14,34 +14,20 @@
  * limitations under the License.
  */
 
-package org.thepavel.jpqlbuilder.operators.builders;
+package org.thepavel.jpqlbuilder.utils;
 
 import org.junit.Test;
-import org.thepavel.jpqlbuilder.utils.Pair;
 
-import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class UpdateChainTest {
+public class StringHelperTest {
   @Test
-  public void set() {
-    UpdateChain chain = new UpdateChain();
-    chain.set("A").to("B");
-
-    assertEquals(
-        singletonList(Pair.of("A", "B")),
-        chain.getUpdates()
-    );
-  }
-
-  @Test
-  public void addUpdate() {
-    UpdateChain chain = new UpdateChain();
-    chain.addUpdate("X", "Y");
-
-    assertEquals(
-        singletonList(Pair.of("X", "Y")),
-        chain.getUpdates()
-    );
+  public void isNotBlank() {
+    assertFalse(StringHelper.isNotBlank(null));
+    assertFalse(StringHelper.isNotBlank(""));
+    assertFalse(StringHelper.isNotBlank(" \t\n\r"));
+    assertTrue(StringHelper.isNotBlank("a"));
+    assertTrue(StringHelper.isNotBlank(" a\t\n\r"));
   }
 }

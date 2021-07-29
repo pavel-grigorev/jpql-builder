@@ -16,8 +16,8 @@
 
 package org.thepavel.jpqlbuilder.operators;
 
-import org.apache.commons.lang3.StringUtils;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
+import org.thepavel.jpqlbuilder.utils.StringHelper;
 
 public class Like extends TernaryOperator<Object, Object, String> {
   public Like(Object operandA, Object operandB) {
@@ -41,7 +41,7 @@ public class Like extends TernaryOperator<Object, Object, String> {
   }
 
   private void appendEscapeChar(JpqlStringWriter stringWriter) {
-    if (StringUtils.isNotBlank(operandC)) {
+    if (StringHelper.isNotBlank(operandC)) {
       stringWriter.appendString(" escape ");
       writeOperand(operandC, stringWriter);
     }

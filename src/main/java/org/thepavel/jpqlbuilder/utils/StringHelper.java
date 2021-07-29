@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'java'
-}
+package org.thepavel.jpqlbuilder.utils;
 
-group 'org.thepavel'
-version '0.3.0'
+public class StringHelper {
+  private StringHelper() {
+  }
 
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile('javax.persistence:javax.persistence-api:2.2')
-    compile('net.bytebuddy:byte-buddy:1.11.8')
-    compile('org.objenesis:objenesis:3.2')
-    testCompile('junit:junit:4.12')
+  public static boolean isNotBlank(String s) {
+    return s != null && s.length() > 0 && s.trim().length() > 0;
+  }
 }

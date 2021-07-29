@@ -16,7 +16,7 @@
 
 package org.thepavel.jpqlbuilder.operators.builders;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.thepavel.jpqlbuilder.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;

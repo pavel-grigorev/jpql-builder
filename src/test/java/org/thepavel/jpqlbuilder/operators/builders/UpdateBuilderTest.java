@@ -16,9 +16,9 @@
 
 package org.thepavel.jpqlbuilder.operators.builders;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.functions.JpqlFunction;
+import org.thepavel.jpqlbuilder.utils.Pair;
 
 import java.util.List;
 

@@ -16,7 +16,6 @@
 
 package org.thepavel.jpqlbuilder.utils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.thepavel.jpqlbuilder.proxy.ProxyClassHelper;
 
 import javax.persistence.Entity;
@@ -28,7 +27,7 @@ public class EntityHelper {
 
   public static String getEntityName(Class<?> type) {
     String name = type.getAnnotation(Entity.class).name();
-    return StringUtils.isNotBlank(name) ? name : type.getSimpleName();
+    return StringHelper.isNotBlank(name) ? name : type.getSimpleName();
   }
 
   public static boolean isProxiedEntity(Object object) {

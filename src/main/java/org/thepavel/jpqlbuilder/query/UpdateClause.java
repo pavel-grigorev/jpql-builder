@@ -16,9 +16,9 @@
 
 package org.thepavel.jpqlbuilder.query;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.thepavel.jpqlbuilder.operators.Operator;
 import org.thepavel.jpqlbuilder.querystring.JpqlStringWriter;
+import org.thepavel.jpqlbuilder.utils.Pair;
 
 import java.util.List;
 

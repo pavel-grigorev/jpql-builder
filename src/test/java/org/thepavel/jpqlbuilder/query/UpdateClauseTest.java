@@ -16,9 +16,9 @@
 
 package org.thepavel.jpqlbuilder.query;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.thepavel.jpqlbuilder.model.Company;
+import org.thepavel.jpqlbuilder.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
