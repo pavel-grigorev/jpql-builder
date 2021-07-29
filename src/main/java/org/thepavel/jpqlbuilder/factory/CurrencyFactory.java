@@ -19,11 +19,11 @@ package org.thepavel.jpqlbuilder.factory;
 import java.lang.reflect.Constructor;
 import java.util.Currency;
 
-public class CurrencyFactory {
+class CurrencyFactory {
   private CurrencyFactory() {
   }
 
-  public static Currency newCurrency() {
+  static Currency newCurrency() {
     try {
       return getConstructor().newInstance("", 0, 0);
     } catch (ReflectiveOperationException e) {
