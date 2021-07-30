@@ -114,7 +114,7 @@ public class ReflectionHelperTest {
     assertEquals("x", ReflectionHelper.getPropertyName(TestClass.class.getMethod("isX")));
   }
 
-  private static class TestClass {
+  public static class TestClass {
     public Map<Long, String> getMap() {
       return null;
     }
@@ -152,7 +152,6 @@ public class ReflectionHelperTest {
   }
 
   private static class NoDefaultConstructor {
-    public NoDefaultConstructor(String s) {
-    }
+    // Because the class itself is private its default constructor is also private
   }
 }

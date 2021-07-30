@@ -61,9 +61,9 @@ public class ReflectionHelper {
 
   public static Constructor<?> getDefaultConstructor(Class<?> type) {
     try {
-      return type.getDeclaredConstructor();
+      return type.getConstructor();
     } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException("Class " + type.getName() + " does not have a default constructor", e);
+      throw new IllegalArgumentException("Class " + type.getName() + " does not have a public default constructor", e);
     }
   }
 
@@ -71,8 +71,29 @@ public class ReflectionHelper {
     try {
       return type.getMethod(name, parameterTypes);
     } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException("Class " + type.getName() + " does not have method '" + name + "' with parameters " + Arrays.asList(parameterTypes), e);
+      throw new IllegalArgumentException("Class " + type.getName() + " does not have a public method " + name + asParameters(parameterTypes), e);
     }
+  }
+
+  private static String asParameters(Class<?>... parameterTypes) {
+    if (parameterTypes.length == 0) {
+      return "()";
+    }
+
+    StringBuilder builder = new StringBuilder();
+    builder
+        .append('(')
+        .append(parameterTypes[0]);
+
+    for (int i = 1; i < parameterTypes.length; i++) {
+      builder
+          .append(',')
+          .append(parameterTypes[i].getSimpleName());
+    }
+
+    return builder
+        .append(')')
+        .toString();
   }
 
   public static List<Method> getGetterMethods(Class<?> type) {
