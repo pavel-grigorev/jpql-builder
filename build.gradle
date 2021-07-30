@@ -15,11 +15,14 @@
  */
 
 plugins {
-    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group 'org.thepavel'
-version '0.3.0'
+version '0.3.1'
 
 sourceCompatibility = 1.8
 
@@ -28,8 +31,83 @@ repositories {
 }
 
 dependencies {
-    compile('javax.persistence:javax.persistence-api:+')
-    compile('net.bytebuddy:byte-buddy:1.11.8')
-    compile('org.objenesis:objenesis:3.2')
-    testCompile('junit:junit:4.12')
+    shadow 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'net.bytebuddy:byte-buddy:1.11.8'
+    implementation 'org.objenesis:objenesis:3.2'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'javax.persistence:javax.persistence-api:2.2'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+shadowJar {
+    archiveClassifier.set('')
+    relocate 'net.bytebuddy', 'org.thepavel.integrations.net.bytebuddy'
+    relocate 'org.objenesis', 'org.thepavel.integrations.org.objenesis'
+    minimize()
+}
+
+publishing {
+    publications {
+        shadowed(MavenPublication) {
+            from components.java
+            pom {
+                withXml {
+                    replaceDependencies(it.asNode())
+                }
+
+                name = 'JPQL Builder'
+                description = 'JPQL Builder provides type safety and fluent API to dynamically build JPQL strings.'
+                url = 'https://github.com/pavel-grigorev/jpql-builder'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'pavel_grigorev'
+                        name = 'Pavel Grigorev'
+                        email = 'pavel@thepavel.org'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:https://github.com/pavel-grigorev/jpql-builder.git'
+                    developerConnection = 'scm:git://github.com/pavel-grigorev/jpql-builder.git'
+                    url = 'https://github.com/pavel-grigorev/jpql-builder.git'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.shadowed
+}
+
+ext.replaceDependencies = { pomRoot ->
+    def dependenciesNode = pomRoot.children().find({ it.name().getLocalPart() == 'dependencies' })
+
+    if (dependenciesNode) {
+        pomRoot.remove(dependenciesNode)
+    }
+
+    dependenciesNode = pomRoot.appendNode('dependencies')
+
+    configurations.shadow.allDependencies.each {
+        if (it instanceof ProjectDependency || !(it instanceof SelfResolvingDependency)) {
+            def dependencyNode = dependenciesNode.appendNode('dependency')
+            dependencyNode.appendNode('groupId', it.group)
+            dependencyNode.appendNode('artifactId', it.name)
+            dependencyNode.appendNode('version', it.version)
+            dependencyNode.appendNode('scope', 'runtime')
+        }
+    }
 }
