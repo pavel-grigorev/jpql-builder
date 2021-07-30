@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    compile('javax.persistence:javax.persistence-api:2.2')
+    compile('javax.persistence:javax.persistence-api:+')
     compile('net.bytebuddy:byte-buddy:1.11.8')
     compile('org.objenesis:objenesis:3.2')
     testCompile('junit:junit:4.12')
