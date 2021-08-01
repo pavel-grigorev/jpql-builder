@@ -88,6 +88,10 @@ publishing {
     }
 }
 
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
+}
+
 signing {
     sign publishing.publications.shadowed
 }
