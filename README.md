@@ -5,8 +5,14 @@
 JpqlBuilder is a tool to dynamically build JPQL strings. JpqlBuilder provides:
 - Type safety
 - Fluent API
+- No annotation processors
 
-Here's how it works:
+##### Warning:
+
+- Exploits ByteBuddy for proxying the entity objects
+- Bundles ByteBuddy with the library binaries making them 3.5 megabytes in size
+
+##### Quick example:
 
 ```java
 SelectBuilder builder = JpqlBuilder.selectBuilder();
